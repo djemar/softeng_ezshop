@@ -73,13 +73,19 @@ ca -> (EZShop)
 ```
 
 ## Interfaces
+
 \<describe here each interface in the context diagram>
 
 \<GUIs will be described graphically in a separate document>
 
-| Actor | Logical Interface | Physical Interface  |
-| ------------- |:-------------:| -----:|
-|   Actor x..     |  |  |
+\<Maybe employee is enough, owner can be removed?>
+
+| Actor         | Logical Interface |                                       Physical Interface |
+| ------------- | :---------------: | -------------------------------------------------------: |
+| Inventory     |      Barcode      |                                          Barcode scanner |
+| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Cash Register |        API        |                                       local network link |
 
 # Stories and personas
 \<A Persona is a realistic impersonation of an actor. Define here a few personas and describe in plain text how a persona interacts with the system>
