@@ -97,11 +97,54 @@ ca -> (EZShop)
 
 \<they match to high level use cases>
 
-| ID        | Description  |
-| ------------- |:-------------:| 
-|  FR1     |  |
-|  FR2     |   |
-| FRx..  | | 
+| ID      |                                        Description                                         |
+| ------- | :----------------------------------------------------------------------------------------: |
+| FR1     |                                      Manage customer                                       |
+| FR1.1   |                   Define a new customer, or modify an existing customer                    |
+| FR1.2   |                                     Delete a customer                                      |
+| FR1.3   |                                     List all customer                                      |
+| FR1.4   |                                     Search a customer                                      |
+| FR1.5   |                                   Manage customer points                                   |
+| FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
+| FR3     |                                        Manage items                                        |
+| FR3.1   |                       Define a new item, or modify an existing item                        |
+| FR3.2   |                                       Delete a item                                        |
+| FR3.3   |                                       List all items                                       |
+| FR3.4   |                                        Search items                                        |
+| FR3.5   |                            Alert if stock is below a threshold                             |
+| FR3.6   |                            Define, update prices for each item                             |
+| FR3.7   |                           Define, update discounts for each item                           |
+| FR3.8   |                         Alert if item is expiring **(FOOD SHOP)**                          |
+| FR4     |                                      Manage employees                                      |
+| FR4.1   |                                     Define work shifts                                     |
+| FR4.1.1 |                                      Define holidays                                       |
+| FR4.2   |                   Define a new employee, or modify an existing employee                    |
+| FR4.3   |                                     Delete a employee                                      |
+| FR4.4   |                                     List all employee                                      |
+| FR4.5   |                                     Search a employee                                      |
+| FR5     |                                     Manage accounting                                      |
+| FR5.1   |                                 Manage employees salaries                                  |
+| FR5.2   |                                     Manage shop income                                     |
+| FR5.3   |                                    Manage shop expenses                                    |
+| FR5.4   |                                    Manage sales history                                    |
+| FR5.5   |                 Generate report about accounting-related data with filters                 |
+| FR6     |                                    Manage cash register                                    |
+| FR6.1   |                              Retrieve data from cash register                              |
+| FR6.2   |                                Expose data to cash register                                |
+
+### Access right, actor vs function
+
+| Function | Admin | Actor                  | Actor |
+| -------- | :---- | ---------------------- | ----- |
+| FR1.1    | yes   | only user X for user X | no    |
+| FR1.2    | yes   | only user X for user X | no    |
+| FR1.3    | yes   | no                     | no    |
+| FR2      | yes   | no                     | no    |
+| FR3      | yes   | no                     | no    |
+| FR4      | yes   | yes                    | yes   |
+| FR5.1    | yes   | yes                    | no    |
+| FR5.2    | no    | no                     | no    |
+| FR5.3    | yes   | yes                    | no    |
 
 ## Non Functional Requirements
 
