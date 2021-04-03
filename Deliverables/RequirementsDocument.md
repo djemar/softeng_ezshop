@@ -52,9 +52,25 @@ EZShop is a software application to:
 # Context Diagram and interfaces
 
 ## Context Diagram
+
 \<Define here Context diagram using UML use case diagram>
 
 \<actors are a subset of stakeholders>
+
+```plantuml
+top to bottom direction
+actor Owner as o
+actor Employee as e
+actor CashRegister as ca
+actor Inventory as in
+actor Accountant as acc
+
+o -up-|> acc
+acc -up-|> e
+in -> (EZShop)
+e -> (EZShop)
+ca -> (EZShop)
+```
 
 ## Interfaces
 \<describe here each interface in the context diagram>
