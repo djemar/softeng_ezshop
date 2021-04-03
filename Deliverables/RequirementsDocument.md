@@ -1,10 +1,10 @@
-# Requirements Document 
+# Requirements Document
 
-Authors:
+Authors: Diego Marino, Michele Massetti, Mohamed Shehab, Elisa Tedde
 
-Date:
+Date: 21/04/2021
 
-Version:
+Version: 1.0
 
 # Contents
 
