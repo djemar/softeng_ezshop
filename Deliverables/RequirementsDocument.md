@@ -38,10 +38,16 @@ EZShop is a software application to:
 
 # Stakeholders
 
-
-| Stakeholder name  | Description | 
-| ----------------- |:-----------:|
-|   Stakeholder x..     |             | 
+| Stakeholder name | Description |
+| ---------------- | :---------: |
+| Customer         |             |
+| Administrator    |             |
+| Developer        |             |
+| Supplier         |             |
+| Cashier          |             |
+| Owner            |             |
+| Accountant       |             |
+| Employee         |             |
 
 # Context Diagram and interfaces
 
