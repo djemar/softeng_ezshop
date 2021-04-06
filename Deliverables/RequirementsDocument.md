@@ -41,16 +41,16 @@ EZShop is a software application to:
 
 # Stakeholders
 
-| Stakeholder name | Description |
-| ---------------- | :---------: |
-| Customer         |             |
-| Administrator    |             |
-| Developer        |             |
-| Supplier         |             |
-| Cashier          |             |
-| Owner            |             |
-| Accountant       |             |
-| Employee         |             |
+| Stakeholder name | Description                                                                                            |
+| ---------------- | :----------------------------------------------------------------------------------------------------: |
+| Customer         | Does not interact directly with the application, he is the final user                                  |
+| Administrator    | Manages the application and its rights                                                                 |
+| Developer        | Develops and tests software to meet clients needs and monitors quality and performance of application  |
+| Supplier         | Manages the availability of shop items                                                                 |
+| Cashier          | Manages cash register and interacts with customers                                                     |               
+| Owner            | Uses the application to manage employees, customers and items                                          |
+| Accountant       | Manages employees salaries, shop income and shop expenses                                              |
+| Employee         | Uses the application to find information about his work shifts and items                               |
 
 # Context Diagram and interfaces
 
@@ -143,17 +143,28 @@ ca -> (EZShop)
 
 ### Access right, actor vs function
 
-| Function | Admin | Actor                  | Actor |
-| -------- | :---- | ---------------------- | ----- |
-| FR1.1    | yes   | only user X for user X | no    |
-| FR1.2    | yes   | only user X for user X | no    |
-| FR1.3    | yes   | no                     | no    |
-| FR2      | yes   | no                     | no    |
-| FR3      | yes   | no                     | no    |
-| FR4      | yes   | yes                    | yes   |
-| FR5.1    | yes   | yes                    | no    |
-| FR5.2    | no    | no                     | no    |
-| FR5.3    | yes   | yes                    | no    |
+| Function | Owner | Accountant             | Employee| Cashier  |
+| -------- | ----- | ---------------------- | ------- | -------- |
+| FR1.1    | yes   | no                     | no      | no       |
+| FR1.2    | yes   | no                     | no      | no       |
+| FR1.3    | yes   | no                     | no      | no       |
+| FR1.4    | yes   | no                     | no      | no       |
+| FR1.5    | yes   | no                     | no      | yes      |
+| FR3.1    | yes   | no                     | no      | no       |
+| FR3.2    | yes   | no                     | no      | no       |
+| FR3.3    | yes   | no                     | yes     | no       |
+| FR3.4    | yes   | no                     | yes     | no       |
+| FR3.5    | yes   | no                     | yes     | no       |
+| FR3.6    | yes   | no                     | no      | no       |
+| FR3.7    | yes   | no                     | no      | no       |
+| FR3.8    | yes   | no                     | yes     | no       |
+| FR4.1    | yes   | no                     | no      | no       |
+| FR4.2    | yes   | no                     | no      | no       |
+| FR4.3    | yes   | no                     | no      | no       |
+| FR4.4    | yes   | yes                    | no      | no       |
+| FR4.5    | yes   | yes                    | no      | no       |
+| FR5      | yes   | yes                    | no      | no       |
+| FR6      | yes   | no                     | no      | yes      |
 
 ## Non Functional Requirements
 
