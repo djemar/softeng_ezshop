@@ -22,8 +22,18 @@ Version: 1.0
   - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
   - [Use case diagram](#use-case-diagram)
-    - [Use case 1, UC1](#use-case-1-uc1) - [Scenario 1.1](#scenario-11) - [Scenario 1.2](#scenario-12) - [Scenario 1.x](#scenario-1x)
-    - [Use case 2, UC2](#use-case-2-uc2)
+    - [Use case 1, UC1 - Create customer account](#use-case-1-uc1---create-customer-account)
+      - [Scenario 1.1](#scenario-11)
+      - [Scenario 1.2](#scenario-12)
+      - [Scenario 1.x](#scenario-1x)
+    - [Use case 2, UC2 - Modify customer account](#use-case-2-uc2---modify-customer-account)
+    - [Use case 3, UC3 - Delete Customer account](#use-case-3-uc3---delete-customer-account)
+    - [Use case 4, UC4 - Create employee account](#use-case-4-uc4---create-employee-account)
+    - [Use case 5, UC5 - Modify employee account](#use-case-5-uc5---modify-employee-account)
+    - [Use case 6, UC6 - Delete employee account](#use-case-6-uc6---delete-employee-account)
+    - [Use case 7, UC7 - Add item to inventory](#use-case-7-uc7---add-item-to-inventory)
+    - [Use case 8, UC8 - Modify item in inventory](#use-case-8-uc8---modify-item-in-inventory)
+    - [Use case 9, UC9 - Delete item from inventory](#use-case-9-uc9---delete-item-from-inventory)
     - [Use case x, UCx](#use-case-x-ucx)
 - [Glossary](#glossary)
 - [System Design](#system-design)
@@ -41,16 +51,16 @@ EZShop is a software application to:
 
 # Stakeholders
 
-| Stakeholder name | Description                                                                                            |
-| ---------------- | :----------------------------------------------------------------------------------------------------: |
-| Customer         | Does not interact directly with the application, he is the final user                                  |
-| Administrator    | Manages the application and its rights                                                                 |
-| Developer        | Develops and tests software to meet clients needs and monitors quality and performance of application  |
-| Supplier         | Manages the availability of shop items                                                                 |
-| Cashier          | Manages cash register and interacts with customers                                                     |               
-| Owner            | Uses the application to manage employees, customers and items                                          |
-| Accountant       | Manages employees salaries, shop income and shop expenses                                              |
-| Employee         | Uses the application to find information about his work shifts and items                               |
+| Stakeholder name |                                              Description                                              |
+| ---------------- | :---------------------------------------------------------------------------------------------------: |
+| Customer         |                 Does not interact directly with the application, he is the final user                 |
+| Administrator    |                                Manages the application and its rights                                 |
+| Developer        | Develops and tests software to meet clients needs and monitors quality and performance of application |
+| Supplier         |                                Manages the availability of shop items                                 |
+| Cashier          |                          Manages cash register and interacts with customers                           |
+| Owner            |                     Uses the application to manage employees, customers and items                     |
+| Accountant       |                       Manages employees salaries, shop income and shop expenses                       |
+| Employee         |               Uses the application to find information about his work shifts and items                |
 
 # Context Diagram and interfaces
 
@@ -143,28 +153,28 @@ ca -> (EZShop)
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant             | Employee| Cashier  |
-| -------- | ----- | ---------------------- | ------- | -------- |
-| FR1.1    | yes   | no                     | no      | no       |
-| FR1.2    | yes   | no                     | no      | no       |
-| FR1.3    | yes   | no                     | no      | no       |
-| FR1.4    | yes   | no                     | no      | no       |
-| FR1.5    | yes   | no                     | no      | yes      |
-| FR3.1    | yes   | no                     | no      | no       |
-| FR3.2    | yes   | no                     | no      | no       |
-| FR3.3    | yes   | no                     | yes     | no       |
-| FR3.4    | yes   | no                     | yes     | no       |
-| FR3.5    | yes   | no                     | yes     | no       |
-| FR3.6    | yes   | no                     | no      | no       |
-| FR3.7    | yes   | no                     | no      | no       |
-| FR3.8    | yes   | no                     | yes     | no       |
-| FR4.1    | yes   | no                     | no      | no       |
-| FR4.2    | yes   | no                     | no      | no       |
-| FR4.3    | yes   | no                     | no      | no       |
-| FR4.4    | yes   | yes                    | no      | no       |
-| FR4.5    | yes   | yes                    | no      | no       |
-| FR5      | yes   | yes                    | no      | no       |
-| FR6      | yes   | no                     | no      | yes      |
+| Function | Owner | Accountant | Employee | Cashier |
+| -------- | ----- | ---------- | -------- | ------- |
+| FR1.1    | yes   | no         | no       | no      |
+| FR1.2    | yes   | no         | no       | no      |
+| FR1.3    | yes   | no         | no       | no      |
+| FR1.4    | yes   | no         | no       | no      |
+| FR1.5    | yes   | no         | no       | yes     |
+| FR3.1    | yes   | no         | no       | no      |
+| FR3.2    | yes   | no         | no       | no      |
+| FR3.3    | yes   | no         | yes      | no      |
+| FR3.4    | yes   | no         | yes      | no      |
+| FR3.5    | yes   | no         | yes      | no      |
+| FR3.6    | yes   | no         | no       | no      |
+| FR3.7    | yes   | no         | no       | no      |
+| FR3.8    | yes   | no         | yes      | no      |
+| FR4.1    | yes   | no         | no       | no      |
+| FR4.2    | yes   | no         | no       | no      |
+| FR4.3    | yes   | no         | no       | no      |
+| FR4.4    | yes   | yes        | no       | no      |
+| FR4.5    | yes   | yes        | no       | no      |
+| FR5      | yes   | yes        | no       | no      |
+| FR6      | yes   | no         | no       | yes     |
 
 ## Non Functional Requirements
 
@@ -188,14 +198,14 @@ ca -> (EZShop)
 
 \<next describe here each use case in the UCD>
 
-### Use case 1, UC1
+### Use case 1, UC1 - Create customer account
 
-| Actors Involved  |                                                                      |
-| ---------------- | :------------------------------------------------------------------: |
-| Precondition     | \<Boolean expression, must evaluate to true before the UC can start> |
-| Post condition   |  \<Boolean expression, must evaluate to true after UC is finished>   |
-| Nominal Scenario |         \<Textual description of actions executed by the UC>         |
-| Variants         |              \<other executions, ex in case of errors>               |
+| Actors Involved  |                                              Employee, **Customer**                                               |
+| ---------------- | :---------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                             Account C does not exists                                             |
+| Post condition   |                                           Account C added to the system                                           |
+| Nominal Scenario | Employee collects customer data and creates the account **!! Are customers allowed to create their own account?** |
+| Variants         |                                     \<other executions, ex in case of errors>                                     |
 
 ##### Scenario 1.1
 
@@ -220,7 +230,77 @@ ca -> (EZShop)
 
 ##### Scenario 1.x
 
-### Use case 2, UC2
+### Use case 2, UC2 - Modify customer account
+
+| Actors Involved  |                Employee, Customer                 |
+| ---------------- | :-----------------------------------------------: |
+| Precondition     |                 Account C exists                  |
+| Post condition   |                         -                         |
+| Nominal Scenario | Employee modifies one or more fields of account C |
+| Variants         |                                                   |
+
+### Use case 3, UC3 - Delete Customer account
+
+| Actors Involved  |               Employee, Customer                |
+| ---------------- | :---------------------------------------------: |
+| Precondition     |                Account C exists                 |
+| Post condition   |        Account C deleted from the system        |
+| Nominal Scenario | Employee selects a customer account C to delete |
+| Variants         |                                                 |
+
+### Use case 4, UC4 - Create employee account
+
+| Actors Involved  |                                                                  Employee                                                                  |
+| ---------------- | :----------------------------------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                                         Account E does not exists                                                          |
+| Post condition   |                                                       Account E added to the system                                                        |
+| Nominal Scenario | Owner/Employee with access rights collects employee data and creates the account **!! Are customers allowed to create their own account?** |
+| Variants         |                                                 \<other executions, ex in case of errors>                                                  |
+
+### Use case 5, UC5 - Modify employee account
+
+| Actors Involved  |                                  Employee                                  |
+| ---------------- | :------------------------------------------------------------------------: |
+| Precondition     |                              Account E exists                              |
+| Post condition   |                                     -                                      |
+| Nominal Scenario | Owner/Employee with access rights modifies one or more fields of account E |
+| Variants         |                                                                            |
+
+### Use case 6, UC6 - Delete employee account
+
+| Actors Involved  |                                 Employee                                  |
+| ---------------- | :-----------------------------------------------------------------------: |
+| Precondition     |                             Account E exists                              |
+| Post condition   |                     Account E deleted from the system                     |
+| Nominal Scenario | Owner/Employee with access rights selects an employee account E to delete |
+| Variants         |                                                                           |
+
+### Use case 7, UC7 - Add item to inventory
+
+| Actors Involved  |                     Employee                     |
+| ---------------- | :----------------------------------------------: |
+| Precondition     |                  Item I exists                   |
+| Post condition   |            Item I added to the system            |
+| Nominal Scenario | Employee creates item I and populate its fields  |
+| Variants         | Each item has a unique SKU based on it's barcode |
+
+### Use case 8, UC8 - Modify item in inventory
+
+| Actors Involved  |                    Employee                    |
+| ---------------- | :--------------------------------------------: |
+| Precondition     |                 Item I exists                  |
+| Post condition   |                       -                        |
+| Nominal Scenario | Employee modifies one or more fields of item I |
+| Variants         |                                                |
+
+### Use case 9, UC9 - Delete item from inventory
+
+| Actors Involved  |               Employee               |
+| ---------------- | :----------------------------------: |
+| Precondition     |            Item I exists             |
+| Post condition   |    Item I deleted from the system    |
+| Nominal Scenario | Employee selects an item I to delete |
+| Variants         |                                      |
 
 ..
 
