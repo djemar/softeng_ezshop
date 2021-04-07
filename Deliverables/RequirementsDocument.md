@@ -326,6 +326,17 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 \<concepts are used consistently all over the document, ex in use cases, requirements etc>
 
+```plantuml
+class Employee
+class Customer
+class Cashier
+class Owner
+class Accountant
+class CashRegister
+class Item
+
+```
+
 # System Design
 
 Not really meaningful in this case. Only software components are needed.
