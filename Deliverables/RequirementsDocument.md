@@ -108,6 +108,15 @@ ca -> (EZShop)
 
 \<stories will be formalized later as scenarios in use cases>
 
+The following personas and stories are meant to cover different profiles of the Owner actors. 
+
+Davis is the owner of a sport shop, he opened it 2 years before. He started with only 2 employees, so it was easy to organize workshifts, now he has 6 employees and it becomes more complicated.
+
+Elisabeth has a grocery store. Unfotunately more than one time customers found expired items on the shelves; she would like to recognize the food in expiration and apply a discount to it.
+
+Sophie manages a clothes shop, she noticed that her employees lost much time in searching for the right sizes of the clothes in the warehouse if not present in the shop.
+
+
 # Functional and non functional requirements
 
 ## Functional Requirements
