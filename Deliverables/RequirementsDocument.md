@@ -146,7 +146,6 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR3.5   |                            Alert if stock is below a threshold                             |
 | FR3.6   |                            Define, update prices for each item                             |
 | FR3.7   |                           Define, update discounts for each item                           |
-| FR3.8   |                         Alert if item is expiring **(FOOD SHOP)**                          |
 | FR4     |                                      Manage employees                                      |
 | FR4.1   |                                     Define work shifts                                     |
 | FR4.1.1 |                                      Define holidays                                       |
@@ -166,28 +165,28 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant | Employee | Cashier |
-| -------- | ----- | ---------- | -------- | ------- |
-| FR1.1    | yes   | no         | no       | no      |
-| FR1.2    | yes   | no         | no       | no      |
-| FR1.3    | yes   | no         | no       | no      |
-| FR1.4    | yes   | no         | no       | no      |
-| FR1.5    | yes   | no         | no       | yes     |
-| FR3.1    | yes   | no         | no       | no      |
-| FR3.2    | yes   | no         | no       | no      |
-| FR3.3    | yes   | no         | yes      | no      |
-| FR3.4    | yes   | no         | yes      | no      |
-| FR3.5    | yes   | no         | yes      | no      |
-| FR3.6    | yes   | no         | no       | no      |
-| FR3.7    | yes   | no         | no       | no      |
-| FR3.8    | yes   | no         | yes      | no      |
-| FR4.1    | yes   | no         | no       | no      |
-| FR4.2    | yes   | no         | no       | no      |
-| FR4.3    | yes   | no         | no       | no      |
-| FR4.4    | yes   | yes        | no       | no      |
-| FR4.5    | yes   | yes        | no       | no      |
-| FR5      | yes   | yes        | no       | no      |
-| FR6      | yes   | no         | no       | yes     |
+| Function | Owner | Accountant | Employee | Cashier | Customer |
+| -------- | ----- | ---------- | -------- | ------- | -------- |
+| FR1.1    | yes   | no         | no       | no      | yes      |
+| FR1.2    | yes   | no         | no       | no      | yes      |
+| FR1.3    | yes   | no         | no       | no      | no       |
+| FR1.4    | yes   | no         | no       | no      | no       |
+| FR1.5    | yes   | no         | no       | yes     | yes      |
+| FR3.1    | yes   | no         | no       | no      | no       |
+| FR3.2    | yes   | no         | no       | no      | no       |
+| FR3.3    | yes   | no         | yes      | no      | no       |
+| FR3.4    | yes   | no         | yes      | no      | no       |
+| FR3.5    | yes   | no         | yes      | no      | no       |
+| FR3.6    | yes   | no         | no       | no      | no       |
+| FR3.7    | yes   | no         | no       | no      | no       |
+| FR3.8    | yes   | no         | yes      | no      | no       |
+| FR4.1    | yes   | no         | no       | no      | no       |
+| FR4.2    | yes   | no         | no       | no      | no       |
+| FR4.3    | yes   | no         | no       | no      | no       |
+| FR4.4    | yes   | yes        | no       | no      | no       |
+| FR4.5    | yes   | yes        | no       | no      | no       |
+| FR5      | yes   | yes        | no       | no      | no       |
+| FR6      | yes   | no         | no       | yes     | no       |
 
 ## Non Functional Requirements
 
