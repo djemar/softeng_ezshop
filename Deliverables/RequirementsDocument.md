@@ -74,14 +74,18 @@ top to bottom direction
 actor Owner as o
 actor Employee as e
 actor CashRegister as ca
-actor Inventory as in
+actor Item as i
 actor Accountant as acc
+actor Cashier as cas
+actor Customer as cu
 
 o -up-|> acc
-acc -up-|> e
-in -> (EZShop)
+cas -up-|> e
+acc -up-|> cas
+i -> (EZShop)
 e -> (EZShop)
 ca -> (EZShop)
+cu -> (EZShop)
 ```
 
 ## Interfaces
