@@ -212,12 +212,12 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 ### Use case 1, UC1 - Create customer account
 
-| Actors Involved  |                                              Employee, **Customer**                                               |
-| ---------------- | :---------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                             Account C does not exists                                             |
-| Post condition   |                                           Account C added to the system                                           |
-| Nominal Scenario | Employee collects customer data and creates the account **!! Are customers allowed to create their own account?** |
-| Variants         |                                     \<other executions, ex in case of errors>                                     |
+| Actors Involved  |                 Customer                  |
+| ---------------- | :---------------------------------------: |
+| Precondition     |         Account C does not exists         |
+| Post condition   |       Account C added to the system       |
+| Nominal Scenario |       Customer creates the account        |
+| Variants         | \<other executions, ex in case of errors> |
 
 ##### Scenario 1.1
 
@@ -244,30 +244,30 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 ### Use case 2, UC2 - Modify customer account
 
-| Actors Involved  |                Employee, Customer                 |
+| Actors Involved  |                     Customer                      |
 | ---------------- | :-----------------------------------------------: |
 | Precondition     |                 Account C exists                  |
 | Post condition   |                         -                         |
-| Nominal Scenario | Employee modifies one or more fields of account C |
+| Nominal Scenario | Customer modifies one or more fields of account C |
 | Variants         |                                                   |
 
 ### Use case 3, UC3 - Delete Customer account
 
-| Actors Involved  |               Employee, Customer                |
-| ---------------- | :---------------------------------------------: |
-| Precondition     |                Account C exists                 |
-| Post condition   |        Account C deleted from the system        |
-| Nominal Scenario | Employee selects a customer account C to delete |
-| Variants         |                                                 |
+| Actors Involved  |             Customer              |
+| ---------------- | :-------------------------------: |
+| Precondition     |         Account C exists          |
+| Post condition   | Account C deleted from the system |
+| Nominal Scenario |    Customer deletes account C     |
+| Variants         |                                   |
 
 ### Use case 4, UC4 - Create employee account
 
-| Actors Involved  |                                                                  Employee                                                                  |
-| ---------------- | :----------------------------------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                                         Account E does not exists                                                          |
-| Post condition   |                                                       Account E added to the system                                                        |
-| Nominal Scenario | Owner/Employee with access rights collects employee data and creates the account **!! Are customers allowed to create their own account?** |
-| Variants         |                                                 \<other executions, ex in case of errors>                                                  |
+| Actors Involved  |                                     Employee                                     |
+| ---------------- | :------------------------------------------------------------------------------: |
+| Precondition     |                            Account E does not exists                             |
+| Post condition   |                          Account E added to the system                           |
+| Nominal Scenario | Owner/Employee with access rights collects employee data and creates the account |
+| Variants         |                                                                                  |
 
 ### Use case 5, UC5 - Modify employee account
 
