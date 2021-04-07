@@ -51,16 +51,15 @@ EZShop is a software application to:
 
 # Stakeholders
 
-| Stakeholder name |                                              Description                                              |
-| ---------------- | :---------------------------------------------------------------------------------------------------: |
-| Customer         |                 Does not interact directly with the application, he is the final user                 |
-| Administrator    |                                Manages the application and its rights                                 |
-| Developer        | Develops and tests software to meet clients needs and monitors quality and performance of application |
-| Supplier         |                                Manages the availability of shop items                                 |
-| Cashier          |                          Manages cash register and interacts with customers                           |
-| Owner            |                     Uses the application to manage employees, customers and items                     |
-| Accountant       |                       Manages employees salaries, shop income and shop expenses                       |
-| Employee         |               Uses the application to find information about his work shifts and items                |
+| Stakeholder name |                                                               Description                                                                |
+| ---------------- | :--------------------------------------------------------------------------------------------------------------------------------------: |
+| Customer         |                      Uses the application to manage his profile and to check his fidelity points and related offers                      |
+| Administrator    |                                                  Manages the application and its rights                                                  |
+| Developer        |                  Develops and tests software to meet clients needs and monitors quality and performance of application                   |
+| Cashier          |                                            Manages cash register and interacts with customers                                            |
+| Owner            |                                      Uses the application to manage employees, customers and items                                       |
+| Accountant       |                                        Manages employees salaries, shop income and shop expenses                                         |
+| Employee         | Uses the application to find information about his work shifts and, depending on his access rights, managing items and customer profiles |
 
 # Context Diagram and interfaces
 
