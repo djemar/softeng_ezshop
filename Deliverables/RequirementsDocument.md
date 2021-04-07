@@ -96,12 +96,13 @@ cu -> (EZShop)
 
 \<Maybe employee is enough, owner can be removed?>
 
-| Actor         | Logical Interface |                                       Physical Interface |
-| ------------- | :---------------: | -------------------------------------------------------: |
-| Inventory     |      Barcode      |                                          Barcode scanner |
-| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Cash Register |        API        |                                       local network link |
+| Actor         | Logical Interface |                                                      Physical Interface |
+| ------------- | :---------------: | ----------------------------------------------------------------------: |
+| Item          |      Barcode      |                                                         Barcode scanner |
+| Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Customer      | Web GUI, Barcode  | Screen, keyboard, mouse on PC, touchscreen on smartphone, Fidelity card |
+| Cash Register |        API        |                                                      Local network link |
 
 # Stories and personas
 
