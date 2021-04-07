@@ -328,9 +328,7 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 # System Design
 
-\<describe here system design>
-
-\<must be consistent with Context diagram>
+Not really meaningful in this case. Only software components are needed.
 
 # Deployment Diagram
 
