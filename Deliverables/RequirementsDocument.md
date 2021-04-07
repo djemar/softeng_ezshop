@@ -210,6 +210,28 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 
 \<next describe here each use case in the UCD>
 
+```plantuml
+actor Owner as o
+actor Employee as e
+actor CashRegister as ca
+actor Item as i
+actor Accountant as acc
+actor Customer as cu
+
+acc -> (manage accounting)
+e -> (manage items)
+(manage items) --> i
+(manage items) -- (manage cash register)
+(manage cash register) --> ca
+e -> (manage customers)
+cu --> (manage customers)
+o -> (manage employees)
+(manage employees) -> e
+o -up-|> acc
+acc -up-|> e
+
+```
+
 ### Use case 1, UC1 - Create customer account
 
 | Actors Involved  |                 Customer                  |
