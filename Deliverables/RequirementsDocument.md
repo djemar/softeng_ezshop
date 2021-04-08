@@ -70,6 +70,7 @@ EZShop is a software application to:
 \<actors are a subset of stakeholders>
 
 ```plantuml
+scale 300 width
 top to bottom direction
 actor Owner as o
 actor Employee as e
@@ -387,13 +388,93 @@ scale 225 width
 \<concepts are used consistently all over the document, ex in use cases, requirements etc>
 
 ```plantuml
-class Employee
-class Customer
-class Cashier
-class Owner
-class Accountant
-class CashRegister
-class Item
+scale 700 width
+class Person{
+-String name;
+-String surname;
+-Integer age;
+-String email;
+-String phone number;
+-String IBAN;
+}
+class Address{
+-String name;
+-String number;
+-String zip code;
+-String city;
+-String nation;
+}
+class Item_Descriptor{
+-String name;
+-String price;
+-Optional discount%;
+-Integer quantity;
+-Integer threshold_alarm;
+}
+class Item{
+-String id;
+-String delivery_date;
+}
+class Fidelity_card{
+-String id;
+-String creation_date;
+-String total_points;
+-Boolean gift_card;
+}
+class Gift_card{
+-String discount%;
+-String minimum_points;
+}
+class Owner{
+-String commercial_license;
+-String VAT_number;
+}
+class Cashier{
+
+}
+class Accountant{
+
+}
+class Employee{
+
+}
+class EZshop{
+
+}
+class Inventory{
+
+}
+class Salary{
+-Integer level;
+-String income; 
+}
+class Expense{
+-String type;
+-String cost;
+}
+Class Day{
+-String date;
+-String start_time;
+-String end_time;
+-Boolean working_day;
+}
+Accountant <|-- Owner
+Cashier <|-- Accountant
+Employee <|--  Cashier
+Person <|-- Employee
+Person - Address : lives in >
+Employee "*" -- EZshop
+Item "*" -- Inventory
+Item "0..*" - Item_Descriptor : is described by >
+Inventory - EZshop
+Fidelity_card - Gift_card
+Person - Fidelity_card : own >
+Employee -- Salary : earns >
+Accountant -  "1..*" Salary : manages >
+Accountant -  "1..*" Expense : manages >
+Fidelity_card "0..*" -- EZshop
+Owner - "*" Day : manages >
+Employee "1..*" - "1..*" Day
 
 ```
 
