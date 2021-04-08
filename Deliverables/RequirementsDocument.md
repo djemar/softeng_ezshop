@@ -307,20 +307,20 @@ acc -up-|> e
 
 ### Use case 4, UC4 - Create employee account
 
-| Actors Involved  |                                     Employee                                     |
+| Actors Involved  |                                     Owner                                     |
 | ---------------- | :------------------------------------------------------------------------------: |
 | Precondition     |                            Account E does not exists                             |
 | Post condition   |                          Account E added to the system                           |
-| Nominal Scenario | Owner/Employee with access rights collects employee data and creates the account |
+| Nominal Scenario | Owner with access rights collects employee data and creates the account |
 | Variants         |                                                                                  |
 
 ### Use case 5, UC5 - Modify employee account
 
-| Actors Involved  |                                  Employee                                  |
+| Actors Involved  |                                  Owner                                  |
 | ---------------- | :------------------------------------------------------------------------: |
 | Precondition     |                              Account E exists                              |
 | Post condition   |                                     -                                      |
-| Nominal Scenario | Owner/Employee with access rights modifies one or more fields of account E |
+| Nominal Scenario | Owner with access rights modifies one or more fields of account E |
 | Variants         |                                                                            |
 
 ### Use case 6, UC6 - Delete employee account
@@ -329,36 +329,45 @@ acc -up-|> e
 | ---------------- | :-----------------------------------------------------------------------: |
 | Precondition     |                             Account E exists                              |
 | Post condition   |                     Account E deleted from the system                     |
-| Nominal Scenario | Owner/Employee with access rights selects an employee account E to delete |
+| Nominal Scenario | Owner with access rights selects an employee account E to delete |
 | Variants         |                                                                           |
 
 ### Use case 7, UC7 - Add item to inventory
 
-| Actors Involved  |                     Employee                     |
+| Actors Involved  |                     Employee,Owner                    |
 | ---------------- | :----------------------------------------------: |
-| Precondition     |                  Item I exists                   |
-| Post condition   |            Item I added to the system            |
-| Nominal Scenario | Employee creates item I and populate its fields  |
+| Precondition     |                  Item I doesn't exist in the DB                   |
+| Post condition   |            Item I is added to the system            |
+| Nominal Scenario | Employee/Owner creates item I and populate its fields  |
 | Variants         | Each item has a unique SKU based on it's barcode |
 
 ### Use case 8, UC8 - Modify item in inventory
 
-| Actors Involved  |                    Employee                    |
+| Actors Involved  |                    Employee,Owner                   |
 | ---------------- | :--------------------------------------------: |
 | Precondition     |                 Item I exists                  |
-| Post condition   |                       -                        |
-| Nominal Scenario | Employee modifies one or more fields of item I |
-| Variants         |                                                |
+| Post condition   |                       Updated quantity                        |
+| Nominal Scenario | Employee/Owner modifies one or more fields of item I |
+| Variants         |        Employee has the right to update the quantity of an item, owner can decide to modify the price         |
 
 ### Use case 9, UC9 - Delete item from inventory
 
-| Actors Involved  |               Employee               |
+| Actors Involved  |               Owner               |
 | ---------------- | :----------------------------------: |
 | Precondition     |            Item I exists             |
 | Post condition   |    Item I deleted from the system    |
-| Nominal Scenario | Employee selects an item I to delete |
+| Nominal Scenario | Owner delete item I from the inventory |
 | Variants         |                                      |
+..
 
+### Use case 10, UC10 - Evaluete fidelity points
+
+| Actors Involved  |               Customer,Cashier               |
+| ---------------- | :----------------------------------: |
+| Precondition     |            Customer has enough  fidelity points for obtaing a discount             |
+| Post condition   |    Customer has discount    |
+| Nominal Scenario | Customer asks for the discount, cashier applies it  |
+| Variants         |             Customer doesn't have enough point, cashier denies the discount                         |
 ..
 
 ### Use case x, UCx
