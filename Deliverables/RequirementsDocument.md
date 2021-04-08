@@ -229,6 +229,29 @@ o -> (manage employees)
 (manage employees) -> e
 o -up-|> acc
 acc -up-|> e
+(manage customers) ..> (define/modify customer) : include
+(manage customers) ..> (delete a customer) : include
+(manage customers) ..> (list all customers) : include
+(manage customers) ..> (search customer) : include
+(manage customers) ..> (manage customer points) : include
+(manage items) ..> (define/modify item) : include
+(manage items) ..> (delete an item ) : include
+(manage items) ..> (list all items) : include
+(manage items) ..> (search items) : include
+(manage items) ..> (alert if stock is below a threshold) : include
+(manage items) ..> (update prices for each item) : include
+(manage items) ..> (define/update discounts for each item) : include
+(manage employees) ..> (define work shifts) : include
+(manage employees) ..> (define/modify employees) : include
+(manage employees) ..> (delete an employee) : include
+(manage employees) ..> (list all employees) : include
+(manage employees) ..> (search an employee) : include
+(manage accounting) ..> (manage employees salaries) : include
+(manage accounting) ..> (manage shop income) : include
+(manage accounting) ..> (manage shop expenses) : include
+(manage accounting) ..> (manage sales history) : include
+(manage accounting) ..> (generate report) : include
+(manage cash register) ..> (expose data to cash register) : include
 
 ```
 
