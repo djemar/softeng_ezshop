@@ -241,7 +241,7 @@ acc -up-|> e
 | Nominal Scenario | Customer asks for fidelity card, he provides his data to cashier, cashier add it in the system and give him the fidelity card |
 | Variants         |                                                   |
 
-### Use case 2, UC2 - Applay discount
+### Use case 2, UC2 - Apply discount
 
 | Actors Involved  |                    Cashier                     |
 | ---------------- | :-----------------------------------------------: |
@@ -257,8 +257,8 @@ acc -up-|> e
 | Post condition   |                          Mounthly workshift is done                           |
 | Nominal Scenario | Owner defines per employees its own times for working  |
 | Variants         |                                                                                  |
+
 | Scenario 3.1   |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
 | Precondition   |Employee can't work a certain date  |
 | Post condition |  Workshift is updated   |
 | Step#          |                                Description                                 |
@@ -266,13 +266,6 @@ acc -up-|> e
 |        2     |          Owner lists the possible employee for replace the employee                  |
 |       3       | Owner modifies the workshift
 
-| Scenario 10.2   |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
-| Precondition   | Accountant requests report for a certain month |
-| Post condition |  System provides  report  |
-| Step#          |                                Description                                 |
-|        1     |         Accountant inserts a month                                                     |
-|        2     |          Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain                 |
 ### Use case 4, UC4 - Create employee account
 
 | Actors Involved  |                                     Owner                                     |
