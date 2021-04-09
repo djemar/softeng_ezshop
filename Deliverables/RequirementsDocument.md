@@ -70,6 +70,7 @@ EZShop is a software application to:
 \<actors are a subset of stakeholders>
 
 ```plantuml
+scale 300 width
 top to bottom direction
 actor Owner as o
 actor Employee as e
@@ -77,7 +78,7 @@ actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
 actor Cashier as cas
-actor Customer as cu
+actor FidelityCard as cu
 
 o -up-|> acc
 cas -up-|> e
@@ -86,6 +87,7 @@ i -> (EZShop)
 e -> (EZShop)
 ca -> (EZShop)
 cu -> (EZShop)
+
 ```
 
 ## Interfaces
@@ -101,7 +103,7 @@ cu -> (EZShop)
 | Item          |      Barcode      |                                                         Barcode scanner |
 | Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Customer      | Web GUI, Barcode  | Screen, keyboard, mouse on PC, touchscreen on smartphone, Fidelity card |
+| FidelityCard  |      Barcode      |                                                          Barcode scanner|
 | Cash Register |        API        |                                                      Local network link |
 
 # Stories and personas
@@ -134,13 +136,13 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR1     |                                      Manage customer                                       |
 | FR1.1   |                   Define a new customer, or modify an existing customer                    |
 | FR1.2   |                                     Delete a customer                                      |
-| FR1.3   |                                     List all customer                                      |
+| FR1.3   |                                     List all customers                                      |
 | FR1.4   |                                     Search a customer                                      |
 | FR1.5   |                                   Manage customer points                                   |
 | FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
 | FR3     |                                        Manage items                                        |
 | FR3.1   |                       Define a new item, or modify an existing item                        |
-| FR3.2   |                                       Delete a item                                        |
+| FR3.2   |                                       Delete an item                                        |
 | FR3.3   |                                       List all items                                       |
 | FR3.4   |                                        Search items                                        |
 | FR3.5   |                            Alert if stock is below a threshold                             |
@@ -150,9 +152,9 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR4.1   |                                     Define work shifts                                     |
 | FR4.1.1 |                                      Define holidays                                       |
 | FR4.2   |                   Define a new employee, or modify an existing employee                    |
-| FR4.3   |                                     Delete a employee                                      |
+| FR4.3   |                                     Delete an employee                                      |
 | FR4.4   |                                     List all employee                                      |
-| FR4.5   |                                     Search a employee                                      |
+| FR4.5   |                                     Search an employee                                      |
 | FR5     |                                     Manage accounting                                      |
 | FR5.1   |                                 Manage employees salaries                                  |
 | FR5.2   |                                     Manage shop income                                     |
@@ -160,33 +162,25 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR5.4   |                                    Manage sales history                                    |
 | FR5.5   |                 Generate report about accounting-related data with filters                 |
 | FR6     |                                    Manage cash register                                    |
-| FR6.1   |                              Retrieve data from cash register                              |
-| FR6.2   |                                Expose data to cash register                                |
+| FR6.1   |                                Expose data to cash register                                |
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant | Employee | Cashier | Customer |
-| -------- | ----- | ---------- | -------- | ------- | -------- |
-| FR1.1    | yes   | no         | no       | no      | yes      |
-| FR1.2    | yes   | no         | no       | no      | yes      |
-| FR1.3    | yes   | no         | no       | no      | no       |
-| FR1.4    | yes   | no         | no       | no      | no       |
-| FR1.5    | yes   | no         | no       | yes     | yes      |
-| FR3.1    | yes   | no         | no       | no      | no       |
-| FR3.2    | yes   | no         | no       | no      | no       |
-| FR3.3    | yes   | no         | yes      | no      | no       |
-| FR3.4    | yes   | no         | yes      | no      | no       |
-| FR3.5    | yes   | no         | yes      | no      | no       |
-| FR3.6    | yes   | no         | no       | no      | no       |
-| FR3.7    | yes   | no         | no       | no      | no       |
-| FR3.8    | yes   | no         | yes      | no      | no       |
-| FR4.1    | yes   | no         | no       | no      | no       |
-| FR4.2    | yes   | no         | no       | no      | no       |
-| FR4.3    | yes   | no         | no       | no      | no       |
-| FR4.4    | yes   | yes        | no       | no      | no       |
-| FR4.5    | yes   | yes        | no       | no      | no       |
-| FR5      | yes   | yes        | no       | no      | no       |
-| FR6      | yes   | no         | no       | yes     | no       |
+| Function | Owner | Accountant | Employee | Cashier | 
+| -------- | ----- | ---------- | -------- | ------- |
+| FR1.1    | yes   | yes        | no       | yes     |       
+| FR1.2    | yes   | yes        | no       | yes     | 
+| FR1.3    | yes   | yes        | no       | yes     |
+| FR1.4    | yes   | yes        | no       | yes     | 
+| FR1.5    | yes   | yes        | no       | yes     | 
+| FR3      | yes   | yes        | yes      | yes     | 
+| FR4.1    | yes   | no         | no       | no      | 
+| FR4.2    | yes   | no         | no       | no      | 
+| FR4.3    | yes   | no         | no       | no      | 
+| FR4.4    | yes   | yes        | no       | no      | 
+| FR4.5    | yes   | yes        | no       | no      |
+| FR5      | yes   | yes        | no       | no      | 
+
 
 ## Non Functional Requirements
 
@@ -211,24 +205,53 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 \<next describe here each use case in the UCD>
 
 ```plantuml
+scale 500 width
 actor Owner as o
 actor Employee as e
 actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
-actor Customer as cu
-
+actor FidelityCard as fc
+actor Cashier as c
 acc -> (manage accounting)
 e -> (manage items)
 (manage items) --> i
-(manage items) -- (manage cash register)
 (manage cash register) --> ca
-e -> (manage customers)
-cu --> (manage customers)
+c --> (manage customers)
+(manage customers) --> fc
 o -> (manage employees)
 (manage employees) -> e
 o -up-|> acc
-acc -up-|> e
+acc -up-|> c
+c -up-|> e
+```
+```plantuml
+
+left to right direction
+scale 225 width
+
+(manage customers) .> (define/modify customer) : include
+(manage customers) .> (delete a customer) : include
+(manage customers) .> (list all customers) : include
+(manage customers) .> (search customer) : include
+(manage customers) .> (manage customer points) : include
+(manage items) .> (define/modify item) : include
+(manage items) .> (delete an item ) : include
+(manage items) .> (search items) : include
+(manage items) .> (alert if stock is below a threshold) : include
+(manage items) .> (update prices for each item) : include
+(manage items) .> (define/update discounts for each item) : include
+(manage employees) .> (define work shifts) : include
+(manage employees) .> (define/modify employees) : include
+(manage employees) .> (delete an employee) : include
+(manage employees) .> (list all employees) : include
+(manage employees) .> (search an employee) : include
+(manage accounting) .> (manage employees salaries) : include
+(manage accounting) .> (manage shop income) : include
+(manage accounting) .> (manage shop expenses) : include
+(manage accounting) .> (manage sales history) : include
+(manage accounting) .> (generate report) : include
+(manage cash register) .> (expose data to cash register) : include
 
 ```
 
@@ -356,20 +379,93 @@ acc -up-|> e
 \<concepts are used consistently all over the document, ex in use cases, requirements etc>
 
 ```plantuml
-class Employee
-class Customer{
-  name
-  surname
-  ID
-  password
-  points
+scale 700 width
+class Person{
+-String name;
+-String surname;
+-Integer age;
+-String email;
+-String phone number;
+-String IBAN;
 }
-class Cashier
-class Owner
-class Accountant
-class CashRegister
-class Item
-class EZShop
+class Address{
+-String name;
+-String number;
+-String zip code;
+-String city;
+-String nation;
+}
+class Item_Descriptor{
+-String name;
+-String price;
+-Optional discount%;
+-Integer quantity;
+-Integer threshold_alarm;
+}
+class Item{
+-String id;
+-String delivery_date;
+}
+class Fidelity_card{
+-String id;
+-String creation_date;
+-String total_points;
+-Boolean gift_card;
+}
+class Gift_card{
+-String discount%;
+-String minimum_points;
+}
+class Owner{
+-String commercial_license;
+-String VAT_number;
+}
+class Cashier{
+
+}
+class Accountant{
+
+}
+class Employee{
+
+}
+class EZshop{
+
+}
+class Inventory{
+
+}
+class Salary{
+-Integer level;
+-String income; 
+}
+class Expense{
+-String type;
+-String cost;
+}
+Class Day{
+-String date;
+-String start_time;
+-String end_time;
+-Boolean working_day;
+}
+Accountant <|-- Owner
+Cashier <|-- Accountant
+Employee <|--  Cashier
+Person <|-- Employee
+Person - Address : lives in >
+Employee "*" -- EZshop
+Item "*" -- Inventory
+Item "0..*" - Item_Descriptor : is described by >
+Inventory - EZshop
+Fidelity_card - Gift_card
+Person - Fidelity_card : own >
+Employee -- Salary : earns >
+Accountant -  "1..*" Salary : manages >
+Accountant -  "1..*" Expense : manages >
+Fidelity_card "0..*" -- EZshop
+Owner - "*" Day : manages >
+Employee "1..*" - "1..*" Day
 
 ```
 
