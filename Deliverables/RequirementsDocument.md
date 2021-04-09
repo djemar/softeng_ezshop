@@ -78,7 +78,7 @@ actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
 actor Cashier as cas
-actor Customer as cu
+actor FidelityCard as cu
 
 o -up-|> acc
 cas -up-|> e
@@ -103,7 +103,7 @@ cu -> (EZShop)
 | Item          |      Barcode      |                                                         Barcode scanner |
 | Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Customer      | Web GUI, Barcode  | Screen, keyboard, mouse on PC, touchscreen on smartphone, Fidelity card |
+| FidelityCard  |      Barcode      |                                                          Barcode scanner|
 | Cash Register |        API        |                                                      Local network link |
 
 # Stories and personas
@@ -136,13 +136,13 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR1     |                                      Manage customer                                       |
 | FR1.1   |                   Define a new customer, or modify an existing customer                    |
 | FR1.2   |                                     Delete a customer                                      |
-| FR1.3   |                                     List all customer                                      |
+| FR1.3   |                                     List all customers                                      |
 | FR1.4   |                                     Search a customer                                      |
 | FR1.5   |                                   Manage customer points                                   |
 | FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
 | FR3     |                                        Manage items                                        |
 | FR3.1   |                       Define a new item, or modify an existing item                        |
-| FR3.2   |                                       Delete a item                                        |
+| FR3.2   |                                       Delete an item                                        |
 | FR3.3   |                                       List all items                                       |
 | FR3.4   |                                        Search items                                        |
 | FR3.5   |                            Alert if stock is below a threshold                             |
@@ -152,9 +152,9 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR4.1   |                                     Define work shifts                                     |
 | FR4.1.1 |                                      Define holidays                                       |
 | FR4.2   |                   Define a new employee, or modify an existing employee                    |
-| FR4.3   |                                     Delete a employee                                      |
+| FR4.3   |                                     Delete an employee                                      |
 | FR4.4   |                                     List all employee                                      |
-| FR4.5   |                                     Search a employee                                      |
+| FR4.5   |                                     Search an employee                                      |
 | FR5     |                                     Manage accounting                                      |
 | FR5.1   |                                 Manage employees salaries                                  |
 | FR5.2   |                                     Manage shop income                                     |
@@ -162,33 +162,25 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR5.4   |                                    Manage sales history                                    |
 | FR5.5   |                 Generate report about accounting-related data with filters                 |
 | FR6     |                                    Manage cash register                                    |
-| FR6.1   |                              Retrieve data from cash register                              |
-| FR6.2   |                                Expose data to cash register                                |
+| FR6.1   |                                Expose data to cash register                                |
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant | Employee | Cashier | Customer |
-| -------- | ----- | ---------- | -------- | ------- | -------- |
-| FR1.1    | yes   | no         | no       | no      | yes      |
-| FR1.2    | yes   | no         | no       | no      | yes      |
-| FR1.3    | yes   | no         | no       | no      | no       |
-| FR1.4    | yes   | no         | no       | no      | no       |
-| FR1.5    | yes   | no         | no       | yes     | yes      |
-| FR3.1    | yes   | no         | no       | no      | no       |
-| FR3.2    | yes   | no         | no       | no      | no       |
-| FR3.3    | yes   | no         | yes      | no      | no       |
-| FR3.4    | yes   | no         | yes      | no      | no       |
-| FR3.5    | yes   | no         | yes      | no      | no       |
-| FR3.6    | yes   | no         | no       | no      | no       |
-| FR3.7    | yes   | no         | no       | no      | no       |
-| FR3.8    | yes   | no         | yes      | no      | no       |
-| FR4.1    | yes   | no         | no       | no      | no       |
-| FR4.2    | yes   | no         | no       | no      | no       |
-| FR4.3    | yes   | no         | no       | no      | no       |
-| FR4.4    | yes   | yes        | no       | no      | no       |
-| FR4.5    | yes   | yes        | no       | no      | no       |
-| FR5      | yes   | yes        | no       | no      | no       |
-| FR6      | yes   | no         | no       | yes     | no       |
+| Function | Owner | Accountant | Employee | Cashier | 
+| -------- | ----- | ---------- | -------- | ------- |
+| FR1.1    | yes   | yes        | no       | yes     |       
+| FR1.2    | yes   | yes        | no       | yes     | 
+| FR1.3    | yes   | yes        | no       | yes     |
+| FR1.4    | yes   | yes        | no       | yes     | 
+| FR1.5    | yes   | yes        | no       | yes     | 
+| FR3      | yes   | yes        | yes      | yes     | 
+| FR4.1    | yes   | no         | no       | no      | 
+| FR4.2    | yes   | no         | no       | no      | 
+| FR4.3    | yes   | no         | no       | no      | 
+| FR4.4    | yes   | yes        | no       | no      | 
+| FR4.5    | yes   | yes        | no       | no      |
+| FR5      | yes   | yes        | no       | no      | 
+
 
 ## Non Functional Requirements
 
@@ -213,24 +205,25 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 \<next describe here each use case in the UCD>
 
 ```plantuml
+scale 500 width
 actor Owner as o
 actor Employee as e
 actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
-actor Customer as cu
-
+actor FidelityCard as fc
+actor Cashier as c
 acc -> (manage accounting)
 e -> (manage items)
 (manage items) --> i
-(manage items) -- (manage cash register)
 (manage cash register) --> ca
-e -> (manage customers)
-cu --> (manage customers)
+c --> (manage customers)
+(manage customers) --> fc
 o -> (manage employees)
 (manage employees) -> e
 o -up-|> acc
-acc -up-|> e
+acc -up-|> c
+c -up-|> e
 ```
 ```plantuml
 
