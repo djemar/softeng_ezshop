@@ -70,7 +70,6 @@ EZShop is a software application to:
 \<actors are a subset of stakeholders>
 
 ```plantuml
-scale 300 width
 top to bottom direction
 actor Owner as o
 actor Employee as e
@@ -78,7 +77,7 @@ actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
 actor Cashier as cas
-actor FidelityCard as cu
+actor Customer as cu
 
 o -up-|> acc
 cas -up-|> e
@@ -87,7 +86,6 @@ i -> (EZShop)
 e -> (EZShop)
 ca -> (EZShop)
 cu -> (EZShop)
-
 ```
 
 ## Interfaces
@@ -103,7 +101,7 @@ cu -> (EZShop)
 | Item          |      Barcode      |                                                         Barcode scanner |
 | Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| FidelityCard  |      Barcode      |                                                          Barcode scanner|
+| Customer      | Web GUI, Barcode  | Screen, keyboard, mouse on PC, touchscreen on smartphone, Fidelity card |
 | Cash Register |        API        |                                                      Local network link |
 
 # Stories and personas
@@ -136,13 +134,13 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR1     |                                      Manage customer                                       |
 | FR1.1   |                   Define a new customer, or modify an existing customer                    |
 | FR1.2   |                                     Delete a customer                                      |
-| FR1.3   |                                     List all customers                                      |
+| FR1.3   |                                     List all customer                                      |
 | FR1.4   |                                     Search a customer                                      |
 | FR1.5   |                                   Manage customer points                                   |
 | FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
 | FR3     |                                        Manage items                                        |
 | FR3.1   |                       Define a new item, or modify an existing item                        |
-| FR3.2   |                                       Delete an item                                        |
+| FR3.2   |                                       Delete a item                                        |
 | FR3.3   |                                       List all items                                       |
 | FR3.4   |                                        Search items                                        |
 | FR3.5   |                            Alert if stock is below a threshold                             |
@@ -152,9 +150,9 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR4.1   |                                     Define work shifts                                     |
 | FR4.1.1 |                                      Define holidays                                       |
 | FR4.2   |                   Define a new employee, or modify an existing employee                    |
-| FR4.3   |                                     Delete an employee                                      |
+| FR4.3   |                                     Delete a employee                                      |
 | FR4.4   |                                     List all employee                                      |
-| FR4.5   |                                     Search an employee                                      |
+| FR4.5   |                                     Search a employee                                      |
 | FR5     |                                     Manage accounting                                      |
 | FR5.1   |                                 Manage employees salaries                                  |
 | FR5.2   |                                     Manage shop income                                     |
@@ -162,25 +160,33 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR5.4   |                                    Manage sales history                                    |
 | FR5.5   |                 Generate report about accounting-related data with filters                 |
 | FR6     |                                    Manage cash register                                    |
-| FR6.1   |                                Expose data to cash register                                |
+| FR6.1   |                              Retrieve data from cash register                              |
+| FR6.2   |                                Expose data to cash register                                |
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant | Employee | Cashier | 
-| -------- | ----- | ---------- | -------- | ------- |
-| FR1.1    | yes   | yes        | no       | yes     |       
-| FR1.2    | yes   | yes        | no       | yes     | 
-| FR1.3    | yes   | yes        | no       | yes     |
-| FR1.4    | yes   | yes        | no       | yes     | 
-| FR1.5    | yes   | yes        | no       | yes     | 
-| FR3      | yes   | yes        | yes      | yes     | 
-| FR4.1    | yes   | no         | no       | no      | 
-| FR4.2    | yes   | no         | no       | no      | 
-| FR4.3    | yes   | no         | no       | no      | 
-| FR4.4    | yes   | yes        | no       | no      | 
-| FR4.5    | yes   | yes        | no       | no      |
-| FR5      | yes   | yes        | no       | no      | 
-
+| Function | Owner | Accountant | Employee | Cashier | Customer |
+| -------- | ----- | ---------- | -------- | ------- | -------- |
+| FR1.1    | yes   | no         | no       | no      | yes      |
+| FR1.2    | yes   | no         | no       | no      | yes      |
+| FR1.3    | yes   | no         | no       | no      | no       |
+| FR1.4    | yes   | no         | no       | no      | no       |
+| FR1.5    | yes   | no         | no       | yes     | yes      |
+| FR3.1    | yes   | no         | no       | no      | no       |
+| FR3.2    | yes   | no         | no       | no      | no       |
+| FR3.3    | yes   | no         | yes      | no      | no       |
+| FR3.4    | yes   | no         | yes      | no      | no       |
+| FR3.5    | yes   | no         | yes      | no      | no       |
+| FR3.6    | yes   | no         | no       | no      | no       |
+| FR3.7    | yes   | no         | no       | no      | no       |
+| FR3.8    | yes   | no         | yes      | no      | no       |
+| FR4.1    | yes   | no         | no       | no      | no       |
+| FR4.2    | yes   | no         | no       | no      | no       |
+| FR4.3    | yes   | no         | no       | no      | no       |
+| FR4.4    | yes   | yes        | no       | no      | no       |
+| FR4.5    | yes   | yes        | no       | no      | no       |
+| FR5      | yes   | yes        | no       | no      | no       |
+| FR6      | yes   | no         | no       | yes     | no       |
 
 ## Non Functional Requirements
 
@@ -205,106 +211,68 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 \<next describe here each use case in the UCD>
 
 ```plantuml
-scale 500 width
 actor Owner as o
 actor Employee as e
 actor CashRegister as ca
 actor Item as i
 actor Accountant as acc
-actor FidelityCard as fc
-actor Cashier as c
+actor Customer as cu
+
 acc -> (manage accounting)
 e -> (manage items)
 (manage items) --> i
+(manage items) -- (manage cash register)
 (manage cash register) --> ca
-c --> (manage customers)
-(manage customers) --> fc
+e -> (manage customers)
+cu --> (manage customers)
 o -> (manage employees)
 (manage employees) -> e
 o -up-|> acc
-acc -up-|> c
-c -up-|> e
-```
-```plantuml
-
-left to right direction
-scale 225 width
-
-(manage customers) .> (define/modify customer) : include
-(manage customers) .> (delete a customer) : include
-(manage customers) .> (list all customers) : include
-(manage customers) .> (search customer) : include
-(manage customers) .> (manage customer points) : include
-(manage items) .> (define/modify item) : include
-(manage items) .> (delete an item ) : include
-(manage items) .> (search items) : include
-(manage items) .> (alert if stock is below a threshold) : include
-(manage items) .> (update prices for each item) : include
-(manage items) .> (define/update discounts for each item) : include
-(manage employees) .> (define work shifts) : include
-(manage employees) .> (define/modify employees) : include
-(manage employees) .> (delete an employee) : include
-(manage employees) .> (list all employees) : include
-(manage employees) .> (search an employee) : include
-(manage accounting) .> (manage employees salaries) : include
-(manage accounting) .> (manage shop income) : include
-(manage accounting) .> (manage shop expenses) : include
-(manage accounting) .> (manage sales history) : include
-(manage accounting) .> (generate report) : include
-(manage cash register) .> (expose data to cash register) : include
+acc -up-|> e
 
 ```
 
-### Use case 1, UC1 - Create customer account
+### Use case 1, UC1 - Create fidality card 
 
-| Actors Involved  |                 Customer                  |
-| ---------------- | :---------------------------------------: |
-| Precondition     |         Account C does not exists         |
-| Post condition   |       Account C added to the system       |
-| Nominal Scenario |       Customer creates the account        |
-| Variants         | \<other executions, ex in case of errors> |
-
-##### Scenario 1.1
-
-\<describe here scenarios instances of UC1>
-
-\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
-
-\<a scenario is a more formal description of a story>
-
-\<only relevant scenarios should be described>
-
-| Scenario 1.1   |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
-| Precondition   | \<Boolean expression, must evaluate to true before the scenario can start> |
-| Post condition |  \<Boolean expression, must evaluate to true after scenario is finished>   |
-| Step#          |                                Description                                 |
-| 1              |                                                                            |
-| 2              |                                                                            |
-| ...            |                                                                            |
-
-##### Scenario 1.2
-
-##### Scenario 1.x
-
-### Use case 2, UC2 - Modify customer account
-
-| Actors Involved  |                     Customer                      |
+| Actors Involved  |                     Cashier                      |
 | ---------------- | :-----------------------------------------------: |
-| Precondition     |                 Account C exists                  |
-| Post condition   |                         -                         |
-| Nominal Scenario | Customer modifies one or more fields of account C |
+| Precondition     |                 Account C doesn't exist              |
+| Post condition   |                  Account C is added                  |
+| Nominal Scenario | Customer asks for fidelity card, he provides his data to cashier, cashier add it in the system and give him the fidelity card |
 | Variants         |                                                   |
 
-### Use case 3, UC3 - Delete Customer account
+### Use case 2, UC2 - Applay discount
 
-| Actors Involved  |             Customer              |
-| ---------------- | :-------------------------------: |
-| Precondition     |         Account C exists          |
-| Post condition   | Account C deleted from the system |
-| Nominal Scenario |    Customer deletes account C     |
-| Variants         |                                   |
+| Actors Involved  |                    Cashier                     |
+| ---------------- | :-----------------------------------------------: |
+| Precondition     |                Custemer achieves fixed threshold of fidelity poitns                |
+| Post condition   |                         Discount is applied                         |
+| Nominal Scenario | Cashier applies discount to the price and fidelity points is set to zero  |
+| Variants         |                        If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold                         |
+### Use case 3, UC3 - Define workshifts
 
+| Actors Involved  |                                     Owner                                     |
+| ---------------- | :------------------------------------------------------------------------------: |
+| Precondition     |                            Owner defines workshift for the next mounth                            |
+| Post condition   |                          Mounthly workshift is done                           |
+| Nominal Scenario | Owner defines per employees its own times for working  |
+| Variants         |                                                                                  |
+| Scenario 3.1   |                                                                            |
+| -------------- | :------------------------------------------------------------------------: |
+| Precondition   |Employee can't work a certain date  |
+| Post condition |  Workshift is updated   |
+| Step#          |                                Description                                 |
+|        1     |         Owner delete the employee for the defined date                                                    |
+|        2     |          Owner lists the possible employee for replace the employee                  |
+|       3       | Owner modifies the workshift
+
+| Scenario 10.2   |                                                                            |
+| -------------- | :------------------------------------------------------------------------: |
+| Precondition   | Accountant requests report for a certain month |
+| Post condition |  System provides  report  |
+| Step#          |                                Description                                 |
+|        1     |         Accountant inserts a month                                                     |
+|        2     |          Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain                 |
 ### Use case 4, UC4 - Create employee account
 
 | Actors Involved  |                                     Owner                                     |
@@ -319,16 +287,16 @@ scale 225 width
 | Actors Involved  |                                  Owner                                  |
 | ---------------- | :------------------------------------------------------------------------: |
 | Precondition     |                              Account E exists                              |
-| Post condition   |                                     -                                      |
+| Post condition   |           Account E is updated                                              |
 | Nominal Scenario | Owner with access rights modifies one or more fields of account E |
 | Variants         |                                                                            |
 
 ### Use case 6, UC6 - Delete employee account
 
-| Actors Involved  |                                 Employee                                  |
+| Actors Involved  |                               Owner                                  |
 | ---------------- | :-----------------------------------------------------------------------: |
 | Precondition     |                             Account E exists                              |
-| Post condition   |                     Account E deleted from the system                     |
+| Post condition   |                     Account E is deleted from the system                     |
 | Nominal Scenario | Owner with access rights selects an employee account E to delete |
 | Variants         |                                                                           |
 
@@ -343,12 +311,12 @@ scale 225 width
 
 ### Use case 8, UC8 - Modify item in inventory
 
-| Actors Involved  |                    Employee,Owner                   |
+| Actors Involved  |                    Employee, Owner                   |
 | ---------------- | :--------------------------------------------: |
 | Precondition     |                 Item I exists                  |
 | Post condition   |                       Updated quantity                        |
 | Nominal Scenario | Employee/Owner modifies one or more fields of item I |
-| Variants         |        Employee has the right to update the quantity of an item, owner can decide to modify the price         |
+| Variants         |        Employee has the rights to update the quantity of an item, owner can decide to modify the price (e.g. apply a temporary discount)        |
 
 ### Use case 9, UC9 - Delete item from inventory
 
@@ -358,21 +326,33 @@ scale 225 width
 | Post condition   |    Item I deleted from the system    |
 | Nominal Scenario | Owner delete item I from the inventory |
 | Variants         |                                      |
-..
 
-### Use case 10, UC10 - Evaluete fidelity points
+### Use case 10, UC10 - Generate report about accounting
 
-| Actors Involved  |               Customer,Cashier               |
+| Actors Involved  |              Accountant              |
 | ---------------- | :----------------------------------: |
-| Precondition     |            Customer has enough  fidelity points for obtaing a discount             |
-| Post condition   |    Customer has discount    |
-| Nominal Scenario | Customer asks for the discount, cashier applies it  |
-| Variants         |             Customer doesn't have enough point, cashier denies the discount                         |
-..
+| Precondition     |            Accountant asks for report             |
+| Post condition   |    Report is provided     |
+| Nominal Scenario | Report is achieved by collecting data  |
+| Variants         |                                    |
 
-### Use case x, UCx
 
-..
+| Scenario 10.1   |                                                                            |
+| -------------- | :------------------------------------------------------------------------: |
+| Precondition   | Accountant requests report for a certain date |
+| Post condition |  System provides  a report  |
+| Step#          |                                Description                                 |
+|        1     |         Accountant inserts a data                                                     |
+|        2     |          Report provides all the sales, total incomes,the expenses per items, for that date                   |
+
+| Scenario 10.2   |                                                                            |
+| -------------- | :------------------------------------------------------------------------: |
+| Precondition   | Accountant requests report for a certain month |
+| Post condition |  System provides  report  |
+| Step#          |                                Description                                 |
+|        1     |         Accountant inserts a month                                                     |
+|        2     |          Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain                 |
+
 
 # Glossary
 
@@ -381,93 +361,20 @@ scale 225 width
 \<concepts are used consistently all over the document, ex in use cases, requirements etc>
 
 ```plantuml
-scale 700 width
-class Person{
--String name;
--String surname;
--Integer age;
--String email;
--String phone number;
--String IBAN;
+class Employee
+class Customer{
+  name
+  surname
+  ID
+  password
+  points
 }
-class Address{
--String name;
--String number;
--String zip code;
--String city;
--String nation;
-}
-class Item_Descriptor{
--String name;
--String price;
--Optional discount%;
--Integer quantity;
--Integer threshold_alarm;
-}
-class Item{
--String id;
--String delivery_date;
-}
-class Fidelity_card{
--String id;
--String creation_date;
--String total_points;
--Boolean gift_card;
-}
-class Gift_card{
--String discount%;
--String minimum_points;
-}
-class Owner{
--String commercial_license;
--String VAT_number;
-}
-class Cashier{
-
-}
-class Accountant{
-
-}
-class Employee{
-
-}
-class EZshop{
-
-}
-class Inventory{
-
-}
-class Salary{
--Integer level;
--String income; 
-}
-class Expense{
--String type;
--String cost;
-}
-Class Day{
--String date;
--String start_time;
--String end_time;
--Boolean working_day;
-}
-Accountant <|-- Owner
-Cashier <|-- Accountant
-Employee <|--  Cashier
-Person <|-- Employee
-Person - Address : lives in >
-Employee "*" -- EZshop
-Item "*" -- Inventory
-Item "0..*" - Item_Descriptor : is described by >
-Inventory - EZshop
-Fidelity_card - Gift_card
-Person - Fidelity_card : own >
-Employee -- Salary : earns >
-Accountant -  "1..*" Salary : manages >
-Accountant -  "1..*" Expense : manages >
-Fidelity_card "0..*" -- EZshop
-Owner - "*" Day : manages >
-Employee "1..*" - "1..*" Day
+class Cashier
+class Owner
+class Accountant
+class CashRegister
+class Item
+class EZShop
 
 ```
 
