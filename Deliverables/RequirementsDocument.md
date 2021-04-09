@@ -254,17 +254,19 @@ acc -up-|> e
 | Actors Involved  |                                     Owner                                     |
 | ---------------- | :------------------------------------------------------------------------------: |
 | Precondition     |                            Owner defines workshift for the next mounth                            |
-| Post condition   |                          Mounthly workshift is done                           |
+| Post condition   |                          Mounthly workshifts is done                           |
 | Nominal Scenario | Owner defines per employees its own times for working  |
 | Variants         |                                                                                  |
 
-| Scenario 3.1   |                                                                            |
+| Scenario 3.1  |                                                                            |
+| -------------- | :------------------------------------------------------------------------: |
 | Precondition   |Employee can't work a certain date  |
 | Post condition |  Workshift is updated   |
 | Step#          |                                Description                                 |
 |        1     |         Owner delete the employee for the defined date                                                    |
 |        2     |          Owner lists the possible employee for replace the employee                  |
-|       3       | Owner modifies the workshift
+|       3       | Owner modifies the workshift                  |
+
 
 ### Use case 4, UC4 - Create employee account
 
