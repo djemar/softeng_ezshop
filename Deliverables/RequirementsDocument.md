@@ -104,7 +104,7 @@ cu -> (EZShop)
 | Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | FidelityCard  |      Barcode      |                                                          Barcode scanner|
-| Cash Register |        API        |                                                      Local network link |
+| Cash Register |      Stripe API   |                                                      Local network link |
 
 # Stories and personas
 
@@ -136,13 +136,13 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR1     |                                      Manage customer                                       |
 | FR1.1   |                   Define a new customer, or modify an existing customer                    |
 | FR1.2   |                                     Delete a customer                                      |
-| FR1.3   |                                     List all customers                                      |
+| FR1.3   |                                     List all customers                                     |
 | FR1.4   |                                     Search a customer                                      |
 | FR1.5   |                                   Manage customer points                                   |
 | FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
 | FR3     |                                        Manage items                                        |
 | FR3.1   |                       Define a new item, or modify an existing item                        |
-| FR3.2   |                                       Delete an item                                        |
+| FR3.2   |                                       Delete an item                                       |
 | FR3.3   |                                       List all items                                       |
 | FR3.4   |                                        Search items                                        |
 | FR3.5   |                            Alert if stock is below a threshold                             |
@@ -152,17 +152,17 @@ Sophie manages a clothes shop, she noticed that her employees lost much time in 
 | FR4.1   |                                     Define work shifts                                     |
 | FR4.1.1 |                                      Define holidays                                       |
 | FR4.2   |                   Define a new employee, or modify an existing employee                    |
-| FR4.3   |                                     Delete an employee                                      |
+| FR4.3   |                                     Delete an employee                                     |
 | FR4.4   |                                     List all employee                                      |
-| FR4.5   |                                     Search an employee                                      |
+| FR4.5   |                                     Search an employee                                     |
 | FR5     |                                     Manage accounting                                      |
-| FR5.1   |                                 Manage employees salaries                                  |
-| FR5.2   |                                     Manage shop income                                     |
-| FR5.3   |                                    Manage shop expenses                                    |
-| FR5.4   |                                    Manage sales history                                    |
-| FR5.5   |                 Generate report about accounting-related data with filters                 |
+| FR5.1   |                                     Manage shop income                                     |
+| FR5.2   |                                    Manage shop expenses                                    |
+| FR5.3   |                                    Manage sales history                                    |
+| FR5.4   |                 Generate report about accounting-related data with filters                 |
 | FR6     |                                    Manage cash register                                    |
 | FR6.1   |                                Expose data to cash register                                |
+| FR6.2   |                                Expose payment confirmation                                 |
 
 ### Access right, actor vs function
 
@@ -385,40 +385,38 @@ class Person{
 -String surname;
 -Integer age;
 -String email;
--String phone number;
--String IBAN;
+-String phonenumber;
+-String cardnumber;
 }
+
 class Address{
 -String name;
 -String number;
--String zip code;
+-String zipcode;
 -String city;
 -String nation;
 }
-class Item_Descriptor{
--String name;
+class ItemDescriptor{
+-String id;
+-String description;
 -String price;
--Optional discount%;
--Integer quantity;
--Integer threshold_alarm;
+-String unit;
 }
 class Item{
 -String id;
--String delivery_date;
+-Optional discount%;
+-Integer thresholdalarm;
+-String deliverydate;
+-Integer quantity;
 }
-class Fidelity_card{
+class FidelityCard{
 -String id;
--String creation_date;
--String total_points;
--Boolean gift_card;
-}
-class Gift_card{
--String discount%;
--String minimum_points;
+-String creationdate;
+-String points;
 }
 class Owner{
--String commercial_license;
--String VAT_number;
+-String license;
+-String VATnumber;
 }
 class Cashier{
 
@@ -429,43 +427,51 @@ class Accountant{
 class Employee{
 
 }
+class Subscriber{
+
+}
 class EZshop{
 
 }
 class Inventory{
 
 }
-class Salary{
--Integer level;
--String income; 
-}
+
 class Expense{
 -String type;
 -String cost;
 }
-Class Day{
+class StripeAPI{
+
+}
+class Transaction{
 -String date;
--String start_time;
--String end_time;
--Boolean working_day;
+-Integer totalcost;
+-Boolean creditcard;
+}
+class CreditCard{
+  -String code;
+  -String expirationdate;
 }
 Accountant <|-- Owner
 Cashier <|-- Accountant
 Employee <|--  Cashier
 Person <|-- Employee
+Person <|-- Subscriber
 Person - Address : lives in >
 Employee "*" -- EZshop
+StripeAPI -- EZshop
 Item "*" -- Inventory
-Item "0..*" - Item_Descriptor : is described by >
+Item "0..*" - ItemDescriptor : is described by >
 Inventory - EZshop
-Fidelity_card - Gift_card
-Person - Fidelity_card : own >
-Employee -- Salary : earns >
-Accountant -  "1..*" Salary : manages >
+Subscriber - FidelityCard : own >
 Accountant -  "1..*" Expense : manages >
-Fidelity_card "0..*" -- EZshop
-Owner - "*" Day : manages >
-Employee "1..*" - "1..*" Day
+FidelityCard "0..*" -- EZshop
+Transaction "0..*" -- "0..1" CreditCard
+Transaction -- "1..*" Item : includes >
+Transaction "0..*" -- FidelityCard
+
+
 
 ```
 
