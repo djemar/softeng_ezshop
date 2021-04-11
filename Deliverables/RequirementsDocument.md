@@ -22,19 +22,18 @@ Version: 1.0
   - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
   - [Use case diagram](#use-case-diagram)
-    - [Use case 1, UC1 - Create customer account](#use-case-1-uc1---create-customer-account)
-      - [Scenario 1.1](#scenario-11)
-      - [Scenario 1.2](#scenario-12)
-      - [Scenario 1.x](#scenario-1x)
+    - [Use case 1, UC1 - Create fidality card](#use-case-1-uc1---create-fidality-card)
     - [Use case 2, UC2 - Modify customer account](#use-case-2-uc2---modify-customer-account)
     - [Use case 3, UC3 - Delete Customer account](#use-case-3-uc3---delete-customer-account)
+    - [Use case 2, UC2 - Apply discount](#use-case-2-uc2---apply-discount)
+    - [Use case 3, UC3 - Define workshifts](#use-case-3-uc3---define-workshifts)
     - [Use case 4, UC4 - Create employee account](#use-case-4-uc4---create-employee-account)
     - [Use case 5, UC5 - Modify employee account](#use-case-5-uc5---modify-employee-account)
     - [Use case 6, UC6 - Delete employee account](#use-case-6-uc6---delete-employee-account)
     - [Use case 7, UC7 - Add item to inventory](#use-case-7-uc7---add-item-to-inventory)
     - [Use case 8, UC8 - Modify item in inventory](#use-case-8-uc8---modify-item-in-inventory)
     - [Use case 9, UC9 - Delete item from inventory](#use-case-9-uc9---delete-item-from-inventory)
-    - [Use case x, UCx](#use-case-x-ucx)
+    - [Use case 10, UC10 - Generate report about accounting](#use-case-10-uc10---generate-report-about-accounting)
 - [Glossary](#glossary)
 - [System Design](#system-design)
 - [Deployment Diagram](#deployment-diagram)
@@ -98,13 +97,13 @@ cu -> (EZShop)
 
 \<Maybe employee is enough, owner can be removed?>
 
-| Actor         | Logical Interface |                                                      Physical Interface |
-| ------------- | :---------------: | ----------------------------------------------------------------------: |
-| Item          |      Barcode      |                                                         Barcode scanner |
-| Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| FidelityCard  |      Barcode      |                                                          Barcode scanner|
-| Cash Register |      Stripe API   |                                                      Local network link |
+| Actor         | Logical Interface |                                       Physical Interface |
+| ------------- | :---------------: | -------------------------------------------------------: |
+| Item          |      Barcode      |                                          Barcode scanner |
+| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| FidelityCard  |      Barcode      |                                          Barcode scanner |
+| Cash Register |    Stripe API     |                                       Local network link |
 
 # Stories and personas
 
@@ -114,17 +113,15 @@ cu -> (EZShop)
 
 \<stories will be formalized later as scenarios in use cases>
 
-The following personas and stories are meant to cover different profiles of the Owner actors. 
+The following personas and stories are meant to cover different profiles of the Owner actors.
 
 David is 34, he played tennis for many years and now he is the owner of a sports shop in a little city. He loves speaking with his customers and giving precious advice about the best rackets that he has in his inventory. He would like to be grateful to his customers for their trust with some special discounts every 100 euros spent. Additionally, he would like to know exactly how many rackets are available in his warehouse in order to immediately advertise to his customers that a certain item is quickly being sold.
 
-Elisabeth is 25, she is a young entrepreneur and she studied the market strategies at Bocconi. She opened her first clothes shop in the middle of Milan 2 years ago and she advertises her season collection on Instagram. She has found some difficulties because Milan is the capital of fashion where there is a great number of rich Chinese and Russian tourists that require a high level of service: on many occasion clothes sizes had finished quickly, she forgot to order them and her customers were unsatisfied. She would like to have an alarm that notifies the low quantity of her clothes sizes.   
+Elisabeth is 25, she is a young entrepreneur and she studied the market strategies at Bocconi. She opened her first clothes shop in the middle of Milan 2 years ago and she advertises her season collection on Instagram. She has found some difficulties because Milan is the capital of fashion where there is a great number of rich Chinese and Russian tourists that require a high level of service: on many occasion clothes sizes had finished quickly, she forgot to order them and her customers were unsatisfied. She would like to have an alarm that notifies the low quantity of her clothes sizes.
 
 Tom is 40, he is the owner of an Irish pub in Dublin. He is very famous because the quality of his whisky is the best in the city and he offers a variety of cheap craft beers. Unfortunately, four years ago he had some serious economical issues because the prices of his products were too low and he didn't have enough money to pay his customers salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
 
 Katia is 50, she is the owner of a fish market. 2 years ago she employed her son as a cashier because he was jobless. He doesn't have a good relationship with technology and he prefers using the calculator to obtain the total payments. Additionally, Katia discovered that he didn't make receipts and one day she had to pay an expensive fine. She would like to use an easy application that shows the cost of each product, calculates autonomously the total cost and shows it on the screen. Additionally, she would like an error message when the payment was not successful and so the receipt was not issued.
-
-
 
 # Functional and non functional requirements
 
@@ -169,21 +166,20 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 
 ### Access right, actor vs function
 
-| Function | Owner | Accountant | Employee | Cashier | 
+| Function | Owner | Accountant | Employee | Cashier |
 | -------- | ----- | ---------- | -------- | ------- |
-| FR1.1    | yes   | yes        | no       | yes     |       
-| FR1.2    | yes   | yes        | no       | yes     | 
+| FR1.1    | yes   | yes        | no       | yes     |
+| FR1.2    | yes   | yes        | no       | yes     |
 | FR1.3    | yes   | yes        | no       | yes     |
-| FR1.4    | yes   | yes        | no       | yes     | 
-| FR1.5    | yes   | yes        | no       | yes     | 
-| FR3      | yes   | yes        | yes      | yes     | 
-| FR4.1    | yes   | no         | no       | no      | 
-| FR4.2    | yes   | no         | no       | no      | 
-| FR4.3    | yes   | no         | no       | no      | 
-| FR4.4    | yes   | yes        | no       | no      | 
+| FR1.4    | yes   | yes        | no       | yes     |
+| FR1.5    | yes   | yes        | no       | yes     |
+| FR3      | yes   | yes        | yes      | yes     |
+| FR4.1    | yes   | no         | no       | no      |
+| FR4.2    | yes   | no         | no       | no      |
+| FR4.3    | yes   | no         | no       | no      |
+| FR4.4    | yes   | yes        | no       | no      |
 | FR4.5    | yes   | yes        | no       | no      |
-| FR5      | yes   | yes        | no       | no      | 
-
+| FR5      | yes   | yes        | no       | no      |
 
 ## Non Functional Requirements
 
@@ -228,6 +224,7 @@ o -up-|> acc
 acc -up-|> c
 c -up-|> e
 ```
+
 ```plantuml
 
 left to right direction
@@ -258,122 +255,138 @@ scale 225 width
 
 ```
 
-### Use case 1, UC1 - Create fidality card 
+### Use case 1, UC1 - Create fidality card
+
+| Actors Involved  |                                                            Cashier                                                            |
+| ---------------- | :---------------------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                                    Account C doesn't exist                                                    |
+| Post condition   |                                                      Account C is added                                                       |
+| Nominal Scenario | Customer asks for fidelity card, he provides his data to cashier, cashier add it in the system and give him the fidelity card |
+| Variants         |                                                                                                                               |
+
+### Use case 2, UC2 - Modify customer account
 
 | Actors Involved  |                     Cashier                      |
-| ---------------- | :-----------------------------------------------: |
-| Precondition     |                 Account C doesn't exist              |
-| Post condition   |                  Account C is added                  |
-| Nominal Scenario | Customer asks for fidelity card, he provides his data to cashier, cashier add it in the system and give him the fidelity card |
-| Variants         |                                                   |
+| ---------------- | :----------------------------------------------: |
+| Precondition     |                 Account C exists                 |
+| Post condition   |                        -                         |
+| Nominal Scenario | Cashier modifies one or more fields of account C |
+| Variants         |                                                  |
+
+### Use case 3, UC3 - Delete Customer account
+
+| Actors Involved  |                    Cashier                     |
+| ---------------- | :--------------------------------------------: |
+| Precondition     |                Account C exists                |
+| Post condition   |       Account C deleted from the system        |
+| Nominal Scenario | Cashier selects a customer account C to delete |
+| Variants         |                                                |
 
 ### Use case 2, UC2 - Apply discount
 
-| Actors Involved  |                    Cashier                     |
-| ---------------- | :-----------------------------------------------: |
-| Precondition     |                Custemer achieves fixed threshold of fidelity poitns                |
-| Post condition   |                         Discount is applied                         |
-| Nominal Scenario | Cashier applies discount to the price and fidelity points is set to zero  |
-| Variants         |                        If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold                         |
+| Actors Involved  |                                                        Cashier                                                         |
+| ---------------- | :--------------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                  Custemer achieves fixed threshold of fidelity poitns                                  |
+| Post condition   |                                                  Discount is applied                                                   |
+| Nominal Scenario |                        Cashier applies discount to the price and fidelity points is set to zero                        |
+| Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold |
+
 ### Use case 3, UC3 - Define workshifts
 
-| Actors Involved  |                                     Owner                                     |
-| ---------------- | :------------------------------------------------------------------------------: |
-| Precondition     |                            Owner defines workshift for the next mounth                            |
-| Post condition   |                          Mounthly workshifts is done                           |
-| Nominal Scenario | Owner defines per employees its own times for working  |
-| Variants         |                                                                                  |
+| Actors Involved  |                         Owner                         |
+| ---------------- | :---------------------------------------------------: |
+| Precondition     |      Owner defines workshift for the next mounth      |
+| Post condition   |              Mounthly workshifts is done              |
+| Nominal Scenario | Owner defines per employees its own times for working |
+| Variants         |                                                       |
 
-| Scenario 3.1  |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
-| Precondition   |Employee can't work a certain date  |
-| Post condition |  Workshift is updated   |
-| Step#          |                                Description                                 |
-|        1     |         Owner delete the employee for the defined date                                                    |
-|        2     |          Owner lists the possible employee for replace the employee                  |
-|       3       | Owner modifies the workshift                  |
-
+| Scenario 3.1   |                                                            |
+| -------------- | :--------------------------------------------------------: |
+| Precondition   |             Employee can't work a certain date             |
+| Post condition |                    Workshift is updated                    |
+| Step#          |                        Description                         |
+| 1              |       Owner delete the employee for the defined date       |
+| 2              | Owner lists the possible employee for replace the employee |
+| 3              |                Owner modifies the workshift                |
 
 ### Use case 4, UC4 - Create employee account
 
-| Actors Involved  |                                     Owner                                     |
-| ---------------- | :------------------------------------------------------------------------------: |
-| Precondition     |                            Account E does not exists                             |
-| Post condition   |                          Account E added to the system                           |
+| Actors Involved  |                                  Owner                                  |
+| ---------------- | :---------------------------------------------------------------------: |
+| Precondition     |                        Account E does not exists                        |
+| Post condition   |                      Account E added to the system                      |
 | Nominal Scenario | Owner with access rights collects employee data and creates the account |
-| Variants         |                                                                                  |
+| Variants         |                                                                         |
 
 ### Use case 5, UC5 - Modify employee account
 
-| Actors Involved  |                                  Owner                                  |
-| ---------------- | :------------------------------------------------------------------------: |
-| Precondition     |                              Account E exists                              |
-| Post condition   |           Account E is updated                                              |
+| Actors Involved  |                               Owner                               |
+| ---------------- | :---------------------------------------------------------------: |
+| Precondition     |                         Account E exists                          |
+| Post condition   |                       Account E is updated                        |
 | Nominal Scenario | Owner with access rights modifies one or more fields of account E |
-| Variants         |                                                                            |
+| Variants         |                                                                   |
 
 ### Use case 6, UC6 - Delete employee account
 
-| Actors Involved  |                               Owner                                  |
-| ---------------- | :-----------------------------------------------------------------------: |
-| Precondition     |                             Account E exists                              |
-| Post condition   |                     Account E is deleted from the system                     |
+| Actors Involved  |                              Owner                               |
+| ---------------- | :--------------------------------------------------------------: |
+| Precondition     |                         Account E exists                         |
+| Post condition   |               Account E is deleted from the system               |
 | Nominal Scenario | Owner with access rights selects an employee account E to delete |
-| Variants         |                                                                           |
+| Variants         |                                                                  |
 
 ### Use case 7, UC7 - Add item to inventory
 
-| Actors Involved  |                     Employee,Owner                    |
-| ---------------- | :----------------------------------------------: |
-| Precondition     |                  Item I doesn't exist in the DB                   |
-| Post condition   |            Item I is added to the system            |
-| Nominal Scenario | Employee/Owner creates item I and populate its fields  |
-| Variants         | Each item has a unique SKU based on it's barcode |
+| Actors Involved  |                    Employee,Owner                     |
+| ---------------- | :---------------------------------------------------: |
+| Precondition     |            Item I doesn't exist in the DB             |
+| Post condition   |             Item I is added to the system             |
+| Nominal Scenario | Employee/Owner creates item I and populate its fields |
+| Variants         |   Each item has a unique SKU based on it's barcode    |
 
 ### Use case 8, UC8 - Modify item in inventory
 
-| Actors Involved  |                    Employee, Owner                   |
-| ---------------- | :--------------------------------------------: |
-| Precondition     |                 Item I exists                  |
-| Post condition   |                       Updated quantity                        |
-| Nominal Scenario | Employee/Owner modifies one or more fields of item I |
-| Variants         |        Employee has the rights to update the quantity of an item, owner can decide to modify the price (e.g. apply a temporary discount)        |
+| Actors Involved  |                                                          Employee, Owner                                                          |
+| ---------------- | :-------------------------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                                           Item I exists                                                           |
+| Post condition   |                                                         Updated quantity                                                          |
+| Nominal Scenario |                                       Employee/Owner modifies one or more fields of item I                                        |
+| Variants         | Employee has the rights to update the quantity of an item, owner can decide to modify the price (e.g. apply a temporary discount) |
 
 ### Use case 9, UC9 - Delete item from inventory
 
-| Actors Involved  |               Owner               |
-| ---------------- | :----------------------------------: |
-| Precondition     |            Item I exists             |
-| Post condition   |    Item I deleted from the system    |
+| Actors Involved  |                 Owner                  |
+| ---------------- | :------------------------------------: |
+| Precondition     |             Item I exists              |
+| Post condition   |     Item I deleted from the system     |
 | Nominal Scenario | Owner delete item I from the inventory |
-| Variants         |                                      |
+| Variants         |                                        |
 
 ### Use case 10, UC10 - Generate report about accounting
 
-| Actors Involved  |              Accountant              |
-| ---------------- | :----------------------------------: |
-| Precondition     |            Accountant asks for report             |
-| Post condition   |    Report is provided     |
-| Nominal Scenario | Report is achieved by collecting data  |
-| Variants         |                                    |
+| Actors Involved  |              Accountant               |
+| ---------------- | :-----------------------------------: |
+| Precondition     |      Accountant asks for report       |
+| Post condition   |          Report is provided           |
+| Nominal Scenario | Report is achieved by collecting data |
+| Variants         |                                       |
 
+| Scenario 10.1  |                                                                                    |
+| -------------- | :--------------------------------------------------------------------------------: |
+| Precondition   |                   Accountant requests report for a certain date                    |
+| Post condition |                              System provides a report                              |
+| Step#          |                                    Description                                     |
+| 1              |                             Accountant inserts a data                              |
+| 2              | Report provides all the sales, total incomes,the expenses per items, for that date |
 
-| Scenario 10.1   |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
-| Precondition   | Accountant requests report for a certain date |
-| Post condition |  System provides  a report  |
-| Step#          |                                Description                                 |
-|        1     |         Accountant inserts a data                                                     |
-|        2     |          Report provides all the sales, total incomes,the expenses per items, for that date                   |
-
-| Scenario 10.2   |                                                                            |
-| -------------- | :------------------------------------------------------------------------: |
-| Precondition   | Accountant requests report for a certain month |
-| Post condition |  System provides  report  |
-| Step#          |                                Description                                 |
-|        1     |         Accountant inserts a month                                                     |
-|        2     |          Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain                 |
-
+| Scenario 10.2  |                                                                                                                                |
+| -------------- | :----------------------------------------------------------------------------------------------------------------------------: |
+| Precondition   |                                         Accountant requests report for a certain month                                         |
+| Post condition |                                                     System provides report                                                     |
+| Step#          |                                                          Description                                                           |
+| 1              |                                                   Accountant inserts a month                                                   |
+| 2              | Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain |
 
 # Glossary
 
