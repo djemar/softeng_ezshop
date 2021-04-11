@@ -116,11 +116,14 @@ cu -> (EZShop)
 
 The following personas and stories are meant to cover different profiles of the Owner actors. 
 
-Davis is the owner of a sport shop, he opened it 2 years before. He started with only 2 employees, so it was easy to organize workshifts, now he has 6 employees and it becomes more complicated.
+David is 34, he played tennis for many years and now he is the owner of a sports shop in a little city. He loves speaking with his customers and giving precious advice about the best rackets that he has in his inventory. He would like to be grateful to his customers for their trust with some special discounts every 100 euros spent. Additionally, he would like to know exactly how many rackets are available in his warehouse in order to immediately advertise to his customers that a certain item is quickly being sold.
 
-Elisabeth has a grocery store. Unfotunately more than one time customers found expired items on the shelves; she would like to recognize the food in expiration and apply a discount to it.
+Elisabeth is 25, she is a young entrepreneur and she studied the market strategies at Bocconi. She opened her first clothes shop in the middle of Milan 2 years ago and she advertises her season collection on Instagram. She has found some difficulties because Milan is the capital of fashion where there is a great number of rich Chinese and Russian tourists that require a high level of service: on many occasion clothes sizes had finished quickly, she forgot to order them and her customers were unsatisfied. She would like to have an alarm that notifies the low quantity of her clothes sizes.   
 
-Sophie manages a clothes shop, she noticed that her employees lost much time in searching for the right sizes of the clothes in the warehouse if not present in the shop.
+Tom is 40, he is the owner of an Irish pub in Dublin. He is very famous because the quality of his whisky is the best in the city and he offers a variety of cheap craft beers. Unfortunately, four years ago he had some serious economical issues because the prices of his products were too low and he didn't have enough money to pay his customers salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
+
+Katia is 50, she is the owner of a fish market. 2 years ago she employed her son as a cashier because he was jobless. He doesn't have a good relationship with technology and he prefers using the calculator to obtain the total payments. Additionally, Katia discovered that he didn't make receipts and one day she had to pay an expensive fine. She would like to use an easy application that shows the cost of each product, calculates autonomously the total cost and shows it on the screen. Additionally, she would like an error message when the payment was not successful and so the receipt was not issued.
+
 
 
 # Functional and non functional requirements
