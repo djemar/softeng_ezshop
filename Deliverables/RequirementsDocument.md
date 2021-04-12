@@ -163,6 +163,7 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR6     |                                    Manage cash register                                    |
 | FR6.1   |                                Expose data to cash register                                |
 | FR6.2   |                                Expose payment confirmation                                 |
+| FR6.3   |								Rollback in case of payment problem                            |
 
 ### Access right, actor vs function
 
@@ -194,6 +195,8 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | NFR5 |            Localisation            |                                                                                                                                                                   Decimal numbers use . (dot) as decimal                                                                                                                                                                   |    All FR |
 | NFR6 |          Interoperability          |                                                                                                                                                  The API should be compatible with the majority of cash registers brands.                                                                                                                                                  |    All FR |
 | NFR7 |            Reliability             |                                                                                                                                            The application must be reliable for shops with 1-2 cash registers, 5-10 employees.                                                                                                                                             |    All FR |
+| NFR8 |             Usability              |                                                                                                                                                   Sytem collects the data of the current year and the year before                                                                                                                                  |    All FR |
+| NFR9 |             Usability              |                                                                                                                                                   Sytem can apply at most 5 filter simultanously when the report is generated                                                                                                                             |    All FR |
 
 # Use case diagram and use cases
 
@@ -282,7 +285,7 @@ scale 225 width
 | Nominal Scenario | Cashier selects a customer account C to delete |
 | Variants         |                                                |
 
-### Use case 2, UC2 - Apply discount
+### Use case 3, UC3 - Apply discount
 
 | Actors Involved  |                                                        Cashier                                                         |
 | ---------------- | :--------------------------------------------------------------------------------------------------------------------: |
@@ -290,24 +293,6 @@ scale 225 width
 | Post condition   |                                                  Discount is applied                                                   |
 | Nominal Scenario |                        Cashier applies discount to the price and fidelity points is set to zero                        |
 | Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold |
-
-### Use case 3, UC3 - Define workshifts
-
-| Actors Involved  |                         Owner                         |
-| ---------------- | :---------------------------------------------------: |
-| Precondition     |      Owner defines workshift for the next mounth      |
-| Post condition   |              Mounthly workshifts is done              |
-| Nominal Scenario | Owner defines per employees its own times for working |
-| Variants         |                                                       |
-
-| Scenario 3.1   |                                                            |
-| -------------- | :--------------------------------------------------------: |
-| Precondition   |             Employee can't work a certain date             |
-| Post condition |                    Workshift is updated                    |
-| Step#          |                        Description                         |
-| 1              |       Owner delete the employee for the defined date       |
-| 2              | Owner lists the possible employee for replace the employee |
-| 3              |                Owner modifies the workshift                |
 
 ### Use case 4, UC4 - Create employee account
 
@@ -374,19 +359,27 @@ scale 225 width
 
 | Scenario 10.1  |                                                                                    |
 | -------------- | :--------------------------------------------------------------------------------: |
-| Precondition   |                   Accountant requests report for a certain date                    |
+| Precondition   |                   Accountant requests report with filters                    |
 | Post condition |                              System provides a report                              |
 | Step#          |                                    Description                                     |
-| 1              |                             Accountant inserts a data                              |
-| 2              | Report provides all the sales, total incomes,the expenses per items, for that date |
+| 1              |                             Accountant inserts info for the filters                               |
+| 2              | System applies fileters on data  |
 
-| Scenario 10.2  |                                                                                                                                |
-| -------------- | :----------------------------------------------------------------------------------------------------------------------------: |
-| Precondition   |                                         Accountant requests report for a certain month                                         |
-| Post condition |                                                     System provides report                                                     |
-| Step#          |                                                          Description                                                           |
-| 1              |                                                   Accountant inserts a month                                                   |
-| 2              | Report provides all daily incomes, the total incomes, the expenses for itemes, the management costs and calculate the net gain |
+### Use case 11, UC11 - Mange payment
+
+| Actors Involved  |              Accountant               |
+| ---------------- | :-----------------------------------: |
+| Precondition     |      Customer pays       |
+| Post condition   |          Payment is accepted          |
+| Nominal Scenario | System saves the transaction 		   |
+| Variants         |                                       |
+
+| Scenario 11.1  |                                                                                    |
+| -------------- | :--------------------------------------------------------------------------------: |
+| Precondition   |                   Payment is no accepted filters                    |
+| Post condition |                              System rollback the transaction                              |
+| Step#          |                                    Description                                     |
+| 1              |                            Transaction is deleted                               |
 
 # Glossary
 
