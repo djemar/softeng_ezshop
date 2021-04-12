@@ -52,13 +52,16 @@ EZShop is a software application to:
 
 | Stakeholder name |                                                               Description                                                                |
 | ---------------- | :--------------------------------------------------------------------------------------------------------------------------------------: |
-| Customer         |                      Uses the application to manage his profile and to check his fidelity points and related offers                      |
-| Administrator    |                                                  Manages the application and its rights                                                  |
+| Customer         |                      Buys items and can require the fidelity card to obtain discounts                      |
+| Administrator    |                                                  Manages the application and its    rights                                                  |
 | Developer        |                  Develops and tests software to meet clients needs and monitors quality and performance of application                   |
 | Cashier          |                                            Manages cash register and interacts with customers                                            |
 | Owner            |                                      Uses the application to manage employees, customers and items                                       |
-| Accountant       |                                        Manages employees salaries, shop income and shop expenses                                         |
-| Employee         | Uses the application to find information about his work shifts and, depending on his access rights, managing items and customer profiles |
+| Accountant       |                                        Manages shop income and shop expenses                                         |
+| Employee         |                                         Uses the application to manage items                                         |
+| Fidelity Card    |                                         Collects points every time that customer buys some products                  |
+| Cash Register    |                                         Is composed by POS, ...|
+| Supplier         |                        Provides the products required by EZshop accountant |
 
 # Context Diagram and interfaces
 
@@ -97,6 +100,7 @@ cu -> (EZShop)
 
 \<Maybe employee is enough, owner can be removed?>
 
+<<<<<<< HEAD
 | Actor         | Logical Interface |                                       Physical Interface |
 | ------------- | :---------------: | -------------------------------------------------------: |
 | Item          |      Barcode      |                                          Barcode scanner |
@@ -104,6 +108,15 @@ cu -> (EZShop)
 | Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | FidelityCard  |      Barcode      |                                          Barcode scanner |
 | Cash Register |    Stripe API     |                                       Local network link |
+=======
+| Actor         | Logical Interface |                                                      Physical Interface |
+| ------------- | :---------------: | ----------------------------------------------------------------------: |
+| Item          |      Barcode      |                                                         Barcode scanner |
+| Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| FidelityCard  |      Barcode      |                                                          Barcode scanner|
+| Cash Register |      Visa API     |                                                      Local network link |
+>>>>>>> 695e170 (stackholders-glossary-deplydiagr modified)
 
 # Stories and personas
 
@@ -392,19 +405,10 @@ scale 700 width
 class Person{
 -String name;
 -String surname;
--Integer age;
 -String email;
--String phonenumber;
--String cardnumber;
+-String identitycardnumber;
 }
 
-class Address{
--String name;
--String number;
--String zipcode;
--String city;
--String nation;
-}
 class ItemDescriptor{
 -String id;
 -String description;
@@ -415,7 +419,7 @@ class Item{
 -String id;
 -Optional discount%;
 -Integer thresholdalarm;
--String deliverydate;
+-String date;
 -Integer quantity;
 }
 class FidelityCard{
@@ -436,6 +440,13 @@ class Accountant{
 class Employee{
 
 }
+class Supplier{
+
+}
+
+class Order{
+
+}
 class Subscriber{
 
 }
@@ -449,16 +460,21 @@ class Inventory{
 class Expense{
 -String type;
 -String cost;
+-String description;
+-String id;
+-String category;
+-String date;
 }
-class StripeAPI{
+class VisaAPI{
 
 }
 class Transaction{
 -String date;
+-String itme;
 -Integer totalcost;
 -Boolean creditcard;
 }
-class CreditCard{
+class PaymentCard{
   -String code;
   -String expirationdate;
 }
@@ -467,20 +483,21 @@ Cashier <|-- Accountant
 Employee <|--  Cashier
 Person <|-- Employee
 Person <|-- Subscriber
-Person - Address : lives in >
+
 Employee "*" -- EZshop
-StripeAPI -- EZshop
+VisaAPI -- EZshop
 Item "*" -- Inventory
 Item "0..*" - ItemDescriptor : is described by >
 Inventory - EZshop
 Subscriber - FidelityCard : own >
 Accountant -  "1..*" Expense : manages >
+Accountant -  "1..*" Order 
+Order -- "1..*" ItemDescriptor
+Order "1..*" - Supplier
 FidelityCard "0..*" -- EZshop
-Transaction "0..*" -- "0..1" CreditCard
+Transaction "0..*" -- "0..1" PaymentCard
 Transaction -- "1..*" Item : includes >
 Transaction "0..*" -- FidelityCard
-
-
 
 ```
 
@@ -489,5 +506,17 @@ Transaction "0..*" -- FidelityCard
 Not really meaningful in this case. Only software components are needed.
 
 # Deployment Diagram
-
-\<describe here deployment diagram >
+```plantuml
+node Server
+node PCEmployee
+node TabletEmployee
+artifact EZShop{
+  artifact ManageSales
+  artifact ManageInventory
+  artifact ManageCustomers
+  artifact SupportAccounting
+}
+PCEmployee "*" -- Server : internet 
+TabletEmployee "*" -- Server : internet 
+EZShop -- Server 
+```
