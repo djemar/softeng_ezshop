@@ -136,39 +136,33 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 
 \<they match to high level use cases>
 
-| ID      |                                        Description                                         |
-| ------- | :----------------------------------------------------------------------------------------: |
-| FR1     |                                      Manage customer                                       |
-| FR1.1   |                   Define a new customer, or modify an existing customer                    |
-| FR1.2   |                                     Delete a customer                                      |
-| FR1.3   |                                     List all customers                                     |
-| FR1.4   |                                     Search a customer                                      |
-| FR1.5   |                                   Manage customer points                                   |
-| FR2     | Manage rights. Authorize access to functions to specific actors according to access rights |
-| FR3     |                                        Manage items                                        |
-| FR3.1   |                       Define a new item, or modify an existing item                        |
-| FR3.2   |                                       Delete an item                                       |
-| FR3.3   |                                       List all items                                       |
-| FR3.4   |                                        Search items                                        |
-| FR3.5   |                            Alert if stock is below a threshold                             |
-| FR3.6   |                            Define, update prices for each item                             |
-| FR3.7   |                           Define, update discounts for each item                           |
-| FR4     |                                      Manage employees                                      |
-| FR4.1   |                                     Define work shifts                                     |
-| FR4.1.1 |                                      Define holidays                                       |
-| FR4.2   |                   Define a new employee, or modify an existing employee                    |
-| FR4.3   |                                     Delete an employee                                     |
-| FR4.4   |                                     List all employee                                      |
-| FR4.5   |                                     Search an employee                                     |
-| FR5     |                                     Manage accounting                                      |
-| FR5.1   |                                     Manage shop income                                     |
-| FR5.2   |                                    Manage shop expenses                                    |
-| FR5.3   |                                    Manage sales history                                    |
-| FR5.4   |                 Generate report about accounting-related data with filters                 |
-| FR6     |                                    Manage cash register                                    |
-| FR6.1   |                                Expose data to cash register                                |
-| FR6.2   |                                Expose payment confirmation                                 |
-| FR6.3   |								Rollback in case of payment problem                            |
+| ID    |                                        Description                                         |
+| ----- | :----------------------------------------------------------------------------------------: |
+| FR1   |                                      Manage customer                                       |
+| FR1.1 |                   Define a new customer, or modify an existing customer                    |
+| FR1.2 |                                     Delete a customer                                      |
+| FR1.3 |                                     Search a customer                                      |
+| FR2   | Manage rights. Authorize access to functions to specific actors according to access rights |
+| FR3   |                                        Manage items                                        |
+| FR3.1 |                       Define a new item, or modify an existing item                        |
+| FR3.2 |                                       Delete an item                                       |
+| FR3.3 |                                        Search items                                        |
+| FR3.4 |                            Alert if stock is below a threshold                             |
+| FR3.5 |                            Define, update prices for each item                             |
+| FR3.6 |                           Define, update discounts for each item                           |
+| FR4   |                                     Manage accounting                                      |
+| FR4.1 |                                    Manage shop revenue                                     |
+| FR4.2 |                                    Manage shop expenses                                    |
+| FR4.3 |                                    Manage sales history                                    |
+| FR4.4 |                       Generate report about accounting-related data                        |
+| FR5   |                                  Manage sale transaction                                   |
+| FR5.1 |                              Exchange data with cash register                              |
+| FR5.2 |                                   Exchange data with PoS                                   |
+| FR5.3 |                                Manage payment confirmation                                 |
+| FR5.4 |                             Rollback in case of failed payment                             |
+| FR6   |                                   Manage loyalty program                                   |
+| FR6.1 |                        Customize threshold needed for the discount                         |
+| FR6.2 |                                 Customize discount amount                                  |
 
 ### Access right, actor vs function
 
