@@ -100,15 +100,7 @@ cu -> (EZShop)
 
 \<Maybe employee is enough, owner can be removed?>
 
-<<<<<<< HEAD
-| Actor         | Logical Interface |                                       Physical Interface |
-| ------------- | :---------------: | -------------------------------------------------------: |
-| Item          |      Barcode      |                                          Barcode scanner |
-| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| FidelityCard  |      Barcode      |                                          Barcode scanner |
-| Cash Register |    Stripe API     |                                       Local network link |
-=======
+
 | Actor         | Logical Interface |                                                      Physical Interface |
 | ------------- | :---------------: | ----------------------------------------------------------------------: |
 | Item          |      Barcode      |                                                         Barcode scanner |
@@ -116,7 +108,7 @@ cu -> (EZShop)
 | Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
 | FidelityCard  |      Barcode      |                                                          Barcode scanner|
 | Cash Register |      Visa API     |                                                      Local network link |
->>>>>>> 695e170 (stackholders-glossary-deplydiagr modified)
+
 
 # Stories and personas
 
@@ -132,9 +124,9 @@ David is 34, he played tennis for many years and now he is the owner of a sports
 
 Elisabeth is 25, she is a young entrepreneur and she studied the market strategies at Bocconi. She opened her first clothes shop in the middle of Milan 2 years ago and she advertises her season collection on Instagram. She has found some difficulties because Milan is the capital of fashion where there is a great number of rich Chinese and Russian tourists that require a high level of service: on many occasion clothes sizes had finished quickly, she forgot to order them and her customers were unsatisfied. She would like to have an alarm that notifies the low quantity of her clothes sizes.
 
-Tom is 40, he is the owner of an Irish pub in Dublin. He is very famous because the quality of his whisky is the best in the city and he offers a variety of cheap craft beers. Unfortunately, four years ago he had some serious economical issues because the prices of his products were too low and he didn't have enough money to pay his customers salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
+Tom is 40, he is the accountant of an Irish pub called "Dubliners". This pub is very famous for the quality of its whisky that is the best in the city and it also offers a variety of cheap craft beers. Unfortunately, four years ago Tom had some serious economical issues because the prices of his products were too low and he didn't have enough money to pay employees salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
 
-Katia is 50, she is the owner of a fish market. 2 years ago she employed her son as a cashier because he was jobless. He doesn't have a good relationship with technology and he prefers using the calculator to obtain the total payments. Additionally, Katia discovered that he didn't make receipts and one day she had to pay an expensive fine. She would like to use an easy application that shows the cost of each product, calculates autonomously the total cost and shows it on the screen. Additionally, she would like an error message when the payment was not successful and so the receipt was not issued.
+Katia is 50, she is the owner of a fish market. 2 years ago she employed her son John as a cashier because he was jobless. He doesn't have a good relationship with technology and he prefers using the calculator to obtain the total payments. Additionally, Katia discovered that he didn't make receipts and one day she had to pay an expensive fine. John would like to use an easy application that shows the cost of each product, calculates autonomously the total cost and shows it on the screen. Additionally, he would like an error message when the payment was not successful and so the receipt was not issued.
 
 # Functional and non functional requirements
 
@@ -419,7 +411,6 @@ class Item{
 -String id;
 -Optional discount%;
 -Integer thresholdalarm;
--String date;
 -Integer quantity;
 }
 class FidelityCard{
@@ -472,7 +463,7 @@ class Transaction{
 -String date;
 -String itme;
 -Integer totalcost;
--Boolean creditcard;
+-Boolean paymentcard;
 }
 class PaymentCard{
   -String code;
@@ -498,6 +489,7 @@ FidelityCard "0..*" -- EZshop
 Transaction "0..*" -- "0..1" PaymentCard
 Transaction -- "1..*" Item : includes >
 Transaction "0..*" -- FidelityCard
+Transaction "0..*" -- VisaAPI
 
 ```
 
