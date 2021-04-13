@@ -171,15 +171,10 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR1.1    | yes   | yes        | no       | yes     |
 | FR1.2    | yes   | yes        | no       | yes     |
 | FR1.3    | yes   | yes        | no       | yes     |
-| FR1.4    | yes   | yes        | no       | yes     |
 | FR1.5    | yes   | yes        | no       | yes     |
 | FR3      | yes   | yes        | yes      | yes     |
-| FR4.1    | yes   | no         | no       | no      |
-| FR4.2    | yes   | no         | no       | no      |
-| FR4.3    | yes   | no         | no       | no      |
-| FR4.4    | yes   | yes        | no       | no      |
-| FR4.5    | yes   | yes        | no       | no      |
-| FR5      | yes   | yes        | no       | no      |
+| FR4      | yes   | yes        | no       | no      |
+| FR6      | yes   | yes        | no       | yes     |
 
 ## Non Functional Requirements
 
