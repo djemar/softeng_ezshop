@@ -50,18 +50,18 @@ EZShop is a software application to:
 
 # Stakeholders
 
-| Stakeholder name |                                                               Description                                                                |
-| ---------------- | :--------------------------------------------------------------------------------------------------------------------------------------: |
-| Customer         |                      Buys items and can require the fidelity card to obtain discounts                      |
-| Administrator    |                                                  Manages the application and its    rights                                                  |
-| Developer        |                  Develops and tests software to meet clients needs and monitors quality and performance of application                   |
-| Cashier          |                                            Manages cash register and interacts with customers                                            |
-| Owner            |                                      Uses the application to manage employees, customers and items                                       |
-| Accountant       |                                        Manages shop income and shop expenses                                         |
-| Employee         |                                         Uses the application to manage items                                         |
-| Fidelity Card    |                                         Collects points every time that customer buys some products                  |
-| Cash Register    |                                         Is composed by POS, ...|
-| Supplier         |                        Provides the products required by EZshop accountant |
+| Stakeholder name |                                              Description                                              |
+| ---------------- | :---------------------------------------------------------------------------------------------------: |
+| Customer         |                   Buys items and can require the fidelity card to obtain discounts                    |
+| Administrator    |                                Manages the application and its rights                                 |
+| Developer        | Develops and tests software to meet clients needs and monitors quality and performance of application |
+| Cashier          |                          Manages cash register and interacts with customers                           |
+| Owner            |                     Uses the application to manage employees, customers and items                     |
+| Accountant       |                                 Manages shop income and shop expenses                                 |
+| Employee         |                                 Uses the application to manage items                                  |
+| Fidelity Card    |                      Collects points every time that customer buys some products                      |
+| Cash Register    |                                        Is composed by POS, ...                                        |
+| Supplier         |                          Provides the products required by EZshop accountant                          |
 
 # Context Diagram and interfaces
 
@@ -479,7 +479,7 @@ Item "0..*" - ItemDescriptor : is described by >
 Inventory - EZshop
 Subscriber - FidelityCard : own >
 Accountant -  "1..*" Expense : manages >
-Accountant -  "1..*" Order 
+Accountant -  "1..*" Order
 Order -- "1..*" ItemDescriptor
 Order "1..*" - Supplier
 FidelityCard "0..*" -- EZshop
@@ -495,6 +495,7 @@ Transaction "0..*" -- VisaAPI
 Not really meaningful in this case. Only software components are needed.
 
 # Deployment Diagram
+
 ```plantuml
 node Server
 node PCEmployee
@@ -505,7 +506,7 @@ artifact EZShop{
   artifact ManageCustomers
   artifact SupportAccounting
 }
-PCEmployee "*" -- Server : internet 
-TabletEmployee "*" -- Server : internet 
-EZShop -- Server 
+PCEmployee "*" -- Server : internet
+TabletEmployee "*" -- Server : internet
+EZShop -- Server
 ```
