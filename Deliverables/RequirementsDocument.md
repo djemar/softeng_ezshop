@@ -22,18 +22,18 @@ Version: 1.0
   - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
   - [Use case diagram](#use-case-diagram)
-    - [Use case 1, UC1 - Create fidality card](#use-case-1-uc1---create-fidality-card)
+    - [Use case 1, UC1 - Create customer account](#use-case-1-uc1---create-customer-account)
     - [Use case 2, UC2 - Modify customer account](#use-case-2-uc2---modify-customer-account)
     - [Use case 3, UC3 - Delete Customer account](#use-case-3-uc3---delete-customer-account)
-    - [Use case 2, UC2 - Apply discount](#use-case-2-uc2---apply-discount)
-    - [Use case 3, UC3 - Define workshifts](#use-case-3-uc3---define-workshifts)
-    - [Use case 4, UC4 - Create employee account](#use-case-4-uc4---create-employee-account)
-    - [Use case 5, UC5 - Modify employee account](#use-case-5-uc5---modify-employee-account)
-    - [Use case 6, UC6 - Delete employee account](#use-case-6-uc6---delete-employee-account)
-    - [Use case 7, UC7 - Add item to inventory](#use-case-7-uc7---add-item-to-inventory)
-    - [Use case 8, UC8 - Modify item in inventory](#use-case-8-uc8---modify-item-in-inventory)
-    - [Use case 9, UC9 - Delete item from inventory](#use-case-9-uc9---delete-item-from-inventory)
-    - [Use case 10, UC10 - Generate report about accounting](#use-case-10-uc10---generate-report-about-accounting)
+    - [Use case 4, UC4 - Search Customer account](#use-case-4-uc4---search-customer-account)
+    - [Use case 5, UC5 - Manage Customer points](#use-case-5-uc5---manage-customer-points)
+    - [Use case 6, UC6 - Add item to inventory](#use-case-6-uc6---add-item-to-inventory)
+    - [Use case 7, UC7 - Modify item in inventory](#use-case-7-uc7---modify-item-in-inventory)
+    - [Use case 8, UC8 - Delete item from inventory](#use-case-8-uc8---delete-item-from-inventory)
+    - [Use case 9, UC9 - Search Item](#use-case-9-uc9---search-item)
+    - [Use case 10, UC10 - Manage shop expenses](#use-case-10-uc10---manage-shop-expenses)
+    - [Use case 11, UC11 - Generate report about accounting-related data](#use-case-11-uc11---generate-report-about-accounting-related-data)
+    - [Use case 12, UC12 - Manage sale transaction](#use-case-12-uc12---manage-sale-transaction)
 - [Glossary](#glossary)
 - [System Design](#system-design)
 - [Deployment Diagram](#deployment-diagram)
@@ -263,14 +263,14 @@ scale 225 width
 
 ```
 
-### Use case 1, UC1 - Create fidality card
+### Use case 1, UC1 - Create customer account
 
-| Actors Involved  |                                                            Cashier                                                            |
-| ---------------- | :---------------------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                                    Account C doesn't exist                                                    |
-| Post condition   |                                                      Account C is added                                                       |
-| Nominal Scenario | Customer asks for fidelity card, he provides his data to cashier, cashier add it in the system and give him the fidelity card |
-| Variants         |                                                                                                                               |
+| Actors Involved  |                                    Cashier                                    |
+| ---------------- | :---------------------------------------------------------------------------: |
+| Precondition     |                            Account C doesn't exist                            |
+| Post condition   |                              Account C is added                               |
+| Nominal Scenario | Cashier creates account C with Customer data and link it with a Fidelity Card |
+| Variants         |                                                                               |
 
 ### Use case 2, UC2 - Modify customer account
 
@@ -290,101 +290,105 @@ scale 225 width
 | Nominal Scenario | Cashier selects a customer account C to delete |
 | Variants         |                                                |
 
-### Use case 3, UC3 - Apply discount
+### Use case 4, UC4 - Search Customer account
 
-| Actors Involved  |                                                        Cashier                                                         |
-| ---------------- | :--------------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                  Custemer achieves fixed threshold of fidelity poitns                                  |
-| Post condition   |                                                  Discount is applied                                                   |
-| Nominal Scenario |                        Cashier applies discount to the price and fidelity points is set to zero                        |
-| Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold |
+| Actors Involved  |                        Cashier                         |
+| ---------------- | :----------------------------------------------------: |
+| Precondition     |                           -                            |
+| Post condition   |          Account C retrieved from the system           |
+| Nominal Scenario |          Cashier search a customer account C           |
+| Variants         | If there are no results, an error message is displayed |
 
-### Use case 4, UC4 - Create employee account
+### Use case 5, UC5 - Manage Customer points
 
-| Actors Involved  |                                  Owner                                  |
-| ---------------- | :---------------------------------------------------------------------: |
-| Precondition     |                        Account E does not exists                        |
-| Post condition   |                      Account E added to the system                      |
-| Nominal Scenario | Owner with access rights collects employee data and creates the account |
-| Variants         |                                                                         |
+| Actors Involved  |                                                         Cashier                                                         |
+| ---------------- | :---------------------------------------------------------------------------------------------------------------------: |
+| Precondition     |                                             Customer collects enough points                                             |
+| Post condition   |                                     Discount is applied and points are set to zero                                      |
+| Nominal Scenario |                          Cashier scans the fidelity card and discount is automatically applied                          |
+| Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold. |
+| Variants         |                  If the customer doesn't qualify for the discount, new points are added to his balance                  |
 
-### Use case 5, UC5 - Modify employee account
+### Use case 6, UC6 - Add item to inventory
 
-| Actors Involved  |                               Owner                               |
-| ---------------- | :---------------------------------------------------------------: |
-| Precondition     |                         Account E exists                          |
-| Post condition   |                       Account E is updated                        |
-| Nominal Scenario | Owner with access rights modifies one or more fields of account E |
-| Variants         |                                                                   |
+| Actors Involved  |                     Employee                     |
+| ---------------- | :----------------------------------------------: |
+| Precondition     |          Item I doesn't exist in the DB          |
+| Post condition   |          Item I is added to the system           |
+| Nominal Scenario | Employee creates item I and populate its fields  |
+| Variants         | Each item has a unique SKU based on it's barcode |
 
-### Use case 6, UC6 - Delete employee account
+### Use case 7, UC7 - Modify item in inventory
 
-| Actors Involved  |                              Owner                               |
-| ---------------- | :--------------------------------------------------------------: |
-| Precondition     |                         Account E exists                         |
-| Post condition   |               Account E is deleted from the system               |
-| Nominal Scenario | Owner with access rights selects an employee account E to delete |
-| Variants         |                                                                  |
+| Actors Involved  |                      Employee                       |
+| ---------------- | :-------------------------------------------------: |
+| Precondition     |                    Item I exists                    |
+| Post condition   |                   Updated item I                    |
+| Nominal Scenario |   Employee modifies one or more fields of item I    |
+| Variants         | The employee modifies its price, applies a discount |
 
-### Use case 7, UC7 - Add item to inventory
+### Use case 8, UC8 - Delete item from inventory
 
-| Actors Involved  |                    Employee,Owner                     |
-| ---------------- | :---------------------------------------------------: |
-| Precondition     |            Item I doesn't exist in the DB             |
-| Post condition   |             Item I is added to the system             |
-| Nominal Scenario | Employee/Owner creates item I and populate its fields |
-| Variants         |   Each item has a unique SKU based on it's barcode    |
+| Actors Involved  |                  Employee                  |
+| ---------------- | :----------------------------------------: |
+| Precondition     |               Item I exists                |
+| Post condition   |       Item I deleted from the system       |
+| Nominal Scenario | Employee deletes item I from the inventory |
+| Variants         |                                            |
 
-### Use case 8, UC8 - Modify item in inventory
+### Use case 9, UC9 - Search Item
 
-| Actors Involved  |                                                          Employee, Owner                                                          |
-| ---------------- | :-------------------------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                                           Item I exists                                                           |
-| Post condition   |                                                         Updated quantity                                                          |
-| Nominal Scenario |                                       Employee/Owner modifies one or more fields of item I                                        |
-| Variants         | Employee has the rights to update the quantity of an item, owner can decide to modify the price (e.g. apply a temporary discount) |
+| Actors Involved  |                        Cashier                         |
+| ---------------- | :----------------------------------------------------: |
+| Precondition     |                           -                            |
+| Post condition   |            Item I retrieved from the system            |
+| Nominal Scenario |              Employee searches an item I               |
+| Variants         | If there are no results, an error message is displayed |
 
-### Use case 9, UC9 - Delete item from inventory
+### Use case 10, UC10 - Manage shop expenses
 
-| Actors Involved  |                 Owner                  |
-| ---------------- | :------------------------------------: |
-| Precondition     |             Item I exists              |
-| Post condition   |     Item I deleted from the system     |
-| Nominal Scenario | Owner delete item I from the inventory |
-| Variants         |                                        |
+| Actors Involved  |                  Accountant                   |
+| ---------------- | :-------------------------------------------: |
+| Precondition     |                       -                       |
+| Post condition   |     A new expense is added to the system      |
+| Nominal Scenario | Accountant adds the new expense to the system |
+| Variants         |                                               |
 
-### Use case 10, UC10 - Generate report about accounting
+### Use case 11, UC11 - Generate report about accounting-related data
 
-| Actors Involved  |              Accountant               |
-| ---------------- | :-----------------------------------: |
-| Precondition     |      Accountant asks for report       |
-| Post condition   |          Report is provided           |
-| Nominal Scenario | Report is achieved by collecting data |
-| Variants         |                                       |
+| Actors Involved  |                          Accountant                           |
+| ---------------- | :-----------------------------------------------------------: |
+| Precondition     |                               -                               |
+| Post condition   |               Report is provided by the system                |
+| Nominal Scenario | The accountant can check the report in the Accounting section |
+| Variants         |     The accountant can set the time window for the report     |
 
-| Scenario 10.1  |                                                                                    |
-| -------------- | :--------------------------------------------------------------------------------: |
-| Precondition   |                   Accountant requests report with filters                    |
-| Post condition |                              System provides a report                              |
-| Step#          |                                    Description                                     |
-| 1              |                             Accountant inserts info for the filters                               |
-| 2              | System applies fileters on data  |
+### Use case 12, UC12 - Manage sale transaction
 
-### Use case 11, UC11 - Mange payment
+| Actors Involved  |                                         Cashier                                         |
+| ---------------- | :-------------------------------------------------------------------------------------: |
+| Precondition     |                                            -                                            |
+| Post condition   |                              Sale transaction is concluded                              |
+| Nominal Scenario | Cashier scans the items and their prices is added to the total and manages the checkout |
+| Variants         |                                                                                         |
 
-| Actors Involved  |              Accountant               |
-| ---------------- | :-----------------------------------: |
-| Precondition     |      Customer pays       |
-| Post condition   |          Payment is accepted          |
-| Nominal Scenario | System saves the transaction 		   |
-| Variants         |                                       |
+| Scenario 12.1  |                                         |
+| -------------- | :-------------------------------------: |
+| Precondition   |                    -                    |
+| Post condition |           Payment is accepted           |
+| Step#          |               Description               |
+| 1              | The customer chooses to pay with a card |
+| 2              |          The card is accepted           |
+| 3              |            Receipt is issued            |
 
-| Scenario 11.1  |                                                                                    |
-| -------------- | :--------------------------------------------------------------------------------: |
-| Precondition   |                   Payment is no accepted filters                    |
-| Post condition |                              System rollback the transaction                              |
-| Step#          |                                    Description                                     |
-| 1              |                            Transaction is deleted                               |
+| Scenario 12.2  |                                                                                                   |
+| -------------- | :-----------------------------------------------------------------------------------------------: |
+| Precondition   |                                                 -                                                 |
+| Post condition |                                 System rollbacks the transaction                                  |
+| Step#          |                                            Description                                            |
+| 1              |                              The customer chooses to pay with a card                              |
+| 2              |                                        The card is refused                                        |
+| 3              | The cashier voids the transaction and provides the possibility to pay with another payment option |
 
 # Glossary
 
