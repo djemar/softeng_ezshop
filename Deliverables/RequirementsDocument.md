@@ -101,15 +101,14 @@ pos -> (EZShop)
 
 \<Maybe employee is enough, owner can be removed?>
 
-
-| Actor         | Logical Interface |                                                      Physical Interface |
-| ------------- | :---------------: | ----------------------------------------------------------------------: |
-| Item          |      Barcode      |                                                         Barcode scanner |
-| Employee      |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Owner         |      Web GUI      |                Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| FidelityCard  |      Barcode      |                                                          Barcode scanner|
-| Cash Register |      Visa API     |                                                      Local network link |
-
+| Actor         | Logical Interface |                                       Physical Interface |
+| ------------- | :---------------: | -------------------------------------------------------: |
+| Item          |      Barcode      |                                          Barcode scanner |
+| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| FidelityCard  |      Barcode      |                                          Barcode scanner |
+| Cash Register |      Web GUI      |                                       Local network link |
+| Pos           |     Visa API      |                                            Internet link |
 
 # Stories and personas
 
