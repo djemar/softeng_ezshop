@@ -76,20 +76,21 @@ scale 300 width
 top to bottom direction
 actor Owner as o
 actor Employee as e
-actor CashRegister as ca
+actor CashRegister as cr
 actor Item as i
 actor Accountant as acc
 actor Cashier as cas
-actor FidelityCard as cu
+actor FidelityCard as f
+actor PoS as pos
 
 o -up-|> acc
 cas -up-|> e
 acc -up-|> cas
 i -> (EZShop)
 e -> (EZShop)
-ca -> (EZShop)
-cu -> (EZShop)
-
+f -> (EZShop)
+cr -> (EZShop)
+pos -> (EZShop)
 ```
 
 ## Interfaces
