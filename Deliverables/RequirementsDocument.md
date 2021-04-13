@@ -207,14 +207,17 @@ actor Item as i
 actor Accountant as acc
 actor FidelityCard as fc
 actor Cashier as c
+actor PoS as pos
+
 acc -> (manage accounting)
 e -> (manage items)
 (manage items) --> i
-(manage cash register) --> ca
+(manage payment transaction) --> ca
+(manage payment transaction) --> pos
 c --> (manage customers)
 (manage customers) --> fc
-o -> (manage employees)
-(manage employees) -> e
+o -> (manage access rights)
+(manage access rights) -> e
 o -up-|> acc
 acc -up-|> c
 c -up-|> e
@@ -236,17 +239,20 @@ scale 225 width
 (manage items) .> (alert if stock is below a threshold) : include
 (manage items) .> (update prices for each item) : include
 (manage items) .> (define/update discounts for each item) : include
-(manage employees) .> (define work shifts) : include
-(manage employees) .> (define/modify employees) : include
-(manage employees) .> (delete an employee) : include
-(manage employees) .> (list all employees) : include
-(manage employees) .> (search an employee) : include
+```
+
+```plantuml
+left to right direction
+scale 225 width
 (manage accounting) .> (manage employees salaries) : include
 (manage accounting) .> (manage shop income) : include
 (manage accounting) .> (manage shop expenses) : include
 (manage accounting) .> (manage sales history) : include
 (manage accounting) .> (generate report) : include
-(manage cash register) .> (expose data to cash register) : include
+(manage payment transaction) .> (Exchange data with cash register) : include
+(manage payment transaction) .> (Exchange data with PoS) : include
+(manage payment transaction) .> (Manage payment confirmation) : include
+(manage payment transaction) .> (Rollback in case of failed payment) : include
 
 ```
 
