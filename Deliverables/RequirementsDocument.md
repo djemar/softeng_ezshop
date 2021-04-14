@@ -6,7 +6,7 @@ Date: 21/04/2021
 
 Version: 1.0
 
-# Contents
+<!-- # Contents -->
 
 - [Requirements Document](#requirements-document)
 - [Contents](#contents)
@@ -60,7 +60,9 @@ EZShop is a software application to:
 | Accountant       |                                 Manages shop income and shop expenses                                 |
 | Employee         |                                 Uses the application to manage items                                  |
 | Fidelity Card    |                      Collects points every time that customer buys some products                      |
-| Cash Register    |                                        Is composed by POS, ...                                        |
+| Cash Register    |                                        Is the physical cashier                                        |
+| PoS              |                Is where a customer executes the payment for goods or services with payment cards      |
+| Payment Card     |                                   Is a payment method                                                 |
 | Supplier         |                          Provides the products required by EZshop accountant                          |
 
 # Context Diagram and interfaces
@@ -72,7 +74,7 @@ EZShop is a software application to:
 \<actors are a subset of stakeholders>
 
 ```plantuml
-scale 300 width
+scale 400 width
 top to bottom direction
 actor Owner as o
 actor Employee as e
@@ -104,8 +106,8 @@ pos -> (EZShop)
 | Actor         | Logical Interface |                                       Physical Interface |
 | ------------- | :---------------: | -------------------------------------------------------: |
 | Item          |      Barcode      |                                          Barcode scanner |
-| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
-| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on smartphone |
+| Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on tablet |
+| Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on tablet |
 | FidelityCard  |      Barcode      |                                          Barcode scanner |
 | Cash Register |      Web GUI      |                                       Local network link |
 | Pos           |     Visa API      |                                            Internet link |
@@ -124,7 +126,7 @@ David is 34, he played tennis for many years and now he is the owner of a sports
 
 Elisabeth is 25, she is a young entrepreneur and she studied the market strategies at Bocconi. She opened her first clothes shop in the middle of Milan 2 years ago and she advertises her season collection on Instagram. She has found some difficulties because Milan is the capital of fashion where there is a great number of rich Chinese and Russian tourists that require a high level of service: on many occasion clothes sizes had finished quickly, she forgot to order them and her customers were unsatisfied. She would like to have an alarm that notifies the low quantity of her clothes sizes.
 
-Tom is 40, he is the accountant of an Irish pub called "Dubliners". This pub is very famous for the quality of its whisky that is the best in the city and it also offers a variety of cheap craft beers. Unfortunately, four years ago Tom had some serious economical issues because the prices of his products were too low and he didn't have enough money to pay employees salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
+Tom is 40, he is the accountant of an Irish shop called "Dubliners". This shop is very famous for the quality of its whisky that is the best in the city and it also offers a variety of cheap craft beers. Unfortunately, four years ago Tom had some serious economical issues because the prices of the products were too low and he didn't have enough money to pay employees salary. He would like to manage well his receipts and the prices of the products to satisfy both customers and employees.
 
 Katia is 50, she is the owner of a fish market. 2 years ago she employed her son John as a cashier because he was jobless. He doesn't have a good relationship with technology and he prefers using the calculator to obtain the total payments. Additionally, Katia discovered that he didn't make receipts and one day she had to pay an expensive fine. John would like to use an easy application that shows the cost of each product, calculates autonomously the total cost and shows it on the screen. Additionally, he would like an error message when the payment was not successful and so the receipt was not issued.
 
@@ -142,6 +144,7 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR1.1 |                   Define a new customer, or modify an existing customer                    |
 | FR1.2 |                                     Delete a customer                                      |
 | FR1.3 |                                     Search a customer                                      |
+| FR1.4 |                                   Manage Customer points                                   |
 | FR2   | Manage rights. Authorize access to functions to specific actors according to access rights |
 | FR3   |                                        Manage items                                        |
 | FR3.1 |                       Define a new item, or modify an existing item                        |
@@ -171,10 +174,10 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR1.1    | yes   | yes        | no       | yes     |
 | FR1.2    | yes   | yes        | no       | yes     |
 | FR1.3    | yes   | yes        | no       | yes     |
-| FR1.5    | yes   | yes        | no       | yes     |
+| FR1.4    | yes   | yes        | no       | yes     |
 | FR3      | yes   | yes        | yes      | yes     |
 | FR4      | yes   | yes        | no       | no      |
-| FR6      | yes   | yes        | no       | yes     |
+| FR6      | yes   | no         | no       | no      |
 
 ## Non Functional Requirements
 
@@ -212,11 +215,12 @@ actor PoS as pos
 acc -> (manage accounting)
 e -> (manage items)
 (manage items) --> i
-(manage payment transaction) --> ca
-(manage payment transaction) --> pos
+(manage sales transaction) --> ca
+(manage sales transaction) --> pos
 c --> (manage customers)
 (manage customers) --> fc
 o -> (manage access rights)
+o -> (manage loyalty program)
 (manage access rights) -> e
 o -up-|> acc
 acc -up-|> c
@@ -230,7 +234,6 @@ scale 225 width
 
 (manage customers) .> (define/modify customer) : include
 (manage customers) .> (delete a customer) : include
-(manage customers) .> (list all customers) : include
 (manage customers) .> (search customer) : include
 (manage customers) .> (manage customer points) : include
 (manage items) .> (define/modify item) : include
@@ -244,25 +247,24 @@ scale 225 width
 ```plantuml
 left to right direction
 scale 225 width
-(manage accounting) .> (manage employees salaries) : include
-(manage accounting) .> (manage shop income) : include
+(manage accounting) .> (manage shop revenue) : include
 (manage accounting) .> (manage shop expenses) : include
 (manage accounting) .> (manage sales history) : include
 (manage accounting) .> (generate report) : include
-(manage payment transaction) .> (Exchange data with cash register) : include
-(manage payment transaction) .> (Exchange data with PoS) : include
-(manage payment transaction) .> (Manage payment confirmation) : include
-(manage payment transaction) .> (Rollback in case of failed payment) : include
+(manage sales transaction) .> (Exchange data with cash register) : include
+(manage sales transaction) .> (Exchange data with PoS) : include
+(manage sales transaction) .> (Manage payment confirmation) : include
+(manage sales transaction) .> (Rollback in case of failed payment) : include
 
 ```
 
 ### Use case 1, UC1 - Create customer account
 
-| Actors Involved  |                                    Cashier                                    |
+| Actors Involved  |                           Cashier , Fidelity Card                             |
 | ---------------- | :---------------------------------------------------------------------------: |
 | Precondition     |                            Account C doesn't exist                            |
 | Post condition   |                              Account C is added                               |
-| Nominal Scenario | Cashier creates account C with Customer data and link it with a Fidelity Card |
+| Nominal Scenario | Cashier creates account C with Customer data and links it with a Fidelity Card|
 | Variants         |                                                                               |
 
 ### Use case 2, UC2 - Modify customer account
@@ -289,14 +291,14 @@ scale 225 width
 | ---------------- | :----------------------------------------------------: |
 | Precondition     |                           -                            |
 | Post condition   |          Account C retrieved from the system           |
-| Nominal Scenario |          Cashier search a customer account C           |
+| Nominal Scenario |          Cashier search a Customer account C           |
 | Variants         | If there are no results, an error message is displayed |
 
 ### Use case 5, UC5 - Manage Customer points
 
-| Actors Involved  |                                                         Cashier                                                         |
+| Actors Involved  |                                              Cashier, Fidelity Card                                                     |
 | ---------------- | :---------------------------------------------------------------------------------------------------------------------: |
-| Precondition     |                                             Customer collects enough points                                             |
+| Precondition     |                                  Customer collects enough points for a discount                                         |
 | Post condition   |                                     Discount is applied and points are set to zero                                      |
 | Nominal Scenario |                          Cashier scans the fidelity card and discount is automatically applied                          |
 | Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold. |
@@ -304,16 +306,16 @@ scale 225 width
 
 ### Use case 6, UC6 - Add item to inventory
 
-| Actors Involved  |                     Employee                     |
+| Actors Involved  |                 Employee, Item                   |
 | ---------------- | :----------------------------------------------: |
 | Precondition     |          Item I doesn't exist in the DB          |
 | Post condition   |          Item I is added to the system           |
-| Nominal Scenario | Employee creates item I and populate its fields  |
+| Nominal Scenario | Employee creates item I and populates its fields |
 | Variants         | Each item has a unique SKU based on it's barcode |
 
 ### Use case 7, UC7 - Modify item in inventory
 
-| Actors Involved  |                      Employee                       |
+| Actors Involved  |                      Employee, Item                 |
 | ---------------- | :-------------------------------------------------: |
 | Precondition     |                    Item I exists                    |
 | Post condition   |                   Updated item I                    |
@@ -322,16 +324,16 @@ scale 225 width
 
 ### Use case 8, UC8 - Delete item from inventory
 
-| Actors Involved  |                  Employee                  |
+| Actors Involved  |                  Employee, Item            |
 | ---------------- | :----------------------------------------: |
 | Precondition     |               Item I exists                |
 | Post condition   |       Item I deleted from the system       |
 | Nominal Scenario | Employee deletes item I from the inventory |
 | Variants         |                                            |
 
-### Use case 9, UC9 - Search Item
+### Use case 9, UC9 - Search Items
 
-| Actors Involved  |                        Cashier                         |
+| Actors Involved  |                  Employee, Item                        |
 | ---------------- | :----------------------------------------------------: |
 | Precondition     |                           -                            |
 | Post condition   |            Item I retrieved from the system            |
@@ -358,23 +360,23 @@ scale 225 width
 
 ### Use case 12, UC12 - Manage sale transaction
 
-| Actors Involved  |                                         Cashier                                         |
+| Actors Involved  |                                         Cashier, Item                                   |
 | ---------------- | :-------------------------------------------------------------------------------------: |
 | Precondition     |                                            -                                            |
 | Post condition   |                              Sale transaction is concluded                              |
 | Nominal Scenario | Cashier scans the items and their prices is added to the total and manages the checkout |
 | Variants         |                                                                                         |
 
-| Scenario 12.1  |                                         |
+| Scenario 12.1  |      Cashier, PoS, Cash Register        |
 | -------------- | :-------------------------------------: |
 | Precondition   |                    -                    |
 | Post condition |           Payment is accepted           |
 | Step#          |               Description               |
-| 1              | The customer chooses to pay with a card |
+| 1              | The customer chooses to pay with a payment card or cash |
 | 2              |          The card is accepted           |
 | 3              |            Receipt is issued            |
 
-| Scenario 12.2  |                                                                                                   |
+| Scenario 12.2  |                                   Cashier, PoS                                                    |
 | -------------- | :-----------------------------------------------------------------------------------------------: |
 | Precondition   |                                                 -                                                 |
 | Post condition |                                 System rollbacks the transaction                                  |
@@ -390,7 +392,7 @@ scale 225 width
 \<concepts are used consistently all over the document, ex in use cases, requirements etc>
 
 ```plantuml
-scale 700 width
+scale 800 width
 class Person{
 -String name;
 -String surname;
@@ -458,7 +460,7 @@ class VisaAPI{
 }
 class Transaction{
 -String date;
--String itme;
+-String time;
 -Integer totalcost;
 -Boolean paymentcard;
 }
