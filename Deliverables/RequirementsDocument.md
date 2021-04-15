@@ -151,8 +151,6 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR3.2 |                                       Delete an item                                       |
 | FR3.3 |                                        Search items                                        |
 | FR3.4 |                            Alert if stock is below a threshold                             |
-| FR3.5 |                            Define, update prices for each item                             |
-| FR3.6 |                           Define, update discounts for each item                           |
 | FR4   |                                     Manage accounting                                      |
 | FR4.1 |                                    Manage shop revenue                                     |
 | FR4.2 |                                    Manage shop expenses                                    |
@@ -240,8 +238,7 @@ scale 225 width
 (manage items) .> (delete an item ) : include
 (manage items) .> (search items) : include
 (manage items) .> (alert if stock is below a threshold) : include
-(manage items) .> (update prices for each item) : include
-(manage items) .> (define/update discounts for each item) : include
+
 ```
 
 ```plantuml
@@ -372,7 +369,7 @@ scale 225 width
 | Precondition   |                    -                    |
 | Post condition |           Payment is accepted           |
 | Step#          |               Description               |
-| 1              | The customer chooses to pay with a payment card or cash |
+| 1              | The customer chooses to pay with a payment card  |
 | 2              |          The card is accepted           |
 | 3              |            Receipt is issued            |
 
@@ -499,7 +496,7 @@ Not really meaningful in this case. Only software components are needed.
 # Deployment Diagram
 
 ```plantuml
-node Server
+node LocalServer
 node PCEmployee
 node TabletEmployee
 artifact EZShop{
@@ -508,7 +505,7 @@ artifact EZShop{
   artifact ManageCustomers
   artifact SupportAccounting
 }
-PCEmployee "*" -- Server : internet
-TabletEmployee "*" -- Server : internet
-EZShop -- Server
+PCEmployee "*" -- LocalServer : local network
+TabletEmployee "*" -- LocalServer : local network
+EZShop -- LocalServer
 ```
