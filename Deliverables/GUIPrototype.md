@@ -159,3 +159,10 @@ He has the rights to reset the password of a profile.
     <td><img src="res/gui/ezshop-access-psw_reset.png" alt="User password reset" width="720" /></td></tr>
 </tbody>
 </table>
+
+# Navigation map
+
+<details> 
+  <summary>Click to show the Navigation map</summary>
+<img src="res/gui/ezshop-navmap.png" alt="Navigation map" width="720" />
+</details>
