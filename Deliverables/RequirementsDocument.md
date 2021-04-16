@@ -64,6 +64,7 @@ EZShop is a software application to:
 | PoS              |                Is where a customer executes the payment for goods or services with payment cards      |
 | Payment Card     |                                   Is a payment method                                                 |
 | Supplier         |                          Provides the products required by EZshop accountant                          |
+| BarCode Reader        |                         Scans the items' barcode                         |
 
 # Context Diagram and interfaces
 
@@ -84,6 +85,7 @@ actor Accountant as acc
 actor Cashier as cas
 actor FidelityCard as f
 actor PoS as pos
+actor BarCodeReader as br
 
 o -up-|> acc
 cas -up-|> e
@@ -93,6 +95,7 @@ e -> (EZShop)
 f -> (EZShop)
 cr -> (EZShop)
 pos -> (EZShop)
+br -> (EZShop)
 ```
 
 ## Interfaces
@@ -381,6 +384,14 @@ scale 225 width
 | 1              |                              The customer chooses to pay with a card                              |
 | 2              |                                        The card is refused                                        |
 | 3              | The cashier voids the transaction and provides the possibility to pay with another payment option |
+
+| Scenario 12.3  |      Cashier        |
+| -------------- | :-------------------------------------: |
+| Precondition   |                    Customer can't proceed with the transaction right away                    |
+| Post condition |          Order is put on hold           |
+| Step#          |               Description               |
+| 1              | Customer can't proceed with the transaction right away  |
+| 2              |          Cashier puts the order on hold and proceeds with the next client           |
 
 # Glossary
 
