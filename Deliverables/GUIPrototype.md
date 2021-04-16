@@ -6,21 +6,16 @@ Date: 21/04/2021
 
 Version: 1.0
 
-\<Report here the GUI that you propose. You are free to organize it as you prefer. A suggested presentation matches the Use cases and scenarios defined in the Requirement document. The GUI can be shown as a sequence of graphical files (jpg, png) >
+# Screenshots
 
-# Sceenshots
+## Screenshot 1: Log in
 
-# Screenshot 1: Log in
+The EZShop application starts with screenshot 1.
 
-The EzShop application starts with screenshot 1.
-
-- employees with ID and password access to the application by inserting their credentials;
-
-- new employees without ID have to ask for their ID to the owner, after receiving it, employee set his own password during the sign up;
-
-- employee who forgets the password, has to contact the owner to reset the password and then he proceeds with sign up again, during the sign up, employee set his own password.
-
-- If the owner forgets his password he has to contact EZ shop support
+- Employees with ID and password log into the application by inserting their credentials;
+- New employees without ID have to ask for their ID to the owner; after receiving it, the employee sets his own password during the sign up phase;
+- Employees who forget their password have to contact the owner to reset it and then they can sign up again; during the sign up phase, the employees set their new password;
+- If the owner forgets his password, he needs to contact EZShop support.
 
 <table>
 <tbody>
@@ -33,41 +28,37 @@ The EzShop application starts with screenshot 1.
 </tbody>
 </table>
 
-# Screenshot 2: Inventory
+## Screenshot 2: Inventory
 
-In this section the employee manages items in the inventory.
+In this section the employee manages the items in the inventory.
 
-- insert item: the employee can insert a new item, filling the fields with its specifications;
+- _Add item_: the employee can add a new item, populating the fields with its details;
+- _Edit item_: the employee can modify some fields or add some optional info such as _category_, _discount_ or _quantity alert threshold_. Then he has to save his changes to update the item;
+- _Search item_: the employee can search an item by typing its SKU or description; he can also filter by category to obtain a subset of items. If the search returns no results, he needs to adjust his search.
+- _Delete item_: the employee can delete an item by opening the item details and clicking the `DELETE` button.
 
-- edit item: the employee can modify some item fields or he can add some optional info such as category, discount or quantity alert threshold. Then he has to confirm or not his edit;
-
-- search items: the employee can search a specifc item by inserting its SKU or desription, or he can use a category filter to obtain a subset of items. If he doesn't find any info, he should adjust his search.
-
-- delete item: the employee can delete a specific item by selecting it and clicking the "delete" button.
 <table>
-<tbody>
-  <tr>
-    <td><img src="res/gui/ezshop-inventory.png" alt="Inventory" width="720" /></td>
-    <td><img src="res/gui/ezshop-inventory-failed_search.png" alt="Failed Search" width="720" /></td></tr><tr>
-    <td><img src="res/gui/ezshop-item_detail.png" alt="Item details" width="720" /></td>
-    <td><img src="res/gui/ezshop-confirm_add.png" alt="Item details" width="720" /></td>
-  </tr>
-</tbody>
-</table>
+  <tbody>
+    <tr>
+      <td><img src="res/gui/ezshop-inventory.png" alt="Inventory" width="720" /></td>
+      <td><img src="res/gui/ezshop-inventory-failed_search.png" alt="Failed Search" width="720" /></td></tr><tr>
+      <td><img src="res/gui/ezshop-item_detail.png" alt="Item details" width="720" /></td>
+      <td><img src="res/gui/ezshop-confirm_add.png" alt="Item details" width="720" /></td>
+    </tr>
+  </tbody>
+  </table>
 
-# Screenshot 3: Sales
+## Screenshot 3: Sales
 
 In this section the employee consults some daily statistics.
 
 It provides:
 
-- the sales list of the current day with some details
-
-- the number of sales and the total income of the current day;
-
-- monthly, hourly and top categories sales trend
-
-- payment option chart
+- The sales history of the current day with some details;
+- The number of sales and the total income of the current day;
+- Monthly, hourly sales chart;
+- Top categories by number of sales chart;
+- Payment options chart.
 
 <table>
 <tbody>
@@ -77,15 +68,13 @@ It provides:
 </tbody>
 </table>
 
-# Screenshot 3: Accounting
+## Screenshot 3: Accounting
 
-This section is divided into 3 parts: expenses, revenue and report. Here the employee manages the EZ shop accounting.
+This section is divided into 3 parts: expenses, revenue and report. Here the employee manages the EZShop accounting.
 
-- Expenses part: the employee can consult the total monthly cost (fixed and variable expenses are also available). Additionally, he can add a new expense and search it using some filters. He can also export this info to an excel file;
-
+- Expenses part: the employee can consult the total monthly cost (fixed and variable expenses are also available). Additionally, he can add a new expense and search it using some filters. He can also export this info to a spreadsheet file;
 - Revenue part: the employee can consult the monthly revenue with all details selecting the appropriate time windows;
-
-- Report part: it is shown some economical measures such as profit;
+- Report part: it is shown some economical measures such as profit.
 
 <table>
 <tbody>
@@ -97,19 +86,16 @@ This section is divided into 3 parts: expenses, revenue and report. Here the emp
 </tbody>
 </table>
 
-# Screenshot 4: Transaction
+## Screenshot 4: Sale Register
 
-This branch provides some option for the managing of transaction.
+This section enables the cashier to manage a sale transaction.
 
-- Cashier associates the sale to the fidelity card, scanning it with the barcode reader;
+- The cashier links the sale to the fidelity card (if it is provided by the customer), by tapping the `FIDELITY CARD` button and scanning it with the barcode reader;
+- The cashier can reset the payment option without voiding the transaction;
+- If the customer is unable to complete the transaction+ right away, the cashier can put a sale transaction on hold and proceed with the next one; he can then recall the transaction from hold to resume it;
+- The cashier can void the entire order with the `VOID` button.
 
-- Cashier resets the payment option without removing the items from the cart;
-
-- Cashier can put in pending a sale transaction and proceeding with another one;
-
-- Cashier denies the entire order through "void" button.
-
-Buttons were designed big in order to make the interface more user friendly.
+This UI is touch-friendly, so that it can be used both with mouse and keyboard and with a modern touchscreen device.
 
 <table>
 <tbody>
@@ -122,19 +108,16 @@ Buttons were designed big in order to make the interface more user friendly.
 </tbody>
 </table>
 
-# Screenshot 5: Customer
+## Screenshot 5: Customer
 
 In this section the employee manages customers data.
 
-- insert customer data: the employee can insert a new customer, filling the fields with its specifications. Additionally, he can link it with a fidelity card;
+- _Add customer_: the employee can add a new customer, populating the fields with its details. Additionally, he can link it with a fidelity card;
+- _Edit customer_: the employee can modify the customer details;
+- _Search a customer_: the employee can search a customer by typing his name or fidelity card number, or automatically by scanning the customer's fidelity card.
+- _Delete customer_: the employee can delete a customer by opening the customer details and clicking the `DELETE` button.
 
-- edit customer data: the employee can modify some customer fields;
-
-- search a customer: the employee can search a specific customer by inserting his full name or fidelity card number;
-
-- delete customer: the employee can delete a specific customer by selecting it and clicking the "delete" button.
-
-The owner decides the threshold of points and the respective discount of the fidelity program: when the customer has enough fidelity points, he obtains the discount.
+The owner decides the threshold of points and the respective discount of the loyalty program: when the customer has enough fidelity points, the discount is automatically applied to his next order.
 
 <table>
 <tbody>
@@ -146,11 +129,11 @@ The owner decides the threshold of points and the respective discount of the fid
 </tbody>
 </table>
 
-# Screenshot 6: Access Rights
+## Screenshot 6: Access Rights
 
-The following division allows owner to manage the employees profile: he can create a new user, remove one, he decides the rights of an employee.
+The following section allows the owner to manage the employees profile: he can create a new employee profile or delete one; here he can set an employee's access rights.
 
-He has the rights to reset the password of a profile.
+The owner can also reset the password of an employee profile.
 
 <table>
 <tbody>
