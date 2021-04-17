@@ -80,19 +80,15 @@ top to bottom direction
 actor Owner as o
 actor Employee as e
 actor CashRegister as cr
-actor Item as i
 actor Accountant as acc
 actor Cashier as cas
-actor FidelityCard as f
 actor PoS as pos
 actor BarCodeReader as br
 
 o -up-|> acc
 cas -up-|> e
 acc -up-|> cas
-i -> (EZShop)
 e -> (EZShop)
-f -> (EZShop)
 cr -> (EZShop)
 pos -> (EZShop)
 br -> (EZShop)
@@ -108,12 +104,11 @@ br -> (EZShop)
 
 | Actor         | Logical Interface |                                       Physical Interface |
 | ------------- | :---------------: | -------------------------------------------------------: |
-| Item          |      Barcode      |                                          Barcode scanner |
 | Employee      |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on tablet |
 | Owner         |      Web GUI      | Screen, keyboard, mouse on PC, touchscreen on tablet |
-| FidelityCard  |      Barcode      |                                          Barcode scanner |
 | Cash Register |      Web GUI      |                                       Local network link |
 | Pos           |     Visa API      |                                            Internet link |
+| BarCodeReader |        GUI        |                                                     link |
 
 # Stories and personas
 
@@ -159,6 +154,7 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR4.2 |                                    Manage shop expenses                                    |
 | FR4.3 |                                    Manage sales history                                    |
 | FR4.4 |                       Generate report about accounting-related data                        |
+| FR4.5 |                            Export expenses data to an excel file                           |
 | FR5   |                                  Manage sale transaction                                   |
 | FR5.1 |                              Exchange data with cash register                              |
 | FR5.2 |                                   Exchange data with PoS                                   |
@@ -207,19 +203,19 @@ scale 500 width
 actor Owner as o
 actor Employee as e
 actor CashRegister as ca
-actor Item as i
 actor Accountant as acc
-actor FidelityCard as fc
+actor BarCodeReader as bc
 actor Cashier as c
 actor PoS as pos
 
 acc -> (manage accounting)
 e -> (manage items)
-(manage items) --> i
+(manage items) -> bc
 (manage sales transaction) --> ca
+(manage sales transaction) --> bc
 (manage sales transaction) --> pos
 c --> (manage customers)
-(manage customers) --> fc
+(manage customers) --> bc
 o -> (manage access rights)
 o -> (manage loyalty program)
 (manage access rights) -> e
@@ -251,6 +247,7 @@ scale 225 width
 (manage accounting) .> (manage shop expenses) : include
 (manage accounting) .> (manage sales history) : include
 (manage accounting) .> (generate report) : include
+(manage accounting) .> (export expenses data to an excel file):include
 (manage sales transaction) .> (Exchange data with cash register) : include
 (manage sales transaction) .> (Exchange data with PoS) : include
 (manage sales transaction) .> (Manage payment confirmation) : include
@@ -260,11 +257,11 @@ scale 225 width
 
 ### Use case 1, UC1 - Create customer account
 
-| Actors Involved  |                           Cashier , Fidelity Card                             |
+| Actors Involved  |                           Cashier , BarCodeReader                            |
 | ---------------- | :---------------------------------------------------------------------------: |
 | Precondition     |                            Account C doesn't exist                            |
 | Post condition   |                              Account C is added                               |
-| Nominal Scenario | Cashier creates account C with Customer data and links it with a Fidelity Card|
+| Nominal Scenario | Cashier creates account C with Customer data and links it with a fidelity card that is activated by the Bar Code Reader|
 | Variants         |                                                                               |
 
 ### Use case 2, UC2 - Modify customer account
@@ -296,35 +293,35 @@ scale 225 width
 
 ### Use case 5, UC5 - Manage Customer points
 
-| Actors Involved  |                                              Cashier, Fidelity Card                                                     |
+| Actors Involved  |                                              Cashier, BarCodeReader                                                      |
 | ---------------- | :---------------------------------------------------------------------------------------------------------------------: |
 | Precondition     |                                  Customer collects enough points for a discount                                         |
 | Post condition   |                                     Discount is applied and points are set to zero                                      |
-| Nominal Scenario |                          Cashier scans the fidelity card and discount is automatically applied                          |
+| Nominal Scenario |                          Cashier scans the fidelity card through Bar Code Reader and discount is automatically applied                          |
 | Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold. |
 | Variants         |                  If the customer doesn't qualify for the discount, new points are added to his balance                  |
 
 ### Use case 6, UC6 - Add item to inventory
 
-| Actors Involved  |                 Employee, Item                   |
+| Actors Involved  |                 Employee, BarCodeReader          |
 | ---------------- | :----------------------------------------------: |
 | Precondition     |          Item I doesn't exist in the DB          |
 | Post condition   |          Item I is added to the system           |
-| Nominal Scenario | Employee creates item I and populates its fields |
-| Variants         | Each item has a unique SKU based on it's barcode |
+| Nominal Scenario | Employee creates item scanning it through Bar Code Reader and populates its fields |
+| Variants         | Each item has a unique SKU based on its barcode  |
 
 ### Use case 7, UC7 - Modify item in inventory
 
-| Actors Involved  |                      Employee, Item                 |
+| Actors Involved  |                      Employee                       |
 | ---------------- | :-------------------------------------------------: |
 | Precondition     |                    Item I exists                    |
-| Post condition   |                   Updated item I                    |
+| Post condition   |                   Updated Item I                    |
 | Nominal Scenario |   Employee modifies one or more fields of item I    |
 | Variants         | The employee modifies its price, applies a discount |
 
 ### Use case 8, UC8 - Delete item from inventory
 
-| Actors Involved  |                  Employee, Item            |
+| Actors Involved  |                  Employee                  |       
 | ---------------- | :----------------------------------------: |
 | Precondition     |               Item I exists                |
 | Post condition   |       Item I deleted from the system       |
@@ -333,7 +330,7 @@ scale 225 width
 
 ### Use case 9, UC9 - Search Items
 
-| Actors Involved  |                  Employee, Item                        |
+| Actors Involved  |                  Employee                              |
 | ---------------- | :----------------------------------------------------: |
 | Precondition     |                           -                            |
 | Post condition   |            Item I retrieved from the system            |
@@ -358,16 +355,26 @@ scale 225 width
 | Nominal Scenario | The accountant can check the report in the Accounting section |
 | Variants         |     The accountant can set the time window for the report     |
 
-### Use case 12, UC12 - Manage sale transaction
+### Use case 12, UC12 - Export expenses data to an excel file  
 
-| Actors Involved  |                                         Cashier, Item                                   |
+| Actors Involved  |                          Accountant                           |
+| ---------------- | :-----------------------------------------------------------: |
+| Precondition     |                               -                               |
+| Post condition   |               Excel file is provided by the system            |
+| Nominal Scenario | The accountant can consult expenses data exporting them to an excel file |
+| Variants         |                                               |
+
+
+### Use case 13, UC13 - Manage sale transaction
+
+| Actors Involved  |                                         Cashier, BarCodeReader                                   |
 | ---------------- | :-------------------------------------------------------------------------------------: |
 | Precondition     |                                            -                                            |
 | Post condition   |                              Sale transaction is concluded                              |
-| Nominal Scenario | Cashier scans the items and their prices is added to the total and manages the checkout |
+| Nominal Scenario | Cashier scans the items through Bar Code Reader and their prices is added to the total and manages the checkout |
 | Variants         |                                                                                         |
 
-| Scenario 12.1  |      Cashier, PoS, Cash Register        |
+| Scenario 13.1  |      Cashier, PoS, Cash Register        |
 | -------------- | :-------------------------------------: |
 | Precondition   |                    -                    |
 | Post condition |           Payment is accepted           |
@@ -376,7 +383,7 @@ scale 225 width
 | 2              |          The card is accepted           |
 | 3              |            Receipt is issued            |
 
-| Scenario 12.2  |                                   Cashier, PoS                                                    |
+| Scenario 13.2  |                                   Cashier, PoS                                                    |
 | -------------- | :-----------------------------------------------------------------------------------------------: |
 | Precondition   |                                                 -                                                 |
 | Post condition |                                 System rollbacks the transaction                                  |
@@ -385,7 +392,7 @@ scale 225 width
 | 2              |                                        The card is refused                                        |
 | 3              | The cashier voids the transaction and provides the possibility to pay with another payment option |
 
-| Scenario 12.3  |      Cashier        |
+| Scenario 13.3  |      Cashier        |
 | -------------- | :-------------------------------------: |
 | Precondition   |                    Customer can't proceed with the transaction right away                    |
 | Post condition |          Order is put on hold           |
