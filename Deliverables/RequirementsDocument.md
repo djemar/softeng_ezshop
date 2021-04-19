@@ -269,10 +269,10 @@ scale 225 width
 | Precondition   |                         Account C doesn't exist                    |
 | Post condition |            Account C is added           |
 | Step#          |                   Description                   |
-| 1              |  Cashier creates a new Customer Account A  |
-| 2           |  Cashier fills the field of A with customer info  |
+| 1              |  Cashier creates a new Customer Account C  |
+| 2           |  Cashier fills the field of C with customer info  |
 | 3              |  Cashier scans a new fidelity card   |
-| 4              |  Fidelity card is activated and linked to A  |
+| 4              |  Fidelity card is activated and linked to C  |
 
 
 ### Use case 2, UC2 - Modify customer account
@@ -314,10 +314,10 @@ scale 225 width
 
 | Scenario 5.1  | Cashier,BarCodeReader |
 | -------------- | :---------------------------------------------: |
-| Precondition   |                         Customer collects enough points for a                    |
+| Precondition   |                         Customer collects enough points for a discount                     |
 | Post condition |            Discount is applied           |
 | Step#          |                   Description                   |
-| 1              | Cashier C scans I through Bar Code Reader   |
+| 1              | Cashier C scans item I through Bar Code Reader   |
 | 2              |                 C has more points than needed for obtaining discount           |
 | 3              |       Discout is applied                      |
 | 4              |       New value of C's fidelity points is set as the difference between fidelity points and the threshold             |
@@ -327,7 +327,7 @@ scale 225 width
 | Precondition   |                         Customer collects points                    |
 | Post condition |            Discount is  not applied           |
 | Step#          |                   Description                   |
-| 1              | Cashier C scans I through Bar Code Reader   |
+| 1              | Cashier C scans item I through Bar Code Reader   |
 | 2              |                 C has not enough points for the discount          |
 | 3              |       Points are added to C's fidelity card                      |
 
@@ -357,23 +357,7 @@ scale 225 width
 | Nominal Scenario |   Employee modifies one or more fields of item I    |
 | Variants         | The employee modifies its price, applies a discount |
 
-| Scenario 7.1  | Employee, BarCodeReader     |
-| -------------- | :---------------------------------------------: |
-| Precondition     |                    Item I exists                    |
-| Post condition   |                   Updated Item I                    |
-| Step#          |                   Description                   |
-| 1              | Employee E scans I through Bar Code Reader   |
-| 2             |        I is found and selected                    |
-| 3              |         E modifies one or more fields of I                    |
 
-| Scenario 7.2  | Employee     |
-| -------------- | :---------------------------------------------: |
-| Precondition     |                    Item I exists                    |
-| Post condition   |                   Updated Item I                    |
-| Step#          |                   Description                   |
-| 1              | Employee E searchs I by its charatteristics   |
-| 2             |        I is found and selected                    |
-| 3              |         E modifies one or more fields of I                    |
 ### Use case 8, UC8 - Delete item from inventory
 
 | Actors Involved  |                  Employee                  |
@@ -449,18 +433,16 @@ scale 225 width
 | Precondition   |                        -                        |
 | Post condition |              Report is provided by the system             |
 | Step#          |                   Description                   |
-| 1              | Accountant A logs in  |
-| 2              |                 A asks for the report            |
-| 3              |         No time window is set, all data releted to the accounting is provided in the report                       |
+| 1              |                 Accountant A makes request to the system for the report            |
+| 2              |         No time window is set, all releted data to the accounting is provided in the report                       |
 
 | Scenario 11.2  | Accountant   |
 | -------------- | :---------------------------------------------: |
 | Precondition   |                        -                        |
 | Post condition |              Report is provided by the system             |
 | Step#          |                   Description                   |
-| 1              | Accountant A logs in  |
-| 2              |                 A asks for the report            |
-| 3              |         A sets a time window, time filter is applied to the report                    |
+| 1              |                 Accountant A makes request to the system for the report           |
+| 2              |         A sets a time window, time filter is applied to the report                    |
 ### Use case 12, UC12 - Export expenses data to an excel file
 
 | Actors Involved  |                                Accountant                                |
@@ -469,14 +451,6 @@ scale 225 width
 | Post condition   |                   Excel file is provided by the system                   |
 | Nominal Scenario | The accountant can consult expenses data exporting them to an excel file |
 | Variants         |                                                                          |
-
-| Scenario 12.1  |          Accountant            |
-| -------------- | :---------------------------------------------: |
-| Precondition   |                     -                     |
-| Post condition |               Excel file is provided by the system                |
-| Step#          |                   Description                   |
-| 1              | The account log in the stystem   |
-| 2              |             Accountant asks the system to convert data in an excel file           |
 
 
 ### Use case 13, UC13 - Manage sale transaction
