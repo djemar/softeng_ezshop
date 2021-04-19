@@ -201,12 +201,17 @@ c -up-|> e
 ```
 
 ```plantuml
-
+scale 600 width
 top to bottom direction
 (manage customers) .> (define/modify customer) : include
 (manage customers) .> (delete a customer) : include
 (manage customers) .> (search customer) : include
 (manage customers) .> (manage customer points) : include
+```
+
+```plantuml
+scale 600 width
+top to bottom direction
 (manage items) .> (define/modify item) : include
 (manage items) .> (delete an item ) : include
 (manage items) .> (search items) : include
@@ -215,12 +220,17 @@ top to bottom direction
 ```
 
 ```plantuml
+scale 600 width
 top to bottom direction
 (manage accounting) .> (manage shop revenue) : include
 (manage accounting) .> (manage shop expenses) : include
 (manage accounting) .> (manage sales history) : include
 (manage accounting) .> (generate report) : include
 (manage accounting) .> (export expenses data to an excel file):include
+```
+
+```plantuml
+scale 600 width
 (manage sales transaction) .> (Exchange data with cash register) : include
 (manage sales transaction) .> (Exchange data with PoS) : include
 (manage sales transaction) .> (Manage payment confirmation) : include
