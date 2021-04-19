@@ -264,6 +264,17 @@ scale 225 width
 | Nominal Scenario | Cashier creates account C with Customer data and links it with a fidelity card that is activated by the Bar Code Reader |
 | Variants         |                                                                                                                         |
 
+| Scenario 1.1  | Cashier,Customer |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                         Account C doesn't exist                    |
+| Post condition |            Account C is added           |
+| Step#          |                   Description                   |
+| 1              |  Cashier creates a new Customer Account A  |
+| 2           |  Cashier fills the field of A with customer info  |
+| 3              |  Cashier scans a new fidelity card   |
+| 4              |  Fidelity card is activated and linked to A  |
+
+
 ### Use case 2, UC2 - Modify customer account
 
 | Actors Involved  |                     Cashier                      |
@@ -301,6 +312,25 @@ scale 225 width
 | Variants         | If fidelity points exceeds threshold, the new value is set as the difference between fidelity points and the threshold. |
 | Variants         |                  If the customer doesn't qualify for the discount, new points are added to his balance                  |
 
+| Scenario 5.1  | Cashier,BarCodeReader |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                         Customer collects enough points for a                    |
+| Post condition |            Discount is applied           |
+| Step#          |                   Description                   |
+| 1              | Cashier C scans I through Bar Code Reader   |
+| 2              |                 C has more points than needed for obtaining discount           |
+| 3              |       Discout is applied                      |
+| 4              |       New value of C's fidelity points is set as the difference between fidelity points and the threshold             |
+
+| Scenario 5.2  | Cashier,BarCodeReader |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                         Customer collects points                    |
+| Post condition |            Discount is  not applied           |
+| Step#          |                   Description                   |
+| 1              | Cashier C scans I through Bar Code Reader   |
+| 2              |                 C has not enough points for the discount          |
+| 3              |       Points are added to C's fidelity card                      |
+
 ### Use case 6, UC6 - Add item to inventory
 
 | Actors Involved  |                              Employee, BarCodeReader                               |
@@ -310,6 +340,14 @@ scale 225 width
 | Nominal Scenario | Employee creates item scanning it through Bar Code Reader and populates its fields |
 | Variants         |                  Each item has a unique SKU based on its barcode                   |
 
+| Scenario 6.1  | Employee, BarCodeReader     |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                         Item I doesn't exist in the DB                     |
+| Post condition |             Item I is added to the system             |
+| Step#          |                   Description                   |
+| 1              | Employee E scans I through Bar Code Reader   |
+| 2              |                 I is created in the inventory           |
+| 3              |        E fills the fields of I                      |
 ### Use case 7, UC7 - Modify item in inventory
 
 | Actors Involved  |                      Employee                       |
@@ -319,15 +357,49 @@ scale 225 width
 | Nominal Scenario |   Employee modifies one or more fields of item I    |
 | Variants         | The employee modifies its price, applies a discount |
 
+| Scenario 7.1  | Employee, BarCodeReader     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I exists                    |
+| Post condition   |                   Updated Item I                    |
+| Step#          |                   Description                   |
+| 1              | Employee E scans I through Bar Code Reader   |
+| 2             |        I is found and selected                    |
+| 3              |         E modifies one or more fields of I                    |
+
+| Scenario 7.2  | Employee     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I exists                    |
+| Post condition   |                   Updated Item I                    |
+| Step#          |                   Description                   |
+| 1              | Employee E searchs I by its charatteristics   |
+| 2             |        I is found and selected                    |
+| 3              |         E modifies one or more fields of I                    |
 ### Use case 8, UC8 - Delete item from inventory
 
 | Actors Involved  |                  Employee                  |
 | ---------------- | :----------------------------------------: |
 | Precondition     |               Item I exists                |
-| Post condition   |       Item I deleted from the system       |
+| Post condition   |       Item I is deleted from the system       |
 | Nominal Scenario | Employee deletes item I from the inventory |
 | Variants         |                                            |
 
+| Scenario 8.1  | Employee, BarCodeReader     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I exists                    |
+| Post condition   |                 Item I is deleted from the system                       |
+| Step#          |                   Description                   |
+| 1              | Employee E scans I through Bar Code Reader   |
+| 2             |        I is found and selected                    |
+| 3              |         E deletes I from inventory             |
+
+| Scenario 8.2  | Employee     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I exists                    |
+| Post condition   |                   Updated Item I                    |
+| Step#          |                   Description                   |
+| 1              | Employee E searchs I by its charatteristics   |
+| 2             |        I is found and selected                    |
+| 3              |         E is deleted from inventory                    |
 ### Use case 9, UC9 - Search Items
 
 | Actors Involved  |                        Employee                        |
@@ -336,6 +408,22 @@ scale 225 width
 | Post condition   |            Item I retrieved from the system            |
 | Nominal Scenario |              Employee searches an item I               |
 | Variants         | If there are no results, an error message is displayed |
+
+| Scenario 9.1  | Employee     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I exists                    | 
+| Post condition   |                     Item I retrieved from the system                  |
+| Step#          |                   Description                   |
+| 1              | Employee E searchs I by its charatteristics   |
+| 2             |        I is found and selected                    |
+
+| Scenario 9.2  | Employee     |
+| -------------- | :---------------------------------------------: |
+| Precondition     |                    Item I doesn't exist                    | 
+| Post condition   |                   Error message is displayed               |
+| Step#          |                   Description                   |
+| 1              | Employee E searchs I by its charatteristics   |
+| 2             |        I is not found                  |
 
 ### Use case 10, UC10 - Manage shop expenses
 
@@ -355,6 +443,24 @@ scale 225 width
 | Nominal Scenario | The accountant can check the report in the Accounting section |
 | Variants         |     The accountant can set the time window for the report     |
 
+
+| Scenario 11.1  | Accountant   |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                        -                        |
+| Post condition |              Report is provided by the system             |
+| Step#          |                   Description                   |
+| 1              | Accountant A logs in  |
+| 2              |                 A asks for the report            |
+| 3              |         No time window is set, all data releted to the accounting is provided in the report                       |
+
+| Scenario 11.2  | Accountant   |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                        -                        |
+| Post condition |              Report is provided by the system             |
+| Step#          |                   Description                   |
+| 1              | Accountant A logs in  |
+| 2              |                 A asks for the report            |
+| 3              |         A sets a time window, time filter is applied to the report                    |
 ### Use case 12, UC12 - Export expenses data to an excel file
 
 | Actors Involved  |                                Accountant                                |
@@ -363,6 +469,15 @@ scale 225 width
 | Post condition   |                   Excel file is provided by the system                   |
 | Nominal Scenario | The accountant can consult expenses data exporting them to an excel file |
 | Variants         |                                                                          |
+
+| Scenario 12.1  |          Accountant            |
+| -------------- | :---------------------------------------------: |
+| Precondition   |                     -                     |
+| Post condition |               Excel file is provided by the system                |
+| Step#          |                   Description                   |
+| 1              | The account log in the stystem   |
+| 2              |             Accountant asks the system to convert data in an excel file           |
+
 
 ### Use case 13, UC13 - Manage sale transaction
 
