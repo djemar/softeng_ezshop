@@ -66,7 +66,7 @@ EZShop is a software application to:
 | PoS              |                     Is where a customer executes the payment for goods or services with payment cards                     |
 | Payment Card     |                                                    Is a payment method                                                    |
 | Barcode Reader   |                                                  Scans an items' barcode                                                  |
-
+| Item             |                          Product sold by EZShop that is identified by a barcode                            |
 # Context Diagram and interfaces
 
 ## Context Diagram
@@ -152,6 +152,7 @@ Katia is 50, she is the owner of a fish market. 2 years ago she employed her son
 | FR1.2    | yes   | yes        | no       | yes     |
 | FR1.3    | yes   | yes        | no       | yes     |
 | FR1.4    | yes   | yes        | no       | yes     |
+| FR2      | yes   | no         | no       | no      |
 | FR3      | yes   | yes        | yes      | yes     |
 | FR4      | yes   | yes        | no       | no      |
 | FR6      | yes   | no         | no       | no      |
@@ -468,7 +469,7 @@ scale 600 width
 | ---------------- | :------------------------------------------------------------------------------------------------------------: |
 | Precondition     |                                                       -                                                        |
 | Post condition   |                                         Sale transaction is concluded                                          |
-| Nominal Scenario | Cashier scans the items through Barcode Reader and their prices is added to the total and manages the checkout |
+| Nominal Scenario | Cashier scans the items through Barcode Reader and their prices are added to the total and manages the checkout |
 | Variants         |                                                                                                                |
 
 | Scenario 16.1  |           Cashier, PoS, Cash Register           |
