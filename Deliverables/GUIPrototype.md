@@ -41,9 +41,14 @@ In this section the employee manages the items in the inventory.
   <tbody>
     <tr>
       <td><img src="res/gui/ezshop-inventory.png" alt="Inventory" width="720" /></td>
-      <td><img src="res/gui/ezshop-inventory-failed_search.png" alt="Failed Search" width="720" /></td></tr><tr>
+      <td><img src="res/gui/ezshop-inventory-failed_search.png" alt="Failed Search" width="720" /></td>
+      </tr>
+      <tr>
       <td><img src="res/gui/ezshop-item_detail.png" alt="Item details" width="720" /></td>
       <td><img src="res/gui/ezshop-confirm_add.png" alt="Item details" width="720" /></td>
+    </tr>
+    <tr>
+      <td><img src="res/gui/ezshop-inventory-add-duplicate.png" alt="Item details" width="720" /></td>
     </tr>
   </tbody>
   </table>
