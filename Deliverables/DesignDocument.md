@@ -196,9 +196,16 @@ FinancialTransaction <|-- Debit
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-
-
-
+|FR|EZShop|User|DataImpl|ProdT|Posit|FidelityC|Customer|Order|Return|Debit|Credit|Ticket|SaleTran|SaleIt|FinanTr|
+|-----|:--|---:|-------:|----:|----:|--------:|-------:|----:|-----:|----:|-----:|-----:|-------:|-----:|------:|
+| FR1 |  x| x  |  x     |     |     |         |        |     |      |     |      |      |        |      |       |
+| FR2 |   |    |        |     |     |         |        |     |      |     |      |      |        |      |       |
+| FR3 |  x| x  |  x     |  x  |     |         |        |     |      |     |      |      |        |      |       |
+| FR4 |  x| x  |  x     |  x  |  x  |         |        |  x  |  x   |  x  |      |      |        |      |   x   |
+| FR5 |  x| x  |  x     |     |     |   x     |   x    |     |      |     |      |      |   x?   |      |       |
+| FR6 |  x| x  |  x     |  x  |     |   x?    |        |     |  x   |  x  |   x  |   x  |   x    |   x  |   x   |
+| FR7 |  x|    |  x     |     |     |         |        |     |      |     |      |      |        |      |       |
+| FR8 |  x|    |  x     |     |     |         |        |     |      |     |      |      |        |      |       |
 
 
 
