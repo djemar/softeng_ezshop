@@ -1,11 +1,11 @@
 # Design Document 
 
 
-Authors: 
+Authors: Diego Marino, Michele Massetti, Mohamed Shehab, Elisa Tedde
 
-Date:
+Date: 30/04/2021
 
-Version:
+Version: 1.0
 
 
 # Contents
@@ -23,7 +23,7 @@ The design must satisfy the Official Requirements document, notably functional a
 
 <discuss architectural styles used, if any>
 <report package diagram>
-
+#AGGIUNGERE EXCEPTIONS?
 ```plantuml
 package EZShop <<Folder>>{
   
@@ -216,3 +216,28 @@ FinancialTransaction <|-- Debit
 # Verification sequence diagrams 
 \<select key scenarios from the requirement document. For each of them define a sequence diagram showing that the scenario can be implemented by the classes and methods in the design>
 
+
+Scenario 1-1 : Create product type X
+```plantuml
+"User" -> "EZShop": 1. createProductType(String description, String productCode, double pricePerUnit, String note)
+"EZShop" -> "ProductType" : 2. new ProductType(String description, String productCode, double pricePerUnit, String note)
+"User" -> "EZShop": 3. updatePosition(Integer productId, String newPos) 
+"EZShop" -> "ProductType" : 4. setPosition(String newPos)
+```
+Scenario 2-1 : Create user and define rights
+```plantuml
+"Administrator" -> "EZShop": 1. createUser(String username, String password, String role)
+"EZShop" -> "User": 2. new User(String username, String password, String role)
+```
+Scenario 2-3: Delete user
+```plantuml
+"EZShop" -> "Administrator": 1. getUser(Integer id)
+"Administrator" -> "EZShop": 2. updateUserRights(Integer id, String role)
+"EZShop" -> "User": 3. setUserRights(String role)
+```
+Scenario 3-1: Order of product type X issued
+```plantuml
+"ShopManager" -> "EZShop" : issueReorder(String productCode, int quantity, double pricePerUnit)
+"EZShop" -> "Order" : new Order(String productCode, int quantity, double pricePerUnit)
+"EZShop" -> "Order" : setStatus(String status)
+```
