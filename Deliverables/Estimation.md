@@ -49,4 +49,49 @@ Version: 1.0
 | **Testing**                       |               86                |
 | Tests implementation              |               48                |
 | Bug fixing                        |               38                |
-Insert here Gantt chart with above activities
+
+###
+
+```plantuml
+[Requirements] lasts 7 days
+[Requirements] is colored in Fuchsia/FireBrick
+[Review existing systems] lasts 1 days
+ [Perform work analysis] lasts  1 days
+ [Model process] lasts 1 days
+ [Identify user requirements] lasts 4 days
+ [Identify performance requirements] lasts 1 days
+[Perform work analysis] starts at [Review existing systems]'s end
+[Model process] starts at [Review existing systems]'s end
+[Identify user requirements] starts at [Model process]'s end
+[Identify performance requirements] starts at [Identify user requirements]'s end
+
+[Design] lasts 5 days
+[Design] is colored in Lime/Green
+[Low-level] lasts 1 days
+[High-level] lasts 3 days
+[Traceability Matrix] lasts 1 days
+[Sequence Diagram] lasts 2 days
+[Design] starts at [Requirements]'s end
+[Low-level] starts at [Identify performance requirements]'s end
+[High-level] starts at [Identify performance requirements]'s end
+[Traceability Matrix] starts at [High-level]'s end
+[Sequence Diagram] starts at [High-level]'s end
+
+[Coding] lasts 10 days
+[Coding] is colored in Cyan/Blue
+[Methods implementation] lasts 7 days
+[Exceptions management] lasts 3 days
+[Coding] starts at [Design]'s end
+[Methods implementation] starts at [Design]'s end
+[Exceptions management] starts at [Methods implementation]'s end
+
+[Testing] lasts 11 days
+[Testing] is colored in OrangeRed/Red
+[Tests implementation] lasts 6 days
+[Bug fixing] lasts 5 days
+[Testing] starts at [Coding]'s end
+[Tests implementation] starts at [Coding]'s end
+[Bug fixing] starts at [Tests implementation]'s end
+
+
+```
