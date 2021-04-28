@@ -16,12 +16,13 @@ Version: 1.0
 # Instructions
 
 The design must satisfy the Official Requirements document, notably functional and non functional requirements
-
+#AGGIUNGERE EXCEPTIONS in high level?
+#AGGIUNGERE diritti di ciascun ruolo?
 # High level design
 
 <discuss architectural styles used, if any>
 <report package diagram>
-#AGGIUNGERE EXCEPTIONS?
+
 
 ```plantuml
 package EZShop <<Folder>>{
@@ -54,7 +55,7 @@ class User{
     +password : String
     +role : String
     +Id : Integer
-    +updateUserRights(Integer id, String role)
+    +updateUserRights(String role)
 }
 
 
@@ -262,31 +263,112 @@ ReturnTransaction "*"  --"*" ProductType
 Scenario 1-1 : Create product type X
 
 ```plantuml
-"User" -> "EZShop": 1. createProductType(String description, String productCode, double pricePerUnit, String note)
-"EZShop" -> "ProductType" : 2. new ProductType(String description, String productCode, double pricePerUnit, String note)
-"User" -> "EZShop": 3. updatePosition(Integer productId, String newPos)
-"EZShop" -> "ProductType" : 4. setPosition(String newPos)
+"User" -> "DataImpl": 1. wants to create a new Product
+"DataImpl" -> "ProductType": 2. createProductType(String description, String productCode, double pricePerUnit, String note)
+"User" -> "DataImpl": 3. wants to set the Position
+"DataImpl" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
+```
+
+Scenario 1-2 : Modify product type location
+
+```plantuml
+"Employee" -> "DataImpl": 1. scans the Product
+"DataImpl" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
+"Employee" -> "DataImpl": 3. wants to set a new free Position
+"DataImpl" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
+```
+Scenario 1-3 : Modify product type price per unit
+
+```plantuml
+"Employee" -> "DataImpl": 1. scans the Product
+"DataImpl" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
+"Employee" -> "DataImpl": 3. wants to set a new Price
+"DataImpl" -> "ProductType": 4. updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote)
+"DataImpl" -> "Employee": 5. Confirmation message is displayed
 ```
 
 Scenario 2-1 : Create user and define rights
 
 ```plantuml
-"Administrator" -> "EZShop": 1. createUser(String username, String password, String role)
-"EZShop" -> "User": 2. new User(String username, String password, String role)
+"Administrator" -> "DataImpl": 1. wants to create a new Account
+"DataImpl" -> "User": 2. createUser(String username, String password, String role)
+"Administrator" -> "DataImpl": 3. wants to set access rights 
+"DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
 ```
 
-Scenario 2-3: Delete user
+Scenario 2-2: Delete user
 
 ```plantuml
-"EZShop" -> "Administrator": 1. getUser(Integer id)
-"Administrator" -> "EZShop": 2. updateUserRights(Integer id, String role)
-"EZShop" -> "User": 3. setUserRights(String role)
-```
+"Administrator" -> "DataImpl": 1. wants to delete user account
+"DataImpl" -> "User": 2. deleteUser(Integer id)
 
+```
+Scenario 2-3: Modify user rights
+
+```plantuml
+"Administrator" -> "DataImpl": 1. wants to select user account A
+"DataImpl" -> "User": 2. getUser(Integer id)
+"Administrator" -> "DataImpl": 3. wants to modify access rights 
+"DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
+```
 Scenario 3-1: Order of product type X issued
 
 ```plantuml
-"ShopManager" -> "EZShop" : issueReorder(String productCode, int quantity, double pricePerUnit)
-"EZShop" -> "Order" : new Order(String productCode, int quantity, double pricePerUnit)
-"EZShop" -> "Order" : setStatus(String status)
+"ShopManager" -> "DataImpl": 1. wants to order a new Product
+"DataImpl" -> "Order" : 2. issueReorder(String productCode, int quantity, double pricePerUnit)
+"Order" -> "Order" : 3. setStatus(String status)
+```
+Scenario 3-2: Order of product type X payed
+
+```plantuml
+"ShopManager" -> "DataImpl": 1. wants to pay the Order O
+"DataImpl" -> "Order" : 2. payOrder(Integer orderId)
+"Order" -> "Order" : 3. setStatus(String status)
+"DataImpl" -> "AccountBook" : 4. computeBalace()
+```
+Scenario 3-3: Record order of product type X arrival
+
+```plantuml
+"DataImpl" -> "Order" : 1. recordOrderArrival(Integer orderId) 
+"Order" -> "Order" : 2. setStatus(String status)
+"DataImpl" -> "ProductType" : 3. updateQuantity(Integer productId, int toBeAdded)
+```
+
+Scenario 4-1: Create customer record
+
+```plantuml
+"User" -> "Customer": 1. User asks Customer personal data
+"User" -> "DataImpl" : 2. User wants to create a new User account
+"DataImpl" -> "Customer" : 3. defineCustomer(String customerName)
+
+```
+Scenario 4-2: Attach Loyalty card to customer record
+
+```plantuml
+"User" -> "DataImpl" : 1. User wants to attach Loyalty Card to Customer record
+"DataImpl" -> "FidelityCard" : 2. createCard()
+"DataImpl" -> "FidelityCard" : 3. attachCardToCustomer(String customerCard, Integer customerId)
+
+```
+Scenario 4-3: Update customer record
+
+```plantuml
+"User" -> "DataImpl" : 1. User wants to update customer record
+"DataImpl" -> "Customer" : 2. modifyCustomer(Integer id, String newCustomerName, String newCustomerCard)
+
+```
+Scenario 5-1: Login
+
+```plantuml
+"User" -> "DataImpl" : 1. User inserts his surname and password
+"DataImpl" -> "EZShop" : 2. login(String username, String password)
+"EZShop" -> "DataImpl": 3. shows the functionalities offered by the access priviledges of User
+
+```
+Scenario 5-1: Logout
+
+```plantuml
+"User" -> "DataImpl" : 1. User wants to log out
+"DataImpl" -> "EZShop" : 2. logout()
+
 ```
