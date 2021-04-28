@@ -45,6 +45,8 @@ EZShop <|-- EZShopGUI
 
 class EZShop{
     +currentUser: User
+    +login(String username, String password)
+    +logout()
 
 }
 class User{
@@ -52,17 +54,17 @@ class User{
     +password : String
     +role : String
     +Id : Integer
+    +updateUserRights(Integer id, String role)
 }
 
 
 class DataImplementation{
-    +UserAccountMap : User
-    +CustomerAccountMap : Customer
-    +EZShop
-    +ProductMap : Product
-    +PositionArray : Position
-    +OrderMap : <Integer,Order>
-    +CardMap : <String,FidelityCard>
+    +UserMap : Map<Integer,User>
+    +CustomerMap : Map<Integer,Customer>
+    +EZShop : EZShop
+    +ProductMap : Map<String,ProductType>
+    +PositionSet : Set <Position>
+    +CardMap : Map <String,FidelityCard>
     +SaleMap : <Integer,Ticket>
     +ReturnMap: <Integer,Return>
     +CreditMap:<Integer,Credit>
@@ -126,6 +128,7 @@ class ProductType{
     +Id : Integer
     +quantity : Integer
     +position : Position
+    +updateQuantity(toBeAdded)
 }
 class Position{
     +aisleNumber : Integer
@@ -141,6 +144,7 @@ class Customer{
     +Id : Integer
     +name : String
     +card : FidelityCard
+    
 }
 class Order{
     +pricePerUnit : Double
@@ -157,16 +161,19 @@ class Credit{
 }
 
 class SaleTransaction{
-    +SaleArray : SaleItem
+    +SaleArray : ArrayList <SaleItem>
     +discountRate : Double
     +total : Double
-    +time : Time
-    +date : Date
     +status : String
+    +addProductToSale(String productCode, int amount) 
+    +deleteProductFromSale(String productCode, int amount)
+    +applyDiscountRateToProduct(String productCode, double discountRate)
+    +computePointsForSale()
 }
 class SaleItem{
     +product : String
     +discount : Double
+    +amount: int
 }
 class BalanceOperation{
     +description : String
@@ -182,14 +189,40 @@ class ReturnTransaction{
 }
 
 class AccountBook{
+
     
+    +BalanceOperationMap : Map<Integer,BalanceOperation>
+    +issueOrder(String productCode, int quantity, double pricePerUnit)
+    +payOrderFor(String productCode, int quantity, double pricePerUnit)
+    +payOrder(Integer orderId)
+    
+    +recordOrderArrival(Integer orderId)
+    +getAllOrders()
     +computeBalance()
+    +startSaleTransaction()
+    +addProductToSale(Integer transactionId, String productCode, int amount) 
+    +deleteProductFromSale(Integer transactionId, String productCode, int amount) 
+    +applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
+    + applyDiscountRateToSale(Integer transactionId, double discountRate)
+    +computePointsForSale(Integer transactionId)
+    +endSaleTransaction(Integer transactionId)
+    + deleteSaleTransaction(Integer transactionId)
+    +startReturnTransaction(Integer transactionId)
+    +returnProduct(Integer returnId, String productCode, int amount)
+    +endReturnTransaction(Integer returnId, boolean commit) 
+    +deleteReturnTransaction(Integer returnId)
+    +receiveCashPayment(Integer transactionId, double cash)
+    +receiveCreditCardPayment(Integer transactionId, String creditCard)
+    +creditCardValidity(String creditCard)
+    +recordBalanceUpdate(double toBeAdded) 
 
 }
 
+DataImplementation --"*" Customer
+DataImplementation --"*" FidelityCard
 ReturnTransaction "*" -- SaleTransaction
 EZShop -- User
-User -- DataImplementation
+User "*"-- DataImplementation
 DataImplementation -- ProductType
 ProductType -- Position
 FidelityCard -- Customer
