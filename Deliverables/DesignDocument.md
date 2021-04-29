@@ -66,10 +66,6 @@ class DataImplementation{
     +ProductMap : Map<String,ProductType>
     +PositionSet : Set <Position>
     +CardMap : Map <String,FidelityCard>
-    +SaleMap : <Integer,Ticket>
-    +ReturnMap: <Integer,Return>
-    +CreditMap:<Integer,Credit>
-    +DebitMap:<Integer,Debit>
     +BalanceOperationMap: <Integer,BalanceOperation>
     +createUser(String username, String password, String role)
     +getAllUsers()
@@ -129,7 +125,7 @@ class ProductType{
     +Id : Integer
     +quantity : Integer
     +position : Position
-    +updateQuantity(toBeAdded)
+    +updateQuantity(int toBeAdded)
 }
 class Position{
     +aisleNumber : Integer
@@ -170,6 +166,7 @@ class SaleTransaction{
     +deleteProductFromSale(String productCode, int amount)
     +applyDiscountRateToProduct(String productCode, double discountRate)
     +computePointsForSale()
+    +computeAmount()
 }
 class SaleItem{
     +product : String
@@ -193,10 +190,10 @@ class AccountBook{
 
     
     +BalanceOperationMap : Map<Integer,BalanceOperation>
+    +balance: double
     +issueOrder(String productCode, int quantity, double pricePerUnit)
     +payOrderFor(String productCode, int quantity, double pricePerUnit)
     +payOrder(Integer orderId)
-    
     +recordOrderArrival(Integer orderId)
     +getAllOrders()
     +computeBalance()
@@ -226,9 +223,9 @@ EZShop -- User
 User "*"-- DataImplementation
 DataImplementation -- ProductType
 ProductType -- Position
-FidelityCard -- Customer
-FidelityCard -- SaleTransaction
-SaleTransaction-- SaleItem
+FidelityCard "0..1"-- Customer
+FidelityCard "0..1"--"*" SaleTransaction
+SaleTransaction --"*" SaleItem
 AccountBook -- DataImplementation
 BalanceOperation <|-- Credit
 Debit <|-- ReturnTransaction
@@ -238,7 +235,7 @@ AccountBook -- BalanceOperation
 Credit <|-- SaleTransaction
 SaleItem "*" --   ProductType
 ReturnTransaction "*"  --"*" ProductType
-
+Order "*"--"*" ProductType
 ```
 
 # Verification traceability matrix
