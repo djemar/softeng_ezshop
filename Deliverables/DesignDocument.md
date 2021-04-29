@@ -8,21 +8,23 @@ Version: 1.0
 
 # Contents
 
-- [High level design](#package-diagram)
-- [Low level design](#class-diagram)
+- [Design Document](#design-document)
+- [Contents](#contents)
+- [Instructions](#instructions)
+- [High level design](#high-level-design)
+- [Low level design](#low-level-design)
+  - [EZShopModel](#ezshopmodel)
 - [Verification traceability matrix](#verification-traceability-matrix)
 - [Verification sequence diagrams](#verification-sequence-diagrams)
 
 # Instructions
 
 The design must satisfy the Official Requirements document, notably functional and non functional requirements
-#AGGIUNGERE EXCEPTIONS in high level?
-#AGGIUNGERE diritti di ciascun ruolo?
+
 # High level design
 
 <discuss architectural styles used, if any>
 <report package diagram>
-
 
 ```plantuml
 package EZShop <<Folder>>{
@@ -31,18 +33,32 @@ package EZShop <<Folder>>{
 package EZShopGUI <<Folder>>{
 
 }
-package EZShopData <<Folder>>{
+package EZShopModel <<Folder>>{
+
 
 }
-EZShop <|-- EZShopData
+package EZShopExceptions <<Folder>>{
+
+}
+EZShop <|-- EZShopModel
 EZShop <|-- EZShopGUI
+EZShop <|-- EZShopExceptions
 ```
 
 # Low level design
 
-<for each package, report class diagram>
+## EZShopModel
 
 ```plantuml
+scale 1600 width
+note top of User : Instances are persistent in the db
+note top of ProductType : Instances are persistent in the db
+note top of SaleTransaction : Instances are persistent in the db once closed
+note top of ReturnTransaction : Instances are persistent in the db once closed
+note top of Order : Instances are persistent in the db
+note top of Customer : Instances are persistent in the db
+note top of FidelityCard : Instances are persistent in the db
+note top of Position : Instances are persistent in the db
 
 class EZShop{
     +currentUser: User
@@ -58,15 +74,12 @@ class User{
     +updateUserRights(String role)
 }
 
-
-class DataImplementation{
+class EZShopData{
     +UserMap : Map<Integer,User>
     +CustomerMap : Map<Integer,Customer>
-    +EZShop : EZShop
     +ProductMap : Map<String,ProductType>
     +PositionSet : Set <Position>
     +CardMap : Map <String,FidelityCard>
-    +BalanceOperationMap: <Integer,BalanceOperation>
     +createUser(String username, String password, String role)
     +getAllUsers()
     +getUser(Integer id)
@@ -102,21 +115,23 @@ class DataImplementation{
     +applyDiscountRateToSale(Integer transactionId, double discountRate)
     +computePointsForSale(Integer transactionId)
     +closeSaleTransaction(Integer transactionId)
-    +deleteSaleTicket(Integer ticketNumber)
-    +getSaleTicket(Integer transactionId)
-    +getTicketByNumber(Integer ticketNumber)
-    +startReturnTransaction(Integer ticketNumber)
+    +deleteSaleTransaction(Integer transactionId)
+    +getSaleTransaction(Integer transactionId)
+    +startReturnTransaction(Integer transactionId)
     +returnProduct(Integer returnId, String productCode, int amount)
     +endReturnTransaction(Integer returnId, boolean commit)
     +deleteReturnTransaction(Integer returnId)
-    +receiveCashPayment(Integer ticketNumber, double cash)
-    +receiveCreditCardPayment(Integer ticketNumber, String creditCard)
+    +receiveCashPayment(Integer transactionId, double cash)
+    +receiveCreditCardPayment(Integer transactionId, String creditCard)
     +returnCashPayment(Integer returnId)
     +returnCreditCardPayment(Integer returnId, String creditCard)
     +recordBalanceUpdate(double toBeAdded)
     +getCreditsAndDebits(LocalDate from, LocalDate to)
     +computeBalance()
 }
+
+class EZShopData implements EZShopDataInterface
+
 class ProductType{
     +description : String
     +productCode : String
@@ -141,7 +156,7 @@ class Customer{
     +Id : Integer
     +name : String
     +card : FidelityCard
-    
+
 }
 class Order{
     +pricePerUnit : Double
@@ -162,7 +177,7 @@ class SaleTransaction{
     +discountRate : Double
     +total : Double
     +status : String
-    +addProductToSale(String productCode, int amount) 
+    +addProductToSale(String productCode, int amount)
     +deleteProductFromSale(String productCode, int amount)
     +applyDiscountRateToProduct(String productCode, double discountRate)
     +computePointsForSale()
@@ -187,9 +202,8 @@ class ReturnTransaction{
 }
 
 class AccountBook{
-
-    
-    +BalanceOperationMap : Map<Integer,BalanceOperation>
+    +numberOfTransactions: Integer
+    +balanceOperationMap : Map<Integer,BalanceOperation>
     +balance: double
     +issueOrder(String productCode, int quantity, double pricePerUnit)
     +payOrderFor(String productCode, int quantity, double pricePerUnit)
@@ -198,8 +212,8 @@ class AccountBook{
     +getAllOrders()
     +computeBalance()
     +startSaleTransaction()
-    +addProductToSale(Integer transactionId, String productCode, int amount) 
-    +deleteProductFromSale(Integer transactionId, String productCode, int amount) 
+    +addProductToSale(Integer transactionId, String productCode, int amount)
+    +deleteProductFromSale(Integer transactionId, String productCode, int amount)
     +applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
     + applyDiscountRateToSale(Integer transactionId, double discountRate)
     +computePointsForSale(Integer transactionId)
@@ -207,26 +221,27 @@ class AccountBook{
     + deleteSaleTransaction(Integer transactionId)
     +startReturnTransaction(Integer transactionId)
     +returnProduct(Integer returnId, String productCode, int amount)
-    +endReturnTransaction(Integer returnId, boolean commit) 
+    +endReturnTransaction(Integer returnId, boolean commit)
     +deleteReturnTransaction(Integer returnId)
     +receiveCashPayment(Integer transactionId, double cash)
     +receiveCreditCardPayment(Integer transactionId, String creditCard)
     +creditCardValidity(String creditCard)
-    +recordBalanceUpdate(double toBeAdded) 
+    +recordBalanceUpdate(double toBeAdded)
 
 }
 
-DataImplementation --"*" Customer
-DataImplementation --"*" FidelityCard
+
+EZShopData --"*" Customer
+EZShopData --"*" FidelityCard
 ReturnTransaction "*" -- SaleTransaction
-EZShop -- User
-User "*"-- DataImplementation
-DataImplementation -- ProductType
+EZShop -- EZShopData
+User "*"-- EZShopData
+EZShopData -- ProductType
 ProductType -- Position
 FidelityCard "0..1"-- Customer
 FidelityCard "0..1"--"*" SaleTransaction
 SaleTransaction --"*" SaleItem
-AccountBook -- DataImplementation
+AccountBook -- EZShopData
 BalanceOperation <|-- Credit
 Debit <|-- ReturnTransaction
 Debit <|-- Order
@@ -274,6 +289,7 @@ Scenario 1-2 : Modify product type location
 "Employee" -> "DataImpl": 3. wants to set a new free Position
 "DataImpl" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
 ```
+
 Scenario 1-3 : Modify product type price per unit
 
 ```plantuml
@@ -289,7 +305,7 @@ Scenario 2-1 : Create user and define rights
 ```plantuml
 "Administrator" -> "DataImpl": 1. wants to create a new Account
 "DataImpl" -> "User": 2. createUser(String username, String password, String role)
-"Administrator" -> "DataImpl": 3. wants to set access rights 
+"Administrator" -> "DataImpl": 3. wants to set access rights
 "DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
 ```
 
@@ -300,14 +316,16 @@ Scenario 2-2: Delete user
 "DataImpl" -> "User": 2. deleteUser(Integer id)
 
 ```
+
 Scenario 2-3: Modify user rights
 
 ```plantuml
 "Administrator" -> "DataImpl": 1. wants to select user account A
 "DataImpl" -> "User": 2. getUser(Integer id)
-"Administrator" -> "DataImpl": 3. wants to modify access rights 
+"Administrator" -> "DataImpl": 3. wants to modify access rights
 "DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
 ```
+
 Scenario 3-1: Order of product type X issued
 
 ```plantuml
@@ -315,6 +333,7 @@ Scenario 3-1: Order of product type X issued
 "DataImpl" -> "Order" : 2. issueReorder(String productCode, int quantity, double pricePerUnit)
 "Order" -> "Order" : 3. setStatus(String status)
 ```
+
 Scenario 3-2: Order of product type X payed
 
 ```plantuml
@@ -323,10 +342,11 @@ Scenario 3-2: Order of product type X payed
 "Order" -> "Order" : 3. setStatus(String status)
 "DataImpl" -> "AccountBook" : 4. computeBalace()
 ```
+
 Scenario 3-3: Record order of product type X arrival
 
 ```plantuml
-"DataImpl" -> "Order" : 1. recordOrderArrival(Integer orderId) 
+"DataImpl" -> "Order" : 1. recordOrderArrival(Integer orderId)
 "Order" -> "Order" : 2. setStatus(String status)
 "DataImpl" -> "ProductType" : 3. updateQuantity(Integer productId, int toBeAdded)
 ```
@@ -339,6 +359,7 @@ Scenario 4-1: Create customer record
 "DataImpl" -> "Customer" : 3. defineCustomer(String customerName)
 
 ```
+
 Scenario 4-2: Attach Loyalty card to customer record
 
 ```plantuml
@@ -347,6 +368,7 @@ Scenario 4-2: Attach Loyalty card to customer record
 "DataImpl" -> "FidelityCard" : 3. attachCardToCustomer(String customerCard, Integer customerId)
 
 ```
+
 Scenario 4-3: Update customer record
 
 ```plantuml
@@ -354,6 +376,7 @@ Scenario 4-3: Update customer record
 "DataImpl" -> "Customer" : 2. modifyCustomer(Integer id, String newCustomerName, String newCustomerCard)
 
 ```
+
 Scenario 5-1: Login
 
 ```plantuml
@@ -362,6 +385,7 @@ Scenario 5-1: Login
 "EZShop" -> "DataImpl": 3. shows the functionalities offered by the access priviledges of User
 
 ```
+
 Scenario 5-1: Logout
 
 ```plantuml
