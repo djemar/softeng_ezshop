@@ -257,16 +257,16 @@ Order "*"--"*" ProductType
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-| FR  | EZShop | User | DataImpl | ProdT | Posit | FidelityC | Customer | Order | Return | Debit | Credit | ReturnTrans | SaleTran | SaleIt | BalanOp | AccBook |
-| --- | :----: | :--: | :------: | :---: | :---: | :-------: | :------: | :---: | :----: | :---: | :----: | :---------: | :------: | :----: | :-----: | :-----: |
-| FR1 |   x    |  x   |    x     |       |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR2 |        |      |          |       |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR3 |   x    |  x   |    x     |   x   |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR4 |   x    |  x   |    x     |   x   |   x   |           |          |   x   |   x    |   x   |        |             |          |        |    x    |         |
-| FR5 |   x    |  x   |    x     |       |       |     x     |    x     |       |        |       |        |             |    x     |        |         |    x    |
-| FR6 |   x    |  x   |    x     |   x   |       |     x     |          |       |   x    |   x   |   x    |      x      |    x     |   x    |    x    |    x    |
-| FR7 |   x    |  x   |    x     |   x   |       |           |          |       |        |   x   |   x    |             |          |        |         |    x    |
-| FR8 |   x    |  x   |    x     |       |       |           |          |       |        |   x   |   x    |             |          |        |    x    |    x    |
+| FR  | EZShop | User | EZShopData | ProdT | Posit | FidelityC | Customer | Order | Return | Debit | Credit | ReturnTrans | SaleTran | SaleIt | BalanOp | AccBook |
+| --- | :----: | :--: | :--------: | :---: | :---: | :-------: | :------: | :---: | :----: | :---: | :----: | :---------: | :------: | :----: | :-----: | :-----: |
+| FR1 |   x    |  x   |     x      |       |       |           |          |       |        |       |        |             |          |        |         |         |
+| FR2 |        |      |            |       |       |           |          |       |        |       |        |             |          |        |         |         |
+| FR3 |   x    |  x   |     x      |   x   |       |           |          |       |        |       |        |             |          |        |         |         |
+| FR4 |   x    |  x   |     x      |   x   |   x   |           |          |   x   |   x    |   x   |        |             |          |        |    x    |         |
+| FR5 |   x    |  x   |     x      |       |       |     x     |    x     |       |        |       |        |             |    x     |        |         |    x    |
+| FR6 |   x    |  x   |     x      |   x   |       |     x     |          |       |   x    |   x   |   x    |      x      |    x     |   x    |    x    |    x    |
+| FR7 |   x    |  x   |     x      |   x   |       |           |          |       |        |   x   |   x    |             |          |        |         |    x    |
+| FR8 |   x    |  x   |     x      |       |       |           |          |       |        |   x   |   x    |             |          |        |    x    |    x    |
 
 # Verification sequence diagrams
 
@@ -275,121 +275,284 @@ Order "*"--"*" ProductType
 Scenario 1-1 : Create product type X
 
 ```plantuml
-"User" -> "DataImpl": 1. wants to create a new Product
-"DataImpl" -> "ProductType": 2. createProductType(String description, String productCode, double pricePerUnit, String note)
-"User" -> "DataImpl": 3. wants to set the Position
-"DataImpl" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
+"User" -> "EZShopData": 1. wants to create a new Product
+"EZShopData" -> "ProductType": 2. createProductType(String description, String productCode, double pricePerUnit, String note)
+"User" -> "EZShopData": 3. wants to set the Position
+"EZShopData" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
 ```
 
 Scenario 1-2 : Modify product type location
 
 ```plantuml
-"Employee" -> "DataImpl": 1. scans the Product
-"DataImpl" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
-"Employee" -> "DataImpl": 3. wants to set a new free Position
-"DataImpl" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
+"Employee" -> "EZShopData": 1. scans the Product
+"EZShopData" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
+"Employee" -> "EZShopData": 3. wants to set a new free Position
+"EZShopData" -> "ProductType": 4. updatePosition(Integer productId, String newPos)
 ```
 
 Scenario 1-3 : Modify product type price per unit
 
 ```plantuml
-"Employee" -> "DataImpl": 1. scans the Product
-"DataImpl" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
-"Employee" -> "DataImpl": 3. wants to set a new Price
-"DataImpl" -> "ProductType": 4. updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote)
-"DataImpl" -> "Employee": 5. Confirmation message is displayed
+"Employee" -> "EZShopData": 1. scans the Product
+"EZShopData" -> "ProductType" : 2. getProductTypeByBarCode(String barCode)
+"Employee" -> "EZShopData": 3. wants to set a new Price
+"EZShopData" -> "ProductType": 4. updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote)
+"EZShopData" -> "Employee": 5. Confirmation message is displayed
 ```
 
 Scenario 2-1 : Create user and define rights
 
 ```plantuml
-"Administrator" -> "DataImpl": 1. wants to create a new Account
-"DataImpl" -> "User": 2. createUser(String username, String password, String role)
-"Administrator" -> "DataImpl": 3. wants to set access rights
-"DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
+"Administrator" -> "EZShopData": 1. wants to create a new Account
+"EZShopData" -> "User": 2. createUser(String username, String password, String role)
+"Administrator" -> "EZShopData": 3. wants to set access rights
+"EZShopData" -> "User": 4. updateUserRights(Integer id, String role)
 ```
 
 Scenario 2-2: Delete user
 
 ```plantuml
-"Administrator" -> "DataImpl": 1. wants to delete user account
-"DataImpl" -> "User": 2. deleteUser(Integer id)
+"Administrator" -> "EZShopData": 1. wants to delete user account
+"EZShopData" -> "User": 2. deleteUser(Integer id)
 
 ```
 
 Scenario 2-3: Modify user rights
 
 ```plantuml
-"Administrator" -> "DataImpl": 1. wants to select user account A
-"DataImpl" -> "User": 2. getUser(Integer id)
-"Administrator" -> "DataImpl": 3. wants to modify access rights
-"DataImpl" -> "User": 4. updateUserRights(Integer id, String role)
+"Administrator" -> "EZShopData": 1. wants to select user account A
+"EZShopData" -> "User": 2. getUser(Integer id)
+"Administrator" -> "EZShopData": 3. wants to modify access rights
+"EZShopData" -> "User": 4. updateUserRights(Integer id, String role)
 ```
 
 Scenario 3-1: Order of product type X issued
 
 ```plantuml
-"ShopManager" -> "DataImpl": 1. wants to order a new Product
-"DataImpl" -> "Order" : 2. issueReorder(String productCode, int quantity, double pricePerUnit)
+"ShopManager" -> "EZShopData": 1. wants to order a new Product
+"EZShopData" -> "Order" : 2. issueReorder(String productCode, int quantity, double pricePerUnit)
 "Order" -> "Order" : 3. setStatus(String status)
 ```
 
 Scenario 3-2: Order of product type X payed
 
 ```plantuml
-"ShopManager" -> "DataImpl": 1. wants to pay the Order O
-"DataImpl" -> "Order" : 2. payOrder(Integer orderId)
+"ShopManager" -> "EZShopData": 1. wants to pay the Order O
+"EZShopData" -> "Order" : 2. payOrder(Integer orderId)
 "Order" -> "Order" : 3. setStatus(String status)
-"DataImpl" -> "AccountBook" : 4. computeBalace()
+"EZShopData" -> "AccountBook" : 4. computeBalace()
 ```
 
 Scenario 3-3: Record order of product type X arrival
 
 ```plantuml
-"DataImpl" -> "Order" : 1. recordOrderArrival(Integer orderId)
+"ShopManager" -> "EZShopData": 1. wants to record Order O's arrival
+"EZShopData" -> "Order" : 1. recordOrderArrival(Integer orderId)
 "Order" -> "Order" : 2. setStatus(String status)
-"DataImpl" -> "ProductType" : 3. updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "ProductType" : 3. updateQuantity(Integer productId, int toBeAdded)
 ```
 
 Scenario 4-1: Create customer record
 
 ```plantuml
 "User" -> "Customer": 1. User asks Customer personal data
-"User" -> "DataImpl" : 2. User wants to create a new User account
-"DataImpl" -> "Customer" : 3. defineCustomer(String customerName)
+"User" -> "EZShopData" : 2. User wants to create a new User account
+"EZShopData" -> "Customer" : 3. defineCustomer(String customerName)
 
 ```
 
 Scenario 4-2: Attach Loyalty card to customer record
 
 ```plantuml
-"User" -> "DataImpl" : 1. User wants to attach Loyalty Card to Customer record
-"DataImpl" -> "FidelityCard" : 2. createCard()
-"DataImpl" -> "FidelityCard" : 3. attachCardToCustomer(String customerCard, Integer customerId)
+"User" -> "EZShopData" : 1. User wants to attach Loyalty Card to Customer record
+"EZShopData" -> "FidelityCard" : 2. createCard()
+"EZShopData" -> "FidelityCard" : 3. attachCardToCustomer(String customerCard, Integer customerId)
 
 ```
 
 Scenario 4-3: Update customer record
 
 ```plantuml
-"User" -> "DataImpl" : 1. User wants to update customer record
-"DataImpl" -> "Customer" : 2. modifyCustomer(Integer id, String newCustomerName, String newCustomerCard)
+"User" -> "EZShopData" : 1. User wants to update customer record
+"EZShopData" -> "Customer" : 2. modifyCustomer(Integer id, String newCustomerName, String newCustomerCard)
 
 ```
 
 Scenario 5-1: Login
 
 ```plantuml
-"User" -> "DataImpl" : 1. User inserts his surname and password
-"DataImpl" -> "EZShop" : 2. login(String username, String password)
-"EZShop" -> "DataImpl": 3. shows the functionalities offered by the access priviledges of User
+"User" -> "EZShopData" : 1. User inserts his surname and password
+"EZShopData" -> "EZShop" : 2. login(String username, String password)
+"EZShop" -> "EZShopData": 3. shows the functionalities offered by the access priviledges of User
 
 ```
 
-Scenario 5-1: Logout
+Scenario 5-2: Logout
 
 ```plantuml
-"User" -> "DataImpl" : 1. User wants to log out
-"DataImpl" -> "EZShop" : 2. logout()
+"User" -> "EZShopData" : 1. User wants to log out
+"EZShopData" -> "EZShop" : 2. logout()
+
+```
+
+Scenario 6-1: Sale of product type X completed
+
+```plantuml
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
+"EZShopData" -> "AccountBook" : 8.   Manage payment (see Scenarios 7.*)
+"EZShopData" -> "AccountBook" : 9.   Update balance (see Scenarios 7.*)
+
+```
+
+Scenario 6-2: Sale of product type X with product discount
+
+```plantuml
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier applies a discount rate
+"EZShopData" -> "ProductType" : 7.   applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
+"Cashier" -> "EZShopData" : 8. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 9.   endSaleTransaction(Integer transactionId)
+"EZShopData" -> "AccountBook" : 10.   Manage payment (see Scenarios 7.*)
+"EZShopData" -> "AccountBook" : 11.   Update balance (see Scenarios 7.*)
+
+```
+
+Scenario 6-3: Logout
+
+```plantuml
+"User" -> "EZShopData" : 1. User wants to log out
+"EZShopData" -> "EZShop" : 2. logout()
+
+```
+
+Scenario 6-1: Sale of product type X with Loyalty Card update
+
+```plantuml
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "EZShopData" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
+"EZShopData" -> "AccountBook" : 8.   Manage payment (see Scenarios 7.*)
+"EZShopData" -> "AccountBook" : 9.   Update balance (see Scenarios 7.*)
+
+```
+
+Scenario 6-5: Logout
+
+```plantuml
+"User" -> "EZShopData" : 1. User wants to log out
+"EZShopData" -> "EZShop" : 2. logout()
+
+```
+
+Scenario 6-6: Logout
+
+```plantuml
+"User" -> "EZShopData" : 1. User wants to log out
+"EZShopData" -> "EZShop" : 2. logout()
+
+```
+
+Scenario 7-1: Manage payment by valid credit card
+
+```plantuml
+"Employee" -> "EZShopData" : 1. Validates Credit Card number with Luhn algorithm
+"EZShopData" -> "AccountBook" : 2. receiveCreditCardPayment(Integer transactionId, String creditCard)
+"EZShopData" -> "AccountBook" : 3. recordBalanceUpdate(double toBeAdded)
+"EZShopData" -> "Employee" : 4. Success Message is displayed
+```
+
+Scenario 7-2: Manage payment by invalid credit card
+
+```plantuml
+"Employee" -> "EZShopData" : 1. Validates Credit Card number with Luhn algorithm
+"EZShopData" -> "Employee" : 2. Error message is displayed, Invalid Card
+```
+
+Scenario 7-3: Manage credit card payment with not enough credit
+
+```plantuml
+"Employee" -> "EZShopData" : 1. Validates Credit Card number with Luhn algorithm
+"EZShopData" -> "Employee" : 2. Error message is displayed, not Enough Credit
+```
+
+Scenario 7-4: Manage cash payment
+
+```plantuml
+"Employee" -> "EZShopData" : 1. Collects banknotes and coins
+"EZShopData" -> "Employee" : 2. returnCashPayment(Integer returnId)
+"EZShopData" -> "AccountBook" : 3. recordBalanceUpdate(double toBeAdded)
+"Employee" -> "Customer" : 4. Returns change
+```
+
+Scenario 8-1: Return transaction of product type X completed, credit card
+
+```plantuml
+"Cashier" -> "EZShopData" : start return transact
+
+"EZShopData" -> "AccountBook": 1.startReturnTransaction(Integer transactionId)
+"Cashier"->  "EZShopData": reads bar code of X
+"EZShopData" -> "AccountBook":2 returnProduct(Integer returnId, String productCode, int amount)
+"EZShopData" -> "AccountBook":3 Manage cash return
+"EZShopData" -> "AccountBook": 3  endReturnTransaction(Integer returnId, boolean commit)
+"EZShopData" -> "Employee" : end return transaction
+
+```
+
+Scenario 8-2: Return transaction of product type X completed, cash
+
+```plantuml
+"Cashier" -> "EZShopData" : start return transact
+
+"EZShopData" -> "AccountBook": 1.startReturnTransaction(Integer transactionId)
+"Cashier"->  "EZShopData": reads bar code of X
+"EZShopData" -> "AccountBook":2 returnProduct(Integer returnId, String productCode, int amount)
+"EZShopData" -> "AccountBook":3 Manage cash return
+"AccountBook"-> "EZShopData" : 4  endReturnTransaction(Integer returnId, boolean commit)
+"EZShopData" -> "Cashier" : end return transaction
+
+```
+
+Scenario 9-1: List credits and debits
+
+```plantuml
+"" -> "" : 1.
+"" -> "" : 2.
+"" -> "" : 3.
+"" -> "" : 4.
+
+```
+
+Scenario 10-1: Return payment by credit card
+
+```plantuml
+"Employee" -> "EZShopData" : start payment return
+
+
+"EZShopData" -> "AccountBook": 1. returnCreditCardPayment(Integer returnId, String creditCard)
+
+"EZShopData" -> "Employee" : end return transaction
+
+```
+
+Scenario 10-2: Return payment by cash
+
+```plantuml
+"Employee" -> "EZShopData" : start payment return
+"EZShopData" -> "AccountBook": 1. returnCashPayment(Integer returnId)
+"EZShopData" -> "Employee" : end payment return and rest is given
 
 ```
