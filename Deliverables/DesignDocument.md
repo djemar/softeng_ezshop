@@ -23,8 +23,6 @@ The design must satisfy the Official Requirements document, notably functional a
 
 # High level design
 
-<discuss architectural styles used, if any>
-<report package diagram>
 
 ```plantuml
 package EZShop <<Folder>>{
@@ -50,7 +48,7 @@ EZShop <|-- EZShopExceptions
 ## EZShopModel
 
 ```plantuml
-scale 1600 width
+scale 4096 height
 note top of User : Instances are persistent in the db
 note top of ProductType : Instances are persistent in the db
 note top of SaleTransaction : Instances are persistent in the db once closed
@@ -75,9 +73,11 @@ class User{
 }
 
 class EZShopData{
+    +nProduct: int
+    +accountBook: AccountBook
     +UserMap : Map<Integer,User>
     +CustomerMap : Map<Integer,Customer>
-    +ProductMap : Map<String,ProductType>
+    +ProductMap : Map<Integer,ProductType>
     +PositionSet : Set <Position>
     +CardMap : Map <String,FidelityCard>
     +createUser(String username, String password, String role)
@@ -95,7 +95,7 @@ class EZShopData{
     +getProductTypesByDescription(String description)
     +updateQuantity(Integer productId, int toBeAdded)
     +updatePosition(Integer productId, String newPos)
-    +issueReorder(String productCode, int quantity, double pricePerUnit)
+    +issueOrder(String productCode, int quantity, double pricePerUnit)
     +payOrderFor(String productCode, int quantity, double pricePerUnit)
     +payOrder(Integer orderId)
     +recordOrderArrival(Integer orderId)
@@ -202,31 +202,32 @@ class ReturnTransaction{
 }
 
 class AccountBook{
+    +ezShopData: EZShopData
     +numberOfTransactions: Integer
     +balanceOperationMap : Map<Integer,BalanceOperation>
     +balance: double
-    +issueOrder(String productCode, int quantity, double pricePerUnit)
+    +manageOrder(String productCode, int quantity, double pricePerUnit)
     +payOrderFor(String productCode, int quantity, double pricePerUnit)
     +payOrder(Integer orderId)
     +recordOrderArrival(Integer orderId)
     +getAllOrders()
     +computeBalance()
     +startSaleTransaction()
-    +addProductToSale(Integer transactionId, String productCode, int amount)
-    +deleteProductFromSale(Integer transactionId, String productCode, int amount)
-    +applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
-    + applyDiscountRateToSale(Integer transactionId, double discountRate)
-    +computePointsForSale(Integer transactionId)
+    +addProduct(Integer transactionId, String productCode, int amount)
+    +deleteSaleProduct(Integer transactionId, String productCode, int amount)
+    +applyDiscountRate(Integer transactionId, String productCode, double discountRate)
+    +applyDiscountTotalSale(Integer transactionId, double discountRate)
+    +computeTotalPoints(Integer transactionId)
     +endSaleTransaction(Integer transactionId)
-    + deleteSaleTransaction(Integer transactionId)
+    +deleteSaleTransaction(Integer transactionId)
     +startReturnTransaction(Integer transactionId)
     +returnProduct(Integer returnId, String productCode, int amount)
     +endReturnTransaction(Integer returnId, boolean commit)
     +deleteReturnTransaction(Integer returnId)
-    +receiveCashPayment(Integer transactionId, double cash)
-    +receiveCreditCardPayment(Integer transactionId, String creditCard)
-    +creditCardValidity(String creditCard)
-    +recordBalanceUpdate(double toBeAdded)
+    +manageCashPayment(Integer transactionId, double cash)
+    +manageCreditCardPayment(Integer transactionId, String creditCard)
+    +checkCreditCardValidity(String creditCard)
+    +updateBalance(double toBeAdded)
 
 }
 
@@ -255,22 +256,18 @@ Order "*"--"*" ProductType
 
 # Verification traceability matrix
 
-\<for each functional requirement from the requirement document, list which classes concur to implement it>
-
-| FR  | EZShop | User | EZShopData | ProdT | Posit | FidelityC | Customer | Order | Return | Debit | Credit | ReturnTrans | SaleTran | SaleIt | BalanOp | AccBook |
+| FR  | EZShop | User | EZShopData | ProdType | Position | FidelityCard | Customer | Order | Return | Debit | Credit | ReturnTrans | SaleTrans | SaleIt | BalanceOp | AccBook |
 | --- | :----: | :--: | :--------: | :---: | :---: | :-------: | :------: | :---: | :----: | :---: | :----: | :---------: | :------: | :----: | :-----: | :-----: |
 | FR1 |   x    |  x   |     x      |       |       |           |          |       |        |       |        |             |          |        |         |         |
 | FR2 |        |      |            |       |       |           |          |       |        |       |        |             |          |        |         |         |
 | FR3 |   x    |  x   |     x      |   x   |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR4 |   x    |  x   |     x      |   x   |   x   |           |          |   x   |   x    |   x   |        |             |          |        |    x    |         |
+| FR4 |   x    |  x   |     x      |   x   |   x   |           |          |   x   |   x    |   x   |        |             |          |        |    x    |    x    |
 | FR5 |   x    |  x   |     x      |       |       |     x     |    x     |       |        |       |        |             |    x     |        |         |    x    |
 | FR6 |   x    |  x   |     x      |   x   |       |     x     |          |       |   x    |   x   |   x    |      x      |    x     |   x    |    x    |    x    |
 | FR7 |   x    |  x   |     x      |   x   |       |           |          |       |        |   x   |   x    |             |          |        |         |    x    |
 | FR8 |   x    |  x   |     x      |       |       |           |          |       |        |   x   |   x    |             |          |        |    x    |    x    |
 
 # Verification sequence diagrams
-
-\<select key scenarios from the requirement document. For each of them define a sequence diagram showing that the scenario can be implemented by the classes and methods in the design>
 
 Scenario 1-1 : Create product type X
 
@@ -418,7 +415,7 @@ Scenario 6-2: Sale of product type X with product discount
 "Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
 "EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
 "EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
-"Cashier" -> "EZShopData" : 6. Cashier applies a discount rate
+"Cashier" -> "EZShopData" : 6. Cashier applies a product discount rate
 "EZShopData" -> "ProductType" : 7.   applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
 "Cashier" -> "EZShopData" : 8. Cashier closes sale transaction
 "EZShopData" -> "AccountBook" : 9.   endSaleTransaction(Integer transactionId)
@@ -427,11 +424,20 @@ Scenario 6-2: Sale of product type X with product discount
 
 ```
 
-Scenario 6-3: Logout
+Scenario 6-3: Sale of product type X with sale discount
 
 ```plantuml
-"User" -> "EZShopData" : 1. User wants to log out
-"EZShopData" -> "EZShop" : 2. logout()
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier applies a sale discount rate
+"EZShopData" -> "AccountBook" : 7.   applyDiscountRateToSale(Integer transactionId, double discountRate)
+"Cashier" -> "EZShopData" : 8. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 9.   endSaleTransaction(Integer transactionId)
+"EZShopData" -> "AccountBook" : 10.   Manage payment (see Scenarios 7.*)
+"EZShopData" -> "AccountBook" : 11.   Update balance (see Scenarios 7.*)
 
 ```
 
@@ -442,11 +448,11 @@ Scenario 6-4: Sale of product type X with Loyalty Card update
 "EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
 "Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
 "EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
-"EZShopData" -> "EZShopData" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
 "EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
 "EZShopData" -> "AccountBook" : 8.   Manage payment (see Scenarios 7.*)
-"EZShopData" -> "AccountBook" : 9. modifyPointsOnCard(String customerCard, int pointsToBeAdded)
+"EZShopData" -> "FidelityCard" : 9. modifyPointsOnCard(String customerCard, int pointsToBeAdded)
 "EZShopData" -> "AccountBook" : 10.   Update balance (see Scenarios 7.*)
 
 ```
@@ -458,7 +464,7 @@ Scenario 6-5: Sale of product type X cancelled
 "EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
 "Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
 "EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
-"EZShopData" -> "EZShopData" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
 "EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
 "Customer "-> "Cashier" : 8. asks Cashier to cancels the payment
@@ -515,58 +521,58 @@ Scenario 7-4: Manage cash payment
 Scenario 8-1: Return transaction of product type X completed, credit card
 
 ```plantuml
-"Cashier" -> "EZShopData" : start return transact
+"Cashier" -> "EZShopData" : 1. Start Return Transaction
 
-"EZShopData" -> "AccountBook": 1.startReturnTransaction(Integer transactionId)
-"Cashier"->  "EZShopData": reads bar code of X
-"EZShopData" -> "AccountBook":2 returnProduct(Integer returnId, String productCode, int amount)
-"EZShopData" -> "AccountBook":3 Manage cash return
-"EZShopData" -> "AccountBook": 3  endReturnTransaction(Integer returnId, boolean commit)
-"EZShopData" -> "Employee" : end return transaction
+"EZShopData" -> "AccountBook": 2. startReturnTransaction(Integer transactionId)
+"Cashier"->  "EZShopData": 3. reads Bar Code of X
+"EZShopData" -> "AccountBook": 4. returnProduct(Integer returnId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "AccountBook":6. Manage cash return
+"EZShopData" -> "AccountBook": 7. endReturnTransaction(Integer returnId, boolean commit)
+"EZShopData" -> "Employee" : 8. End Return Transaction
 
 ```
 
 Scenario 8-2: Return transaction of product type X completed, cash
 
 ```plantuml
-"Cashier" -> "EZShopData" : start return transact
+"Cashier" -> "EZShopData" : 1. Start Return Transaction
 
-"EZShopData" -> "AccountBook": 1.startReturnTransaction(Integer transactionId)
-"Cashier"->  "EZShopData": reads bar code of X
-"EZShopData" -> "AccountBook":2 returnProduct(Integer returnId, String productCode, int amount)
-"EZShopData" -> "AccountBook":3 Manage cash return
-"AccountBook"-> "EZShopData" : 4  endReturnTransaction(Integer returnId, boolean commit)
-"EZShopData" -> "Cashier" : end return transaction
+"EZShopData" -> "AccountBook": 2. startReturnTransaction(Integer transactionId)
+"Cashier"->  "EZShopData": 3. reads Bar Code of X
+"EZShopData" -> "AccountBook":4. returnProduct(Integer returnId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "AccountBook":6. Manage cash return
+"AccountBook"-> "EZShopData" : 7. endReturnTransaction(Integer returnId, boolean commit)
+"EZShopData" -> "Cashier" : 8. End Return Transaction
 
 ```
 
 Scenario 9-1: List credits and debits
 
 ```plantuml
-"" -> "" : 1.
-"" -> "" : 2.
-"" -> "" : 3.
-"" -> "" : 4.
+"Manager" -> "EZShopData" : 1. selects Start Date and End Date
+    
+"EZShopData" -> "AccountBook" : 2. getCreditsAndDebits(LocalDate from, LocalDate to)
+"EZShopData" -> "Manager" : 3. list of transactions is returned
+
 
 ```
 
 Scenario 10-1: Return payment by credit card
 
 ```plantuml
-"Employee" -> "EZShopData" : start payment return
-
-
-"EZShopData" -> "AccountBook": 1. returnCreditCardPayment(Integer returnId, String creditCard)
-
-"EZShopData" -> "Employee" : end return transaction
+"Employee" -> "EZShopData" : 1. Start Payment Return
+"EZShopData" -> "AccountBook": 2. returnCreditCardPayment(Integer returnId, String creditCard)
+"EZShopData" -> "Employee" : 3. End Return Transaction
 
 ```
 
 Scenario 10-2: Return payment by cash
 
 ```plantuml
-"Employee" -> "EZShopData" : start payment return
-"EZShopData" -> "AccountBook": 1. returnCashPayment(Integer returnId)
-"EZShopData" -> "Employee" : end payment return and rest is given
+"Employee" -> "EZShopData" : 1. Start Payment Return
+"EZShopData" -> "AccountBook": 2. returnCashPayment(Integer returnId)
+"EZShopData" -> "Employee" :  3. End Return Transaction and Rest is emitted
 
 ```
