@@ -435,7 +435,7 @@ Scenario 6-3: Logout
 
 ```
 
-Scenario 6-1: Sale of product type X with Loyalty Card update
+Scenario 6-4: Sale of product type X with Loyalty Card update
 
 ```plantuml
 "Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
@@ -446,23 +446,37 @@ Scenario 6-1: Sale of product type X with Loyalty Card update
 "Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
 "EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
 "EZShopData" -> "AccountBook" : 8.   Manage payment (see Scenarios 7.*)
+"EZShopData" -> "AccountBook" : 9. modifyPointsOnCard(String customerCard, int pointsToBeAdded)
+"EZShopData" -> "AccountBook" : 10.   Update balance (see Scenarios 7.*)
+
+```
+
+Scenario 6-5: Sale of product type X cancelled
+
+```plantuml
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "EZShopData" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
+"Customer "-> "Cashier" : 8. asks Cashier to cancels the payment
+"EZShopData" -> "AccountBook" : 9. deleteSaleTransaction(Integer transactionId)
+
+```
+Scenario 6-6: Sale of product type X with product discount
+
+```plantuml
+"Cashier" -> "EZShopData" : 1. Cashier starts a new sale transaction
+"EZShopData" -> "AccountBook" : 2.  startSaleTransaction()
+"Cashier" -> "EZShopData" : 3. Cashier adds a product to sale
+"EZShopData" -> "AccountBook" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShopData" -> "ProductType" : 5.   updateQuantity(Integer productId, int toBeAdded)
+"Cashier" -> "EZShopData" : 6. Cashier closes sale transaction
+"EZShopData" -> "AccountBook" : 7.   endSaleTransaction(Integer transactionId)
+"EZShopData" -> "AccountBook" : 8. Manage cash payment(see Scenarios 7.*)
 "EZShopData" -> "AccountBook" : 9.   Update balance (see Scenarios 7.*)
-
-```
-
-Scenario 6-5: Logout
-
-```plantuml
-"User" -> "EZShopData" : 1. User wants to log out
-"EZShopData" -> "EZShop" : 2. logout()
-
-```
-
-Scenario 6-6: Logout
-
-```plantuml
-"User" -> "EZShopData" : 1. User wants to log out
-"EZShopData" -> "EZShop" : 2. logout()
 
 ```
 
