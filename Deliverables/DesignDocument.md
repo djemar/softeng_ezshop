@@ -42,7 +42,7 @@ EZShop <|-- EZShopModel
 EZShop <|-- EZShopGUI
 EZShop <|-- EZShopExceptions
 ```
-
+Architectural pattern: MVC
 # Low level design
 
 ```plantuml
@@ -63,21 +63,21 @@ class EZShop{
 
 }
 class User{
-    +username : String
-    +password : String
-    +role : String
-    +Id : Integer
+    -username : String
+    -password : String
+    -role : String
+    -Id : Integer
     +updateUserRights(String role)
 }
 
 class EZShopData{
-    +nProduct: int
-    +accountBook: AccountBook
-    +UserMap : Map<Integer,User>
-    +CustomerMap : Map<Integer,Customer>
-    +ProductMap : Map<Integer,ProductType>
-    +PositionSet : Set <Position>
-    +CardMap : Map <String,FidelityCard>
+    -nProduct: int
+    -accountBook: AccountBook
+    -UserMap : Map<Integer,User>
+    -CustomerMap : Map<Integer,Customer>
+    -ProductMap : Map<Integer,ProductType>
+    -PositionSet : Set <Position>
+    -CardMap : Map <String,FidelityCard>
     +createUser(String username, String password, String role)
     +getAllUsers()
     +getUser(Integer id)
@@ -131,36 +131,36 @@ class EZShopData{
 class EZShopData implements EZShopDataInterface
 
 class ProductType{
-    +description : String
-    +productCode : String
-    +pricePerUnit : Double
-    +note : String
-    +Id : Integer
-    +quantity : Integer
-    +position : Position
+    -description : String
+    -productCode : String
+    -pricePerUnit : Double
+    -note : String
+    -Id : Integer
+    -quantity : Integer
+    -position : Position
     +updateQuantity(int toBeAdded)
 }
 class Position{
-    +aisleNumber : Integer
-    +rackAlphabeticIdentifier : String
-    +levelNumber : Integer
+    -aisleNumber : Integer
+    -rackAlphabeticIdentifier : String
+    -levelNumber : Integer
 }
 class FidelityCard{
-    +cardCode : String
-    +points : Integer
-    +customerAttached : Customer
+    -cardCode : String
+    -points : Integer
+    -customerAttached : Customer
 }
 class Customer{
-    +Id : Integer
-    +name : String
-    +card : FidelityCard
+    -Id : Integer
+    -name : String
+    -card : FidelityCard
 
 }
 class Order{
-    +pricePerUnit : Double
-    +quantity : Integer
-    +productType : String
-    +status : String
+    -pricePerUnit : Double
+    -quantity : Integer
+    -productType : String
+    -status : String
 }
 
 class Debit{
@@ -171,10 +171,10 @@ class Credit{
 }
 
 class SaleTransaction{
-    +SaleArray : ArrayList <SaleItem>
-    +discountRate : Double
-    +total : Double
-    +status : String
+    -SaleArray : ArrayList <SaleItem>
+    -discountRate : Double
+    -total : Double
+    -status : String
     +addProductToSale(String productCode, int amount)
     +deleteProductFromSale(String productCode, int amount)
     +applyDiscountRateToProduct(String productCode, double discountRate)
@@ -182,28 +182,28 @@ class SaleTransaction{
     +computeAmount()
 }
 class SaleItem{
-    +product : String
-    +discount : Double
-    +amount: int
+    -product : String
+    -discount : Double
+    -amount: int
 }
 class BalanceOperation{
-    +description : String
-    +amount : Double
-    +date : Date
-    +Id : Integer
+    -description : String
+    -amount : Double
+    -date : Date
+    -Id : Integer
 }
 
 class ReturnTransaction{
-    +quantiy : Integer
-    +returnedValue: Integer
-    +productcode: String
+    -quantity : Integer
+    -returnedValue: Integer
+    -productcode: String
 }
 
 class AccountBook{
-    +ezShopData: EZShopData
-    +numberOfTransactions: Integer
-    +balanceOperationMap : Map<Integer,BalanceOperation>
-    +balance: double
+    -ezShopData: EZShopData
+    -numberOfTransactions: Integer
+    -balanceOperationMap : Map<Integer,BalanceOperation>
+    -balance: double
     +manageOrder(String productCode, int quantity, double pricePerUnit)
     +payOrderFor(String productCode, int quantity, double pricePerUnit)
     +payOrder(Integer orderId)
@@ -251,6 +251,8 @@ SaleItem "*" --   ProductType
 ReturnTransaction "*"  --"*" ProductType
 Order "*"--"*" ProductType
 ```
+
+Design pattern: Fachade
 
 # Verification traceability matrix
 
