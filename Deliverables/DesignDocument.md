@@ -45,8 +45,6 @@ EZShop <|-- EZShopExceptions
 
 # Low level design
 
-## EZShopModel
-
 ```plantuml
 scale 1400 width
 note top of User : Instances are persistent in the db
