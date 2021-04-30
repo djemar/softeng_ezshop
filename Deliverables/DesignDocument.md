@@ -48,7 +48,7 @@ EZShop <|-- EZShopExceptions
 ## EZShopModel
 
 ```plantuml
-scale 4096 height
+scale 1400 width
 note top of User : Instances are persistent in the db
 note top of ProductType : Instances are persistent in the db
 note top of SaleTransaction : Instances are persistent in the db once closed
