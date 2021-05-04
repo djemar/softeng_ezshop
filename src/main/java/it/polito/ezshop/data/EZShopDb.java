@@ -6,14 +6,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import org.sqlite.SQLiteConnection;
+import org.sqlite.SQLiteUpdateListener;
 
 public class EZShopDb {
-    private Connection connection = null;
+    private SQLiteConnection connection = null;
+    private String dbUrl = "jdbc:sqlite:ezshop.db";
 
     public void createConnection() {
         try {
             // create a database connection
-            this.connection = DriverManager.getConnection("jdbc:sqlite:ezshop.db");
+            this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl);
+            connection.addUpdateListener(new SQLiteUpdateListener() {
+                @Override
+                public void onUpdate(Type type, String db, String table, long rowId) {
+                    System.out.println("OnUpdate: " + type + " " + db + " " + table + " " + rowId);
+                    // update data here
+                }
+
+            });
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
