@@ -20,10 +20,15 @@ public class EZShop {
         ezshopDb.createConnection();
         UserImpl User0 = new UserImpl("john", "pippo", "tester", 0);
         UserImpl User1 = new UserImpl("tom", "pippo", "tester", 1);
+        UserImpl User2 = new UserImpl("tommy", "pippo", "cashier", 2);
         ezshopDb.insertUser(User0);
         ezshopDb.insertUser(User1);
+        ezshopDb.insertUser(User2);
         ezshopDb.deleteUser(0);
+        ezshopDb.getUser(1);
+        ezshopDb.updateUserRights(1,"engineer") ;
         ezshopDb.closeConnection();
+
     }
 
 }
