@@ -18,7 +18,11 @@ public class EZShop {
     public static void testDb() { // test function for db implementation
         EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
-        ezshopDb.insertUser(new UserImpl("john", "pippo", "tester", 0));
+        UserImpl User0 = new UserImpl("john", "pippo", "tester", 0);
+        UserImpl User1 = new UserImpl("tom", "pippo", "tester", 1);
+        ezshopDb.insertUser(User0);
+        ezshopDb.insertUser(User1);
+        ezshopDb.deleteUser(0);
         ezshopDb.closeConnection();
     }
 
