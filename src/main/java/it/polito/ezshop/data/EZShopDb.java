@@ -104,7 +104,13 @@ public class EZShopDb {
             while (rs.next()) {
             	users.add(new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id")));
             }
-            users.forEach(x->System.out.println(x.getUsername()));
+
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("name = " + rs.getString("username") + ", id = "
+                        + rs.getInt("id") + ", role = " + rs.getString("role"));
+            }
             
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -152,5 +158,148 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     	
+    }
+    public void insertProductType(ProductTypeImpl product) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into producttypes values(?, ?, ?, ?, ?, ?, ?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+             // the index refers to the ? in the statement
+            pstmt.setString(1, product.getProductDescription());
+            pstmt.setString(2, product.getBarCode());
+            pstmt.setInt(3, product.getId());
+            pstmt.setString(4, product.getNote());
+            pstmt.setString(5, "");
+            pstmt.setInt(6, 0);
+            pstmt.setDouble(7, product.getPricePerUnit());
+            
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from  producttypes");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("description = " + rs.getString("description") + ", id = "
+                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+    public void updateProductType(Integer id, String newDescription, String newCode, double newPrice, String newNote) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("update producttypes set description = (?), productcode = (?),"
+            													+ " priceperunit = (?), note = (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, newDescription); // the index refers to the ? in the statement
+            pstmt.setString(2, newCode);
+            pstmt.setDouble(3, newPrice);
+            pstmt.setString(4, newNote);
+            pstmt.setInt(5, id);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from producttypes");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("description = " + rs.getString("description") + ", id = "
+                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
+    }
+    public void deleteProductType(Integer id) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from producttypes where ID = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from producttypes");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("description = " + rs.getString("description") + ", id = "
+                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public List<ProductTypeImpl> getAllProductTypes(){
+    	List<ProductTypeImpl> products= new ArrayList<ProductTypeImpl>();
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from producttypes");
+            while (rs.next()) {
+            	products.add(new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note")));
+            }
+            products.forEach(x->System.out.println(x.getId()));
+            while (rs.next()) {
+                // read the result set
+            System.out.println("description = " + rs.getString("description") + ", id = "
+                    + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return products;
+    	
+    }
+    public ProductTypeImpl getProductTypeByBarCode(String barCode) {
+    	ProductTypeImpl p = null;
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from producttypes where ProductCode = " + barCode);
+            p= new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"));
+            System.out.println(p.getProductDescription());
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return p;
+    }
+    
+    /*da rivedere*/
+    public List<ProductTypeImpl> getProductTypesByDescription(String description){
+    	List<ProductTypeImpl> products= new ArrayList<ProductTypeImpl>();
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from producttypes where Description = " + description);
+            while (rs.next()) {
+            	products.add(new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note")));
+            }
+            products.forEach(x->System.out.println(x.getId()));
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return products;
     }
 }
