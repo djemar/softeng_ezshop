@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sqlite.SQLiteConnection;
 import org.sqlite.SQLiteUpdateListener;
 
@@ -91,5 +94,63 @@ public class EZShopDb {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+    }
+    public List<UserImpl> getAllUsers() {
+    	List<UserImpl> users= new ArrayList<UserImpl>();
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from users");
+            while (rs.next()) {
+            	users.add(new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id")));
+            }
+            users.forEach(x->System.out.println(x.getUsername()));
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return users;
+    }
+    public UserImpl getUser(Integer id) {
+    	UserImpl u = null;
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from users where ID = " + id);
+            u= new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id"));
+            System.out.println(u.getUsername());
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return u;
+    }
+    public void updateUserRights(Integer id, String role) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("update users set role = (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, role); // the index refers to the ? in the statement
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from users");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("name = " + rs.getString("username") + ", id = "
+                        + rs.getInt("id") + ", role = " + rs.getString("role"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
     }
 }
