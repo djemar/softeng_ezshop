@@ -69,4 +69,27 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     }
+    public void deleteUser(Integer id) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from users where ID = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from users");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("name = " + rs.getString("username") + ", id = "
+                        + rs.getInt("id") + ", role = " + rs.getString("role"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
 }
