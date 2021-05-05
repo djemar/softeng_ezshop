@@ -48,8 +48,7 @@ public class EZShopDb {
 
     public void insertUser(UserImpl user) {
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into users values(?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("insert into users values(?, ?, ?, ?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1, user.getUsername()); // the index refers to the ? in the statement
             pstmt.setString(2, user.getPassword());
@@ -74,8 +73,7 @@ public class EZShopDb {
     }
     public void deleteUser(Integer id) {
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("delete from users where ID = (?)");
+            PreparedStatement pstmt = connection.prepareStatement("delete from users where ID = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -122,9 +120,10 @@ public class EZShopDb {
     public UserImpl getUser(Integer id) {
     	UserImpl u = null;
         try {
-        	Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from users where ID = " + id);
+        	PreparedStatement pstmt = connection.prepareStatement("select * from users where ID = ?");
+        	ResultSet rs;
+        	pstmt.setInt(1, id);  // Set the Bind Value
+        	rs = pstmt.executeQuery(); 
             u= new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id"));
             System.out.println(u.getUsername());
             
@@ -161,8 +160,7 @@ public class EZShopDb {
     }
     public void insertProductType(ProductTypeImpl product) {
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into producttypes values(?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("insert into producttypes values(?, ?, ?, ?, ?, ?, ?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
              // the index refers to the ? in the statement
             pstmt.setString(1, product.getProductDescription());
@@ -220,8 +218,7 @@ public class EZShopDb {
     }
     public void deleteProductType(Integer id) {
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("delete from producttypes where ID = (?)");
+            PreparedStatement pstmt = connection.prepareStatement("delete from producttypes where ID = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -269,9 +266,10 @@ public class EZShopDb {
     public ProductTypeImpl getProductTypeByBarCode(String barCode) {
     	ProductTypeImpl p = null;
         try {
-        	Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from producttypes where ProductCode = " + barCode);
+        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where ProductCode = ?");
+        	ResultSet rs;
+        	pstmt.setString (1, barCode);  
+        	rs = pstmt.executeQuery(); 
             p= new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"));
             System.out.println(p.getProductDescription());
             
@@ -283,23 +281,73 @@ public class EZShopDb {
         return p;
     }
     
-    /*da rivedere*/
     public List<ProductTypeImpl> getProductTypesByDescription(String description){
     	List<ProductTypeImpl> products= new ArrayList<ProductTypeImpl>();
         try {
-        	Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from producttypes where Description = " + description);
-            while (rs.next()) {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where Description = ?");
+        	ResultSet rs;
+        	pstmt.setString(1, description); 
+        	rs = pstmt.executeQuery(); 
+        	while (rs.next()) {
             	products.add(new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note")));
             }
             products.forEach(x->System.out.println(x.getId()));
             
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
         return products;
+    }
+    public void updateQuantity(Integer productId, int toBeAdded) {
+        try {
+			PreparedStatement pstmt = connection.prepareStatement("update producttypes set quantity= quantity + (?) where id = (?)");
+			pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+			pstmt.setInt(1, toBeAdded); // the index refers to the ? in the statement
+			pstmt.setInt(2, productId);
+			pstmt.executeUpdate();
+			
+			Statement stmt = connection.createStatement();
+			ResultSet rs;
+			rs = stmt.executeQuery("select * from producttypes");
+			
+			while (rs.next()) {
+			// read the result set
+			System.out.println("description = " + rs.getString("description") + ", id = "
+			+ rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+			}
+
+        }catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
+    }
+    public void updatePosition(Integer productId, String newPos) {
+        try {
+			PreparedStatement pstmt = connection.prepareStatement("update producttypes set location = (?) where id = (?)");
+			pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+			pstmt.setString(1, newPos); // the index refers to the ? in the statement
+			pstmt.setInt(2, productId);
+			pstmt.executeUpdate();
+			
+			Statement stmt = connection.createStatement();
+			ResultSet rs;
+			rs = stmt.executeQuery("select * from producttypes");
+			
+			while (rs.next()) {
+			// read the result set
+			System.out.println("description = " + rs.getString("description") + ", id = "
+			+ rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+			}
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
     }
 }
