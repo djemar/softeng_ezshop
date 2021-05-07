@@ -6,8 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import org.sqlite.SQLiteConnection;
 import org.sqlite.SQLiteUpdateListener;
@@ -350,4 +354,256 @@ public class EZShopDb {
         }
     	
     }
+    public void insertOrder(OrderImpl order) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("insert into orders values(?, ?, ?, ?, ?, ?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+             // the index refers to the ? in the statement
+            pstmt.setInt(1, order.getOrderId());
+            pstmt.setString(2, order.getProductCode());
+            pstmt.setDouble(3, order.getPricePerUnit());
+            pstmt.setInt(4, order.getQuantity());
+            pstmt.setString(5, order.getStatus());
+            pstmt.setInt(6, order.getBalanceId());
+            
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from orders");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("product Code = " + rs.getString("productCode") + ", id = "
+                        + rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+    public void updateOrder(int orderId, String productCode, Double pricePerUnit, int quantity, String status, Integer balanceId) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("update orders set productCode = (?), pricePerUnit = (?),"
+            													+ " quantity = (?), status = (?),balanceId= (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1,productCode); // the index refers to the ? in the statement
+            pstmt.setDouble(2, pricePerUnit);
+            pstmt.setInt(3, quantity);
+            pstmt.setString(4, status);
+            pstmt.setInt(5, balanceId);
+            pstmt.setInt(6, orderId);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from orderds");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("product Code = " + rs.getString("productCode") + ", id = "
+                        + rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
+    }
+    public OrderImpl getOrder(Integer orderId){
+
+        OrderImpl order=null;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from users where ID = ?");
+        	ResultSet rs;
+        	pstmt.setInt(1, orderId);  // Set the Bind Value
+        	rs = pstmt.executeQuery(); 
+            OrderImpl o = new OrderImpl(rs.getInt("orderId"), rs.getString("productCode"),rs.getDouble("pricePerUnit"),rs.getInt("quantity"),rs.getString("status"),rs.getInt("balanceId"));
+            System.out.println(o.getOrderId());
+            order=o;
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return order;
+    }
+    public Double getBalance(){
+        Double balance=0.0;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from balanceOperations ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            while (rs.next()) {
+                balance+=rs.getDouble("money");
+            }
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return balance;
+    }
+
+    public int getOrderNumber() {
+        int i=0;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select count(*) as number from orders ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            i=rs.getInt("number");
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return i;
+        }
+        return -1;
+
+    }
+    public List<Order> getAllOrders() {
+        List<Order> orders= new ArrayList<Order>();
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from orders");
+            while (rs.next()) {
+            	orders.add(new OrderImpl(rs.getInt("ID"),rs.getString("ProductCode"),rs.getDouble("PricePerUnit"),rs.getInt("Quantity"),rs.getString("Status"),rs.getInt("balanceID")));
+            }
+
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("id = " + rs.getString("ID"));
+            }
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return orders;
+    }
+
+    public int getBalnceOperationsNumber() {
+        int i=0;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select count(*) as number from balanceOperations ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            i=rs.getInt("number");
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return i;
+        }
+        return -1;
+    }
+
+    public void insertBalanceOperation(BalanceOperationImpl b) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("insert into balance values(?, ?, ?, ?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+             // the index refers to the ? in the statement
+            pstmt.setInt(1, b.getBalanceId());
+            pstmt.setDate(2,java.sql.Date.valueOf(b.getDate()) );
+            pstmt.setDouble(3, b.getMoney());
+            pstmt.setString(4, b.getType());        
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from balanceOperations");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("balance ID = " 
+                        + rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+    public int getCustomerNumber(){
+        int i=-1;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select count(*) as number from balanceOperations ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            i=rs.getInt("number");
+        }catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return i;
+    }
+    public void insertCustomer(String name,int id,String card,int points) {
+        
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("insert into customers values(?, ?, ?, ?, ?, ?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+             // the index refers to the ? in the statement
+            pstmt.setString(1, name);
+            pstmt.setInt(2, id);
+            pstmt.setString(3, card);
+            pstmt.setInt(4, points);
+            
+            
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from customers");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("customer name = " + rs.getString("Name") + ", id = "
+                        + rs.getInt("ID"));
+            }
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        
+    }
+    public void updateCustomer(int id,String name,String fidelityCard, int points) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("update customers set name = (?), FidelityCard = (?),"
+            													+ " points = (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1,name); // the index refers to the ? in the statement
+            pstmt.setString(2, fidelityCard);
+            pstmt.setInt(3, points);
+            pstmt.setInt(4, id);
+            
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from customers");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("product Code = " + rs.getString("name") + ", id = "
+                        + rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
+    }
+
+    
 }
