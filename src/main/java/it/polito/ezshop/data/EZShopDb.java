@@ -134,6 +134,24 @@ public class EZShopDb {
         }
         return u;
     }
+    //method to find if a user exists
+    public boolean getUserbyName(String username) {
+    	boolean user = true;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from users where username = ?");
+        	pstmt.setString(1, username);  // Set the Bind Value
+        	ResultSet rs = pstmt.executeQuery();
+        	if(rs.next() == false)
+        		user = false;
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        System.out.print(user);
+        return user;
+    }
     public void updateUserRights(Integer id, String role) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("update users set role = (?) where id = (?)");
@@ -158,6 +176,44 @@ public class EZShopDb {
         }
     	
     }
+    public UserImpl checkCredentials(String username, String password) {
+    	UserImpl u = null;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from users where username = ? AND password = ?");
+        	ResultSet rs;
+        	pstmt.setString(1, username);  // Set the Bind Value
+        	pstmt.setString(2, password); 
+        	rs = pstmt.executeQuery(); 
+        	if(rs.next() == true) 
+        		u= new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id"));
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        System.out.print(u);
+        return u;
+    	
+    }
+    public Integer getUserId() {
+    	Integer id = 1;
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from users");
+            if(rs.next() == true) 
+                id = rs.getInt("ID") + 1;
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	System.out.println(id);
+        return id;
+    	
+    }
+    
     public void insertProductType(ProductTypeImpl product) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("insert into producttypes values(?, ?, ?, ?, ?, ?, ?)");

@@ -1,14 +1,12 @@
 package it.polito.ezshop.data;
 
 import it.polito.ezshop.exceptions.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
 
 public class EZShop implements EZShopInterface {
-
-
+	public User loggedUser = null;
     @Override
     public void reset() {
 
@@ -16,7 +14,23 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-        return null;
+        if(username == "" || username == null)
+        	throw new InvalidUsernameException();
+        if(password == "" || password == null)
+        	throw new InvalidPasswordException();
+        if(role == "" || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
+        	throw new InvalidRoleException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        Integer id = -1;
+        //check if the user exists in the db
+        if(!ezshopDb.getUserbyName(username)) {
+        	 id = ezshopDb.getUserId();
+        	 ezshopDb.insertUser(new UserImpl(username, password, role, id));
+        }
+        ezshopDb.closeConnection();
+        return id;
+        
     }
 
     @Override
@@ -31,22 +45,57 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        return null;
-    }
+        if(id <= 0 || id == null)
+        	throw new InvalidUserIdException();
+        if(this.loggedUser == null || this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0)
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        User u = ezshopDb.getUser(id);
+        ezshopDb.closeConnection();
+        return u;
+   }
 
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
-        return false;
+    	boolean done = false;
+        if(id <= 0 || id == null)
+        	throw new InvalidUserIdException();
+        if(role == "" || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
+        	throw new InvalidRoleException();
+        if(this.loggedUser == null || this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0)
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(ezshopDb.getUser(id) != null) {
+        	updateUserRights(id, role);
+        	done = true;
+        }
+        ezshopDb.closeConnection();
+        return done;
     }
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        return null;
+        if(username == "" || username == null)
+        	throw new InvalidUsernameException();
+        if(password == "" || password == null)
+        	throw new InvalidPasswordException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        this.loggedUser = ezshopDb.checkCredentials(username, password);
+        ezshopDb.closeConnection();
+        return loggedUser;
     }
 
     @Override
     public boolean logout() {
-        return false;
+    	boolean logged = false;
+    	if(this.loggedUser != null) {
+    		this.loggedUser = null;
+    		logged = true;
+    	}
+        return logged;
     }
 
     @Override

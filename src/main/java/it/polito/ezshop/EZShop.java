@@ -20,7 +20,7 @@ public class EZShop {
         EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
         
-        UserImpl User0 = new UserImpl("john", "pippo", "tester", 0);
+        /*UserImpl User0 = new UserImpl("john", "pippo", "tester", 0);
         UserImpl User1 = new UserImpl("tom", "pippo", "tester", 1);
         UserImpl User2 = new UserImpl("tommy", "pippo", "cashier", 2);
         ezshopDb.insertUser(User0);
@@ -28,9 +28,12 @@ public class EZShop {
         ezshopDb.insertUser(User2);
         ezshopDb.deleteUser(0);
         ezshopDb.getUser(1);
-        ezshopDb.updateUserRights(1,"engineer");
-        
-        ProductTypeImpl product0 = new  ProductTypeImpl(0, "panino alla nutella", "4562738492", 5, "nutella");
+        ezshopDb.updateUserRights(1,"engineer");*/
+        ezshopDb.checkCredentials("toms", "pippo");
+        ezshopDb.getUserId();
+        ezshopDb.getUserbyName("tommy");
+        ezshopDb.getUserbyName("ms");
+        /*ProductTypeImpl product0 = new  ProductTypeImpl(0, "panino alla nutella", "4562738492", 5, "nutella");
         ProductTypeImpl product1 = new  ProductTypeImpl(1, "formaggio", "45662738492", 6, "fontina");
         ProductTypeImpl product2 = new  ProductTypeImpl(2, "cioccolato", "45668492", 3, "fondente");
         ProductTypeImpl product3 = new  ProductTypeImpl(3, "cioccolato", "45668yg92", 3, "bianco");
@@ -44,7 +47,7 @@ public class EZShop {
         ezshopDb.getProductTypeByBarCode("45668492"); //description=cioccolato
         ezshopDb.getProductTypesByDescription("cioccolato"); //id=2 id=3
         ezshopDb.updateQuantity(2, 10);
-        ezshopDb.updatePosition(2, "magazzino n3");
+        ezshopDb.updatePosition(2, "magazzino n3");*/
         
         
         
