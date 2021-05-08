@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+
 public class EZShop implements EZShopInterface {
 	public User loggedUser = null;
     @Override
@@ -14,11 +15,11 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-        if(username == "" || username == null)
+        if(username.isEmpty()  || username == null)
         	throw new InvalidUsernameException();
-        if(password == "" || password == null)
+        if(password.isEmpty()  || password == null)
         	throw new InvalidPasswordException();
-        if(role == "" || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
+        if(role.isEmpty() || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
         	throw new InvalidRoleException();
         EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
@@ -61,7 +62,7 @@ public class EZShop implements EZShopInterface {
     	boolean done = false;
         if(id <= 0 || id == null)
         	throw new InvalidUserIdException();
-        if(role == "" || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
+        if(role.isEmpty()  || role == null || (role.compareToIgnoreCase("Administrator")!=0 && role.compareToIgnoreCase("Cashier")!=0 && role.compareToIgnoreCase("ShopManager")!=0))
         	throw new InvalidRoleException();
         if(this.loggedUser == null || this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0)
         	throw new UnauthorizedException();
@@ -77,9 +78,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        if(username == "" || username == null)
+        if(username.isEmpty()  || username == null)
         	throw new InvalidUsernameException();
-        if(password == "" || password == null)
+        if(password.isEmpty()  || password == null)
         	throw new InvalidPasswordException();
         EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
@@ -97,45 +98,159 @@ public class EZShop implements EZShopInterface {
     	}
         return logged;
     }
+    //da rivedere
+    public boolean isValid(String code) {
+    	int sum = 0;
+    	int length = code.length() - 2;
+    	for(int i=0; i<= length; i++) {
+    		sum += code.charAt(i);
+    	}
+    	if(Math.round(sum/10.0) * 10 == code.charAt(length))
+    		return true;
+    	else 
+    		return false;
+    }
 
     @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        return null;
+        if(description.isEmpty() || description == null)
+        	throw new InvalidProductDescriptionException();
+        if(pricePerUnit <= 0)
+        	throw new  InvalidPricePerUnitException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        if(productCode.isEmpty() || productCode == null || !productCode.matches("-?\\d+(\\.\\d+)?") || !isValid(productCode))
+        	throw new InvalidProductCodeException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        Integer id = -1;
+        if(ezshopDb.getProductTypeByBarCode(productCode) == null) {
+        	 id = ezshopDb.getProductId();
+        	 if (note == null)
+        		 note = "";
+        	 ezshopDb.insertProductType(new ProductTypeImpl(id, description, productCode, pricePerUnit, note));
+        }
+        ezshopDb.closeConnection();
+        return id;
     }
 
     @Override
     public boolean updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote) throws InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        return false;
+        boolean done = false;
+    	if(id <= 0 || id == null)
+        	throw new InvalidProductIdException();
+    	if(newDescription.isEmpty() || newDescription == null)
+        	throw new InvalidProductDescriptionException();
+        if(newPrice <= 0)
+        	throw new  InvalidPricePerUnitException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        if(newCode.isEmpty() || newCode == null || !newCode.matches("-?\\d+(\\.\\d+)?") || !isValid(newCode))
+        	throw new InvalidProductCodeException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(ezshopDb.getProductTypeByBarCode(newCode) == null && ezshopDb.getProductTypeById(id) != null) {
+        	ezshopDb.updateProductType(id, newDescription, newCode, newPrice, newNote);
+        	done = true;
+        }
+        ezshopDb.closeConnection();
+        return done;
     }
-
+    
     @Override
     public boolean deleteProductType(Integer id) throws InvalidProductIdException, UnauthorizedException {
-        return false;
+        boolean done = false;
+    	if(id <= 0 || id == null)
+        	throw new InvalidProductIdException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(ezshopDb.getProductTypeById(id) != null) {
+        	ezshopDb.deleteProductType(id);
+        	done=true;
+        }
+    	ezshopDb.closeConnection();
+    	return done;
     }
 
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
-        return null;
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.loggedUser.getRole().compareToIgnoreCase("Cashier")!=0 ))
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        //if it's empty?
+        List<ProductType> products= ezshopDb.getAllProductTypes();
+       	ezshopDb.closeConnection();
+        return products;
     }
 
     @Override
     public ProductType getProductTypeByBarCode(String barCode) throws InvalidProductCodeException, UnauthorizedException {
-        return null;
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        if(barCode.isEmpty() || barCode == null || !barCode.matches("-?\\d+(\\.\\d+)?") || !isValid(barCode))
+        	throw new InvalidProductCodeException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        ProductType p = ezshopDb.getProductTypeByBarCode(barCode);
+       	ezshopDb.closeConnection();
+        return p;
+        
     }
 
     @Override
     public List<ProductType> getProductTypesByDescription(String description) throws UnauthorizedException {
-        return null;
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(description == null)
+        	description = "";
+        //if it's empty?
+        List<ProductType> products= ezshopDb.getProductTypesByDescription(description);
+       	ezshopDb.closeConnection();
+       	return products;
     }
 
     @Override
     public boolean updateQuantity(Integer productId, int toBeAdded) throws InvalidProductIdException, UnauthorizedException {
-        return false;
+        boolean done = false;
+    	if(productId <= 0 || productId == null)
+        	throw new InvalidProductIdException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        ProductType p = ezshopDb.getProductTypeById(productId);
+        if(!p.getLocation().isEmpty() && ezshopDb.getProductTypeById(productId) != null && !ezshopDb.updateQuantity(productId, toBeAdded))
+        	done = true;
+       	ezshopDb.closeConnection();
+       	return done;
     }
 
     @Override
     public boolean updatePosition(Integer productId, String newPos) throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
-        return false;
+    	boolean done = false;
+    	if(productId <= 0 || productId == null)
+        	throw new InvalidProductIdException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0))
+        	throw new UnauthorizedException();
+        String n[] = newPos.split("-");
+        if(!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?"))
+        	throw new InvalidLocationException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(newPos == null)
+        	newPos = new String("");
+        //manca controllo se pos già assegnata
+        if(ezshopDb.getProductTypeById(productId) != null) {
+        	ezshopDb.updatePosition(productId, newPos);
+        	done = true;
+        }
+        ezshopDb.closeConnection();
+        return done;
     }
 
     @Override

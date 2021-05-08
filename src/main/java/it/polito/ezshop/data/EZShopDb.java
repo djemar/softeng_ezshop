@@ -272,6 +272,40 @@ public class EZShopDb {
         }
     	
     }
+    public Integer getProductId() {
+    	Integer id = 1;
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from producttypes");
+            if(rs.next() == true) 
+                id = rs.getInt("ID") + 1;
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	System.out.println(id);
+        return id;
+    }
+    //check
+    public ProductTypeImpl getProductTypeById(Integer id) {
+    	ProductTypeImpl product = null;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from users where username = ?");
+        	pstmt.setInt(1, id);  // Set the Bind Value
+        	ResultSet rs = pstmt.executeQuery();
+        	if(rs.next() == true)
+        		product = new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),
+        				                rs.getDouble("priceperunit"),rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return product;
+    }
     public void deleteProductType(Integer id) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("delete from producttypes where ID = (?)");
@@ -295,16 +329,17 @@ public class EZShopDb {
         }
     }
 
-    public List<ProductTypeImpl> getAllProductTypes(){
-    	List<ProductTypeImpl> products= new ArrayList<ProductTypeImpl>();
+    public List<ProductType> getAllProductTypes(){
+    	List<ProductType> products= new ArrayList<ProductType>();
         try {
         	Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from producttypes");
             while (rs.next()) {
-            	products.add(new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note")));
+        		ProductType p = new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),
+        				rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
+            	products.add(p);
             }
-            products.forEach(x->System.out.println(x.getId()));
             while (rs.next()) {
                 // read the result set
             System.out.println("description = " + rs.getString("description") + ", id = "
@@ -326,7 +361,8 @@ public class EZShopDb {
         	ResultSet rs;
         	pstmt.setString (1, barCode);  
         	rs = pstmt.executeQuery(); 
-            p= new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"));
+            p= new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),
+            		rs.getDouble("priceperunit"),rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
             System.out.println(p.getProductDescription());
             
         } catch (SQLException e) {
@@ -336,16 +372,25 @@ public class EZShopDb {
         }
         return p;
     }
-    
-    public List<ProductTypeImpl> getProductTypesByDescription(String description){
-    	List<ProductTypeImpl> products= new ArrayList<ProductTypeImpl>();
+    //check
+    public List<ProductType> getProductTypesByDescription(String descr){
+    	List<ProductType> products= new ArrayList<ProductType>();
         try {
+            Statement stmt = connection.createStatement();
+            ResultSet ris;
+            ris = stmt.executeQuery("select description as description from producttypes");
+            while (ris.next()) {
+            	if(ris.getString("description").toLowerCase().contains(descr.toLowerCase()))
+            		descr = ris.getString("description");
+            }
         	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where Description = ?");
         	ResultSet rs;
-        	pstmt.setString(1, description); 
+        	pstmt.setString(1, descr); 
         	rs = pstmt.executeQuery(); 
         	while (rs.next()) {
-            	products.add(new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note")));
+        		ProductType p = new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),
+        				rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"),rs.getString("location"), rs.getInt("quantity"));
+            	products.add(p);
             }
             products.forEach(x->System.out.println(x.getId()));
             
@@ -356,30 +401,29 @@ public class EZShopDb {
         }
         return products;
     }
-    public void updateQuantity(Integer productId, int toBeAdded) {
+    //check
+    public boolean updateQuantity(Integer productId, int toBeAdded) {
+    	boolean negative = true;
         try {
-			PreparedStatement pstmt = connection.prepareStatement("update producttypes set quantity= quantity + (?) where id = (?)");
-			pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-			pstmt.setInt(1, toBeAdded); // the index refers to the ? in the statement
-			pstmt.setInt(2, productId);
-			pstmt.executeUpdate();
-			
-			Statement stmt = connection.createStatement();
-			ResultSet rs;
-			rs = stmt.executeQuery("select * from producttypes");
-			
-			while (rs.next()) {
-			// read the result set
-			System.out.println("description = " + rs.getString("description") + ", id = "
-			+ rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+			PreparedStatement ris = connection.prepareStatement("select quantity as quantity from producttypes where id = (?)");
+			ris.setQueryTimeout(30); // set timeout to 30 sec.
+			ris.setInt(1, productId);
+			ResultSet rs = ris.executeQuery(); 
+			int quant = toBeAdded + rs.getInt("quantity");
+			if(quant < 0) {
+				PreparedStatement pstmt = connection.prepareStatement("update producttypes set quantity= (?) where id = (?)");
+				pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+				pstmt.setInt(1, quant); // the index refers to the ? in the statement
+				pstmt.setInt(2, productId);
+				pstmt.executeUpdate();
+				negative = false;
 			}
-
         }catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
-    	
+    	return negative;
     }
     public void updatePosition(Integer productId, String newPos) {
         try {

@@ -16,6 +16,15 @@ public class ProductTypeImpl implements ProductType {
 		this.note = note;
 		this.id = id;
 	}
+	public ProductTypeImpl(Integer id, String description, String productCode, double pricePerUnit, String note, String location, Integer quantity) {
+		this.description = description;
+		this.productCode = productCode;
+		this.pricePerUnit = pricePerUnit;
+		this.note = note;
+		this.id = id;
+		this.location = location;
+		this.quantity = quantity;
+	}
 
 	@Override
 	public Integer getQuantity() {
