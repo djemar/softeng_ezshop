@@ -36,12 +36,31 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        return false;
+    	boolean done = false;
+    	if(this.loggedUser == null || this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0)
+    		throw new UnauthorizedException();
+        if(id <= 0 || id == null)
+        	throw new InvalidUserIdException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        if(ezshopDb.getUser(id) != null) {
+        	deleteUser(id);
+        	done = true;
+        }
+         ezshopDb.closeConnection();
+         return done;
+        
     }
 
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
-        return null;
+    	if(this.loggedUser == null || this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0)
+    		throw new UnauthorizedException();
+        EZShopDb ezshopDb = new EZShopDb();
+        ezshopDb.createConnection();
+        List<User> users = getAllUsers();
+        ezshopDb.closeConnection();
+        return users;
     }
 
     @Override

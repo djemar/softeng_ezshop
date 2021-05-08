@@ -93,14 +93,15 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     }
-    public List<UserImpl> getAllUsers() {
-    	List<UserImpl> users= new ArrayList<UserImpl>();
+    public List<User> getAllUsers() {
+    	List<User> users= new ArrayList<User>();
         try {
         	Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from users");
             while (rs.next()) {
-            	users.add(new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id")));
+            	User u = new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id"));
+            	users.add(u);            
             }
 
 
@@ -209,7 +210,7 @@ public class EZShopDb {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
-    	System.out.println(id);
+    	System.out.println("prossimo id" +id);
         return id;
     	
     }
@@ -292,12 +293,14 @@ public class EZShopDb {
     public ProductTypeImpl getProductTypeById(Integer id) {
     	ProductTypeImpl product = null;
         try {
-        	PreparedStatement pstmt = connection.prepareStatement("select * from users where username = ?");
+        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where id = ?");
         	pstmt.setInt(1, id);  // Set the Bind Value
         	ResultSet rs = pstmt.executeQuery();
-        	if(rs.next() == true)
+        	if(rs.next() == true) {
         		product = new ProductTypeImpl(rs.getInt("id"),rs.getString("description"),rs.getString("productCode"),
         				                rs.getDouble("priceperunit"),rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
+        		System.out.print("prodotto con id trovato" + product.getProductDescription());
+        	}
             
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -328,7 +331,6 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     }
-
     public List<ProductType> getAllProductTypes(){
     	List<ProductType> products= new ArrayList<ProductType>();
         try {
@@ -392,7 +394,7 @@ public class EZShopDb {
         				rs.getString("productCode"),rs.getDouble("priceperunit"),rs.getString("note"),rs.getString("location"), rs.getInt("quantity"));
             	products.add(p);
             }
-            products.forEach(x->System.out.println(x.getId()));
+            products.forEach(x->System.out.println("ricerca per descrizione" + x.getId()));
             
         }catch (SQLException e) {
             // if the error message is "out of memory",
@@ -410,13 +412,14 @@ public class EZShopDb {
 			ris.setInt(1, productId);
 			ResultSet rs = ris.executeQuery(); 
 			int quant = toBeAdded + rs.getInt("quantity");
-			if(quant < 0) {
+			if(quant > 0) {
 				PreparedStatement pstmt = connection.prepareStatement("update producttypes set quantity= (?) where id = (?)");
 				pstmt.setQueryTimeout(30); // set timeout to 30 sec.
 				pstmt.setInt(1, quant); // the index refers to the ? in the statement
 				pstmt.setInt(2, productId);
 				pstmt.executeUpdate();
 				negative = false;
+				System.out.print("maggiore di zero"+ quant);
 			}
         }catch (SQLException e) {
             // if the error message is "out of memory",
