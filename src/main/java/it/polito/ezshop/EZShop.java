@@ -15,16 +15,15 @@ public class EZShop {
         EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
         EZShopGUI gui = new EZShopGUI(ezShop);
         //testDb();
+
+        
 }
 
     public static void testDb() { // test function for db implementation
         EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
-        UserImpl User0 = new UserImpl("tommy", "tommy98", "Administrator", 3);
-        ezshopDb.deleteUser(0);
-        ezshopDb.insertUser(User0);
-
-    
+        ProductTypeImpl product0 = new  ProductTypeImpl(4, "panino alla nutella", "6291041500213", 5, "nutella");
+        ezshopDb.insertProductType(product0);
         /*ezshopDb.getUser(1);
         ezshopDb.updateUserRights(1,"engineer");*/
         /*ezshopDb.checkCredentials("toms", "pippo");
@@ -52,5 +51,6 @@ public class EZShop {
         ezshopDb.closeConnection();
 
     }
+
 
 }

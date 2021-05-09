@@ -101,15 +101,11 @@ public class EZShopDb {
             rs = stmt.executeQuery("select * from users");
             while (rs.next()) {
             	User u = new UserImpl(rs.getString("username"),rs.getString("password"),rs.getString("role"),rs.getInt("id"));
+                System.out.println("name = " + rs.getString("username") + ", id = "
+                        + rs.getInt("id") + ", role = " + rs.getString("role"));
             	users.add(u);            
             }
 
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("name = " + rs.getString("username") + ", id = "
-                        + rs.getInt("id") + ", role = " + rs.getString("role"));
-            }
             
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -452,5 +448,21 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     	
+    }
+    public boolean checkExistingPosition(String position) {
+    	boolean pos = true;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where position = (?)");
+        	pstmt.setString(1, position);  // Set the Bind Value
+        	ResultSet rs = pstmt.executeQuery();
+        	if(rs.next() == false)
+        		pos = false;
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return pos;
     }
 }
