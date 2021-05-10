@@ -48,16 +48,18 @@ public class EZShopDb {
         }
     }
 
-    public void insertUser(UserImpl user) {
+    public Integer insertUser(UserImpl user) {
+        Integer userId = -1;
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into users values(?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into users values(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1, user.getUsername()); // the index refers to the ? in the statement
             pstmt.setString(2, user.getPassword());
             pstmt.setInt(3, user.getId());
             pstmt.setString(4, user.getRole());
             pstmt.executeUpdate();
+            userId = (int) pstmt.getGeneratedKeys().getLong(1);
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
@@ -73,6 +75,8 @@ public class EZShopDb {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+
+        return userId;
     }
 
     public void deleteUser(Integer id) {
