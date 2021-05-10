@@ -342,6 +342,91 @@ public class EZShopDb {
 			System.out.println("description = " + rs.getString("description") + ", id = "
 			+ rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
 			}
+    public void insertSaleTransaction(SaleTransactionImpl saleTransaction) {
+        // to be called by endSaleTransaction
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into saletransactions values(?, ?, ?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, saleTransaction.getTicketNumber());
+            pstmt.setDouble(2, saleTransaction.getDiscountRate());
+            pstmt.setDouble(3, saleTransaction.getPrice());
+
+            pstmt.executeUpdate();
+
+            // TODO insert sold products (ticket entry) in sales table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void deleteSaleTransaction(Integer transactionId) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from saletransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
+
+            pstmt.executeUpdate();
+
+            // TODO delete sold products in sales table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    public SaleTransactionImpl getSaleTransaction(Integer transactionId) {
+        SaleTransactionImpl s = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from saletransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+
+            s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
+                    rs.getDouble("price"));
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return s;
+    }
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
