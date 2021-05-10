@@ -581,6 +581,35 @@ public class EZShopDb {
 
     }
 
+    public void recordBalanceUpdate(double toBeAdded) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into balanceoperation values=(?,?,?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+
+            pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            pstmt.setDouble(2, toBeAdded);
+            String type = toBeAdded < 0 ? "debit" : "credit";
+            pstmt.setString(3, type);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from balanceoperations");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("date = " + rs.getDate("date") + ", money = "
+                        + rs.getDouble("money") + ", type = " + rs.getString("type"));
+            }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
     public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
         // to be called by receiveCreditCardPayment
         List<BalanceOperation> list = new ArrayList<BalanceOperation>();
