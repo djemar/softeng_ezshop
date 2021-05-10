@@ -539,5 +539,37 @@ public class EZShopDb {
         return cc;
 
     }
+
+    public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
+        // to be called by receiveCreditCardPayment
+        List<BalanceOperation> list = new ArrayList<BalanceOperation>();
+        try {
+            // TODO date column name may cause issues?
+            // TODO check if from or to are null
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "select * from balanceoperation where date>=(?) and date<=(?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // date format?
+            pstmt.setDate(1, java.sql.Date.valueOf(from)); // the index refers to the ? in the
+                                                           // statement
+            pstmt.setDate(2, java.sql.Date.valueOf(to)); // the index refers to the ? in the
+                                                         // statement
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                // read the result set
+                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
+                        rs.getDouble("money"), rs.getString("type")));
+            }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return list;
+
     }
 }
