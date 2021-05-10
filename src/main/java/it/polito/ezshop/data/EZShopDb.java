@@ -489,11 +489,55 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
     }
+
+    public void insertCreditCard(String creditCard) {
+        // to be called by receiveCreditCardPayment
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into creditcards values(?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from creditcards");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("cc id = " + rs.getString("creditcard"));
+            }
+
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
-    	
+
+    }
+
+    public String getCreditCard(String creditCard) {
+        // to be called by receiveCreditCardPayment
+        String cc = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from creditcards where creditcard=(?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
+
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            cc = rs.getString("creditcard");
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return cc;
+
+    }
     }
 }
