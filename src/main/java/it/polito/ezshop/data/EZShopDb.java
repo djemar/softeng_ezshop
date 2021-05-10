@@ -428,6 +428,67 @@ public class EZShopDb {
         return s;
     }
 
+
+    public void insertReturnTransaction(ReturnTransaction returnTransaction) {
+        // to be called by endReturnTransaction
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into returntransactions values(?, ?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnTransaction.getReturnId());
+            pstmt.setInt(2, returnTransaction.getTransactionId());
+
+            pstmt.executeUpdate();
+
+            // TODO add returned products to returns table
+            // returnTransaction.getReturnedProductsMap()
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from returntransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
+                        + rs.getInt("transactionid"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void deleteReturnTransaction(Integer returnId) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from returntransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnId);
+
+            pstmt.executeUpdate();
+
+            // TODO delete returned products in returns table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from returntransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
+                        + rs.getInt("transactionid"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
