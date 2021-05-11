@@ -18,7 +18,7 @@ public class EZShopDb {
     private SQLiteConnection connection = null;
     private String dbUrl = "jdbc:sqlite:ezshop.db";
 
-    public void createConnection() {
+    public boolean createConnection() {
         try {
             // create a database connection
             this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl);
@@ -35,17 +35,21 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
-    public void closeConnection() {
+    public boolean closeConnection() {
         try {
             if (connection != null)
                 connection.close();
         } catch (SQLException e) {
             // connection close failed.
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     public Integer insertUser(UserImpl user) {
