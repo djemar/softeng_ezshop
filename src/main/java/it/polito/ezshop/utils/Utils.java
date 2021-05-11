@@ -18,7 +18,12 @@ public class Utils {
         return false;
     }
 
-    static boolean validateCreditCard(String number) {
+    public static boolean isOnlyDigit(String string) {
+        if (string.matches("-?\\d+(\\.\\d+)?"))
+            return true;
+        else
+            return false;
+    }
         // Luhn algorithm
         int nDigits = number.length();
         int nSum = 0;
