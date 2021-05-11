@@ -487,4 +487,39 @@ public class EZShopDb {
         }
         return pos;
     }
+    
+    public boolean resetTables() {
+    	boolean done = false;
+        try {
+        	PreparedStatement pstmt = connection.prepareStatement("delete from producttypes");
+        	pstmt.setQueryTimeout(30);
+        	pstmt.executeUpdate();
+        	pstmt = connection.prepareStatement("delete from saletransactions");
+        	pstmt.setQueryTimeout(30);
+        	pstmt.executeUpdate();
+        	pstmt = connection.prepareStatement("delete from returntransactions");
+        	pstmt.setQueryTimeout(30);
+        	pstmt.executeUpdate();
+        	done = true;
+            
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return done;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

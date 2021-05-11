@@ -12,7 +12,10 @@ public class EZShop implements EZShopInterface {
 	EZShopDb ezshopDb = new EZShopDb();
     @Override
     public void reset() {
-
+	    if(ezshopDb.createConnection()) {
+	    	ezshopDb.resetTables();
+	        ezshopDb.closeConnection();
+	    }
     }
 
     @Override

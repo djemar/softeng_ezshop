@@ -14,14 +14,16 @@ public class EZShop {
     public static void main(String[] args) {
         EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
         EZShopGUI gui = new EZShopGUI(ezShop);
-        //testDb();
+        testDb();
 
         
 }
 
-    /*public static void testDb() { // test function for db implementation
-        /*EZShopDb ezshopDb = new EZShopDb();
+    public static void testDb() { // test function for db implementation
+        EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
+        ezshopDb.resetTables();
+        /*
         ProductTypeImpl product0 = new  ProductTypeImpl(4, "panino alla nutella", "6291041500213", 5, "nutella");
         ezshopDb.insertProductType(product0);*/
         /*ezshopDb.getUser(1);
@@ -47,10 +49,10 @@ public class EZShop {
         ezshopDb.updatePosition(2, "magazzino n3");*/
         /*ezshopDb.getProductTypeById(4); //panino
         ezshopDb.getProductTypeById(8); //nostampa
-
+*/
         ezshopDb.closeConnection();
 
-    }*/
+    }
 
 
 }
