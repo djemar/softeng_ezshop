@@ -452,7 +452,7 @@ public class EZShopDb {
     public boolean checkExistingPosition(String position) {
     	boolean pos = true;
         try {
-        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where position = (?)");
+        	PreparedStatement pstmt = connection.prepareStatement("select * from producttypes where location = (?)");
         	pstmt.setString(1, position);  // Set the Bind Value
         	ResultSet rs = pstmt.executeQuery();
         	if(rs.next() == false)

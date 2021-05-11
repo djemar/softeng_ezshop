@@ -19,11 +19,11 @@ public class EZShop {
         
 }
 
-    public static void testDb() { // test function for db implementation
-        EZShopDb ezshopDb = new EZShopDb();
+    /*public static void testDb() { // test function for db implementation
+        /*EZShopDb ezshopDb = new EZShopDb();
         ezshopDb.createConnection();
         ProductTypeImpl product0 = new  ProductTypeImpl(4, "panino alla nutella", "6291041500213", 5, "nutella");
-        ezshopDb.insertProductType(product0);
+        ezshopDb.insertProductType(product0);*/
         /*ezshopDb.getUser(1);
         ezshopDb.updateUserRights(1,"engineer");*/
         /*ezshopDb.checkCredentials("toms", "pippo");
@@ -46,11 +46,11 @@ public class EZShop {
         ezshopDb.updateQuantity(2, 10);
         ezshopDb.updatePosition(2, "magazzino n3");*/
         /*ezshopDb.getProductTypeById(4); //panino
-        ezshopDb.getProductTypeById(8); //nostampa*/
+        ezshopDb.getProductTypeById(8); //nostampa
 
         ezshopDb.closeConnection();
 
-    }
+    }*/
 
 
 }
