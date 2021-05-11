@@ -529,8 +529,26 @@ public class EZShopDb {
         return s;
     }
 
+    public Integer newReturnTransactionId() {
+        Integer id = 1;
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from returntransactions");
+            if (rs.next() == true)
+                id = rs.getInt("ID") + 1;
 
-    public void insertReturnTransaction(ReturnTransaction returnTransaction) {
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return -1;
+        }
+        System.out.println(id);
+        return id;
+    }
+
+
+    public boolean insertReturnTransaction(ReturnTransaction returnTransaction) {
         // to be called by endReturnTransaction
         try {
             PreparedStatement pstmt =
@@ -540,9 +558,11 @@ public class EZShopDb {
             // the index refers to the ? in the statement
             pstmt.setInt(1, returnTransaction.getReturnId());
             pstmt.setInt(2, returnTransaction.getTransactionId());
-            pstmt.setBoolean(3, false); // payed?
+            pstmt.setBoolean(3, false); // not payed
 
-            pstmt.executeUpdate();
+            int count = pstmt.executeUpdate();
+            if (count < 0)
+                return false;
 
             // TODO add returned products to returns table
             // returnTransaction.getReturnedProductsMap()
@@ -560,10 +580,12 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
-    public void deleteReturnTransaction(Integer returnId) {
+    public boolean deleteReturnTransaction(Integer returnId) {
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("delete from returntransactions where id=?");
@@ -589,8 +611,42 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
+
+    public ReturnTransaction getReturnTransaction(Integer returnId) {
+        ReturnTransaction r = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from returntransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnId);
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+
+            r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
+
+            pstmt = connection.prepareStatement("select * from returnentries where id=?");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                r.addProductToReturn(rs.getString("barcode"), rs.getInt("amount"));
+            }
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return null;
+        }
+        return r;
+    }
+
 
     public void insertCreditCard(String creditCard) {
         // to be called by receiveCreditCardPayment
