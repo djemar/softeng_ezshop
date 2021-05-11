@@ -674,6 +674,7 @@ public class EZShopDb {
 
     }
 
+
     public String getCreditCard(String creditCard) {
         // to be called by receiveCreditCardPayment
         String cc = null;
@@ -698,17 +699,19 @@ public class EZShopDb {
 
     }
 
-    public void recordBalanceUpdate(double toBeAdded) {
+    public boolean recordBalanceUpdate(double toBeAdded) {
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into balanceoperation values=(?,?,?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into balanceoperation(date, money, type) values=(?,?,?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
 
             pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
             pstmt.setString(3, type);
-            pstmt.executeUpdate();
+            int count = pstmt.executeUpdate();
+            if (count < 0)
+                return false;
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
@@ -724,7 +727,10 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+
+        return true;
     }
 
     public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
@@ -732,9 +738,19 @@ public class EZShopDb {
         List<BalanceOperation> list = new ArrayList<BalanceOperation>();
         try {
             // TODO date column name may cause issues?
-            // TODO check if from or to are null
-            PreparedStatement pstmt = connection.prepareStatement(
-                    "select * from balanceoperation where date>=(?) and date<=(?)");
+            PreparedStatement pstmt;
+            if (from == null && to == null) {
+                pstmt = connection.prepareStatement("select * from balanceoperation");
+            } else if (from == null && to != null) {
+                pstmt = connection
+                        .prepareStatement("select * from balanceoperation where date<=(?)");
+            } else if (from != null && to == null) {
+                pstmt = connection
+                        .prepareStatement("select * from balanceoperation where date>=(?)");
+            } else {
+                pstmt = connection.prepareStatement(
+                        "select * from balanceoperation where date>=(?) and date<=(?)");
+            }
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // date format?
             pstmt.setDate(1, java.sql.Date.valueOf(from)); // the index refers to the ? in the
@@ -748,6 +764,7 @@ public class EZShopDb {
                 // read the result set
                 list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
                         rs.getDouble("money"), rs.getString("type")));
+                return new ArrayList<BalanceOperation>();
             }
 
         } catch (SQLException e) {
