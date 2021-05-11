@@ -20,7 +20,7 @@ public class EZShopDb {
     private SQLiteConnection connection = null;
     private String dbUrl = "jdbc:sqlite:ezshop.db";
 
-    public void createConnection() {
+    public boolean createConnection() {
         try {
             // create a database connection
             this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl);
@@ -37,8 +37,11 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
+
 
     public void closeConnection() {
         try {
@@ -50,15 +53,18 @@ public class EZShopDb {
         }
     }
 
-    public void insertUser(UserImpl user) {
+    public Integer insertUser(UserImpl user) {
+        Integer userId = -1;
         try {
-            PreparedStatement pstmt = connection.prepareStatement("insert into users values(?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into users values(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1, user.getUsername()); // the index refers to the ? in the statement
             pstmt.setString(2, user.getPassword());
             pstmt.setInt(3, user.getId());
             pstmt.setString(4, user.getRole());
             pstmt.executeUpdate();
+            userId = (int) pstmt.getGeneratedKeys().getLong(1);
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
@@ -74,7 +80,10 @@ public class EZShopDb {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return userId;
     }
+
+
     public void deleteUser(Integer id) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("delete from users where ID = (?)");
@@ -452,7 +461,7 @@ public class EZShopDb {
     public int getOrderNumber() {
         int i=0;
         try{
-            PreparedStatement pstmt = connection.prepareStatement("select count(*) as number from orders ");
+            PreparedStatement pstmt = connection.prepareStatement("select max(id) as number from orders ");
         	ResultSet rs;
         	rs = pstmt.executeQuery(); 
             i=rs.getInt("number");
@@ -460,9 +469,9 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
-            return i;
+            
         }
-        return -1;
+        return i;
 
     }
     public List<Order> getAllOrders() {
@@ -474,8 +483,6 @@ public class EZShopDb {
             while (rs.next()) {
             	orders.add(new OrderImpl(rs.getInt("ID"),rs.getString("ProductCode"),rs.getDouble("PricePerUnit"),rs.getInt("Quantity"),rs.getString("Status"),rs.getInt("balanceID")));
             }
-
-
             while (rs.next()) {
                 // read the result set
                 System.out.println("id = " + rs.getString("ID"));
@@ -505,7 +512,8 @@ public class EZShopDb {
         return -1;
     }
 
-    public void insertBalanceOperation(BalanceOperationImpl b) {
+    public boolean insertBalanceOperation(BalanceOperationImpl b) {
+        boolean boo=false;
         try {
             PreparedStatement pstmt = connection.prepareStatement("insert into balance values(?, ?, ?, ?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
@@ -525,12 +533,15 @@ public class EZShopDb {
                 System.out.println("balance ID = " 
                         + rs.getInt("ID"));
             }
+            boo=true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return boo;
     }
+
     public int getCustomerNumber(){
         int i=-1;
         try{
@@ -545,45 +556,36 @@ public class EZShopDb {
         }
         return i;
     }
-    public void insertCustomer(String name,int id,String card,int points) {
-        
+
+    public Integer insertCustomer(Customer c) {
+        Integer customerId=-1;
         try {
-            PreparedStatement pstmt = connection.prepareStatement("insert into customers values(?, ?, ?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("insert into customers values(NULL,(?),0,NULL)",Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
              // the index refers to the ? in the statement
-            pstmt.setString(1, name);
-            pstmt.setInt(2, id);
-            pstmt.setString(3, card);
-            pstmt.setInt(4, points);
-            
+            customerId = (int) pstmt.getGeneratedKeys().getLong(1);
+            pstmt.setString(1, c.getCustomerName());
             
             pstmt.executeUpdate();
-
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from customers");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("customer name = " + rs.getString("Name") + ", id = "
-                        + rs.getInt("ID"));
-            }
+            customerId = (int) pstmt.getGeneratedKeys().getLong(1);
             
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return customerId;
         
     }
-    public void updateCustomer(int id,String name,String fidelityCard, int points) {
+    public boolean updateCustomer(int id,String name,String fidelityCard,Integer points) {
+        boolean boo=false;
         try {
             PreparedStatement pstmt = connection.prepareStatement("update customers set name = (?), FidelityCard = (?),"
             													+ " points = (?) where id = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1,name); // the index refers to the ? in the statement
             pstmt.setString(2, fidelityCard);
-            pstmt.setInt(3, points); pstmt.setInt(3, points);
+            pstmt.setInt(3, points);
             pstmt.setInt(4, id);
             
             pstmt.executeUpdate();
@@ -597,11 +599,13 @@ public class EZShopDb {
                 System.out.println("product Code = " + rs.getString("name") + ", id = "
                         + rs.getInt("ID"));
             }
+            boo=true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return boo;
     	
     }
 
@@ -620,9 +624,10 @@ public class EZShopDb {
         return i;
     }
 
-    public void insertCustomerCard(String customerCard) {
+    public boolean insertCustomerCard(String customerCard) {
+        boolean boo=false;
         try {
-            PreparedStatement pstmt = connection.prepareStatement("insert into customercards values(?, NULL, NULL)");
+            PreparedStatement pstmt = connection.prepareStatement("insert into customercards values((?), NULL, 0)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1, customerCard); // the index refers to the ? in the statement
             pstmt.executeUpdate();
@@ -635,15 +640,17 @@ public class EZShopDb {
                 // read the result set
                 System.out.println("card number  = " + rs.getString("card"));
             }
+            boo=true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return boo;
     }
 
-    public Customer getCustomer(Integer id){
-        Customer c=null;
+    public CustomerImpl getCustomer(Integer id){
+        CustomerImpl c=null;
         try{
             PreparedStatement pstmt = connection.prepareStatement("select * from customers where id=?");
             pstmt.setInt(1, id);
@@ -692,8 +699,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery(); 
             if(rs.getString("CustomerCard")==null)  {  
-                this.updateCustomer(c.getId(), c.getCustomerName(),customerCard, c.getPoints());
-                this.updateCard(customerId,customerCard,card.getPoints());
+                b=this.updateCustomer(c.getId(), c.getCustomerName(),customerCard, card.getPoints());
+                b&=this.updateCard(customerCard,customerId,card.getPoints());
                 b=true;
             }
             else
@@ -707,9 +714,10 @@ public class EZShopDb {
         return b;
     }
 
-    public void updateCard(Integer customerId, String customerCard,int points) {
+    public boolean updateCard(String customerCard,Integer customerId,int points) {
+        boolean boo=false;
         try {
-            PreparedStatement pstmt = connection.prepareStatement("update customercards set customer (?), points = (?),where id = (?)");
+            PreparedStatement pstmt = connection.prepareStatement("update customercards set customer (?), points = (?),where card = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1,customerId); // the index refers to the ? in the statement
             pstmt.setInt(2, points);
@@ -727,11 +735,13 @@ public class EZShopDb {
                 System.out.println("product Code = " + rs.getString("name") + ", id = "
                         + rs.getInt("ID"));
             }
+            boo=true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return boo;
     	
 
     }
@@ -744,7 +754,7 @@ public class EZShopDb {
             ResultSet rs;
             rs = stmt.executeQuery("select * from customers");
             while (rs.next()) {
-            	l.add(new CustomerImpl(rs.getString("name"),rs.getInt("id"),rs.getString("card")));
+            	l.add(new CustomerImpl(rs.getInt("id"),rs.getString("name"),rs.getString("card"),rs.getInt("points")));
             }
             l.forEach(x->System.out.println(x.getId()));
             while (rs.next()) {
@@ -759,6 +769,57 @@ public class EZShopDb {
         }
         return l;
     	
+    }
+
+    public boolean deleteCustomer(CustomerImpl c) {
+        boolean boo=false;
+        try {
+
+            PreparedStatement pstmt = connection.prepareStatement("delete from Customer where ID = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setInt(1, c.getId());
+            pstmt.executeUpdate();
+            if(c.getCustomerCard() != null){
+                boo=this.updateCard( c.getCustomerCard(),0, 0);
+        
+            }else
+             boo=true;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return boo;
+    }
+
+
+    public CustomerImpl getCustemByCard(String customerCard) {
+        return null;
+    }
+
+
+    public int insertSaleTransaction(int i) {
+        return 0;
+    }
+
+
+    public int SaleTransactionNumber() {
+        Integer i=0;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select max(id) as number from saletransactions ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            i=rs.getInt("number");
+            if(i==null)
+                i=0;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return i;
+
+    }
     }
     
 }
