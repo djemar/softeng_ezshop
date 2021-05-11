@@ -540,16 +540,52 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean recordBalanceUpdate(double toBeAdded) throws UnauthorizedException {
-        return false;
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+
+        if (toBeAdded + computeBalance() < 0)
+            return false;
+
+        boolean isSuccess = ezShopDb.recordBalanceUpdate(toBeAdded);
+
+        return isSuccess;
     }
 
     @Override
-    public List<BalanceOperation> getCreditsAndDebits(LocalDate from, LocalDate to) throws UnauthorizedException {
-        return null;
+    public List<BalanceOperation> getCreditsAndDebits(LocalDate from, LocalDate to)
+            throws UnauthorizedException {
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return new ArrayList<BalanceOperation>();
+
+        List<BalanceOperation> list = ezShopDb.getAllBalanceOperations(from, to);
+
+        return list;
     }
 
     @Override
     public double computeBalance() throws UnauthorizedException {
-        return 0;
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return -1;
+
+        List<BalanceOperation> list = ezShopDb.getAllBalanceOperations(null, null);
+        if (list.isEmpty())
+            return -1;
+
+        double balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
+        return balance;
     }
 }
