@@ -12,6 +12,12 @@ public class UserImpl implements User {
 		this.role = role;
 		this.id = id;
 	}
+	public UserImpl(String username, String password, String role) {
+		this.username = username;
+		this.password = password;
+		this.role = role;
+	}
+
 
 	@Override
 	public Integer getId() {

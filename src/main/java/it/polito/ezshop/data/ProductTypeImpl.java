@@ -9,12 +9,11 @@ public class ProductTypeImpl implements ProductType {
 	private Integer quantity;
 	private Integer id;
 
-	public ProductTypeImpl(Integer id, String description, String productCode, double pricePerUnit, String note) {
+	public ProductTypeImpl(String description, String productCode, double pricePerUnit, String note) {
 		this.description = description;
 		this.productCode = productCode;
 		this.pricePerUnit = pricePerUnit;
 		this.note = note;
-		this.id = id;
 	}
 	public ProductTypeImpl(Integer id, String description, String productCode, double pricePerUnit, String note, String location, Integer quantity) {
 		this.description = description;
