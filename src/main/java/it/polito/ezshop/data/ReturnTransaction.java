@@ -7,7 +7,10 @@ public class ReturnTransaction {
 	private Integer returnId;
 	private Integer transactionId;
 	private String productCode;
+	private String status;
 	private int amount;
+	private double total = 0;
+
 	private HashMap<String, Integer> returnedProductsMap;
 
 	public ReturnTransaction(Integer returnId, String productCode, int amount) {
@@ -17,9 +20,9 @@ public class ReturnTransaction {
 		this.amount = amount;
 	}
 
-	public ReturnTransaction(Integer transactionId) {
+	public ReturnTransaction(Integer returnId, Integer transactionId) {
+		this.returnId = returnId;
 		this.transactionId = transactionId;
-		// TODO generate return ID if transactionId is valid
 	}
 
 	public Integer getReturnId() {
@@ -64,6 +67,26 @@ public class ReturnTransaction {
 
 	public void setReturnedProductsMap(HashMap<String, Integer> returnedProductsMap) {
 		this.returnedProductsMap = returnedProductsMap;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void updateTotal(double money) {
+		this.total += money;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
 	}
 
 }
