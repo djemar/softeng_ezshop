@@ -1,5 +1,8 @@
 package it.polito.ezshop.utils;
 
+import java.util.List;
+import it.polito.ezshop.data.*;
+
 public class Utils {
     public static boolean validateBarcode(String code) {
         if (code.length() >= 12 && code.length() <= 14) {
@@ -24,6 +27,8 @@ public class Utils {
         else
             return false;
     }
+
+    public static boolean validateCreditCard(String number) {
         // Luhn algorithm
         int nDigits = number.length();
         int nSum = 0;
