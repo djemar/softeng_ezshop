@@ -1,13 +1,17 @@
 package it.polito.ezshop.data;
 
 import it.polito.ezshop.exceptions.*;
-
+import it.polito.ezshop.utils.Utils;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class EZShop implements EZShopInterface {
-
+    EZShopDb ezShopDb = new EZShopDb();
+    SaleTransactionImpl activeSaleTransaction = null;
+    ReturnTransaction activeReturnTransaction = null;
+    User currentUser = null;
 
     @Override
     public void reset() {
