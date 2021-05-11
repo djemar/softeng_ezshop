@@ -272,23 +272,150 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
-        return null;
+    public Integer startReturnTransaction(Integer saleNumber)
+            throws /* InvalidTicketNumberException, */InvalidTransactionIdException,
+            UnauthorizedException {
+        Integer transactionId = saleNumber;
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return -1;
+
+        if (!(ezShopDb.getSaleTransaction(transactionId)).getStatus().equalsIgnoreCase("payed")) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+
+        Integer returnId = ezShopDb.newReturnTransactionId();
+        ezShopDb.closeConnection();
+
+        if (returnId >= 0)
+            activeReturnTransaction = new ReturnTransaction(returnId, transactionId);
+
+        return returnId;
     }
 
     @Override
-    public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        return false;
+    public boolean returnProduct(Integer returnId, String productCode, int amount)
+            throws InvalidTransactionIdException, InvalidProductCodeException,
+            InvalidQuantityException, UnauthorizedException {
+        SaleTransactionImpl saleTransaction;
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException();
+        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+                || !Utils.validateBarcode(productCode))
+            throw new InvalidProductCodeException();
+        if (amount <= 0)
+            throw new InvalidQuantityException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        if (activeReturnTransaction.getReturnId() != returnId)
+            return false;
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+
+        saleTransaction = ezShopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
+        if (saleTransaction == null) {
+            ezShopDb.closeConnection();
+            return false;
+        }
+
+        List<TicketEntry> entries = saleTransaction.getEntries();
+        if (!Utils.containsProduct(entries, productCode)) {
+            ezShopDb.closeConnection();
+            return false;
+        }
+        TicketEntryImpl ticketEntry =
+                (TicketEntryImpl) Utils.getProductFromEntries(entries, productCode);
+        if (ticketEntry.getAmount() < amount) {
+            ezShopDb.closeConnection();
+            return false;
+        }
+
+        double money = ticketEntry.getPricePerUnit()
+                - ((ticketEntry.getPricePerUnit() * ticketEntry.getDiscountRate()));
+        activeReturnTransaction.updateTotal(money);
+
+        activeReturnTransaction.addProductToReturn(productCode, amount);
+
+        return true;
+
     }
 
     @Override
-    public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-        return false;
+    public boolean endReturnTransaction(Integer returnId, boolean commit)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        if (returnId != activeReturnTransaction.getReturnId())
+            return false;
+
+        if (!commit) {
+            activeReturnTransaction = null;
+            return true;
+        }
+
+        if (activeReturnTransaction == null)
+            return false;
+        else
+            activeReturnTransaction.setStatus("closed");
+
+        // TODO decrease saleTransaction items and total price and add items back to inventory
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+
+        boolean isSuccess = ezShopDb.insertReturnTransaction(activeReturnTransaction);
+        conn = ezShopDb.closeConnection();
+
+        return isSuccess;
     }
 
     @Override
-    public boolean deleteReturnTransaction(Integer returnId) throws InvalidTransactionIdException, UnauthorizedException {
-        return false;
+    public boolean deleteReturnTransaction(Integer returnId)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+
+        if (ezShopDb.getReturnTransaction(returnId).getStatus().equalsIgnoreCase("payed")) {
+            ezShopDb.closeConnection();
+            return false;
+        }
+
+        boolean isSuccess = ezShopDb.deleteReturnTransaction(returnId);
+
+        // TODO undo decrease saleTransaction items and total price and add items back to inventory
+
+
+        ezShopDb.closeConnection();
+
+        return isSuccess;
     }
 
     @Override
