@@ -419,22 +419,122 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    public double receiveCashPayment(Integer ticketNumber, double cash) throws InvalidTransactionIdException, InvalidPaymentException, UnauthorizedException {
-        return 0;
+    public double receiveCashPayment(Integer ticketNumber, double cash)
+            throws InvalidTransactionIdException, InvalidPaymentException, UnauthorizedException {
+        Integer transactionID = ticketNumber;
+        if (transactionID == null || transactionID <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+        if (cash <= 0)
+            throw new InvalidPaymentException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return -1;
+        SaleTransactionImpl s = ezShopDb.getSaleTransaction(transactionID);
+        if (s == null) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+        Double totalPrice = s.getPrice();
+        if (cash < totalPrice) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+        // TODO insertBalanceOperation
+        return cash - totalPrice;
     }
 
     @Override
-    public boolean receiveCreditCardPayment(Integer ticketNumber, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
-        return false;
+    public boolean receiveCreditCardPayment(Integer ticketNumber, String creditCard)
+            throws InvalidTransactionIdException, InvalidCreditCardException,
+            UnauthorizedException {
+        Integer transactionID = ticketNumber;
+        if (transactionID == null || transactionID <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+        if (creditCard == null || creditCard.isEmpty() || !Utils.validateCreditCard(creditCard))
+            throw new InvalidCreditCardException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+        SaleTransactionImpl s = ezShopDb.getSaleTransaction(transactionID);
+        if (s == null) {
+            ezShopDb.closeConnection();
+            return false;
+        }
+
+        // TODO check credit cards
+
+        // TODO insertBalanceOperation
+
+        return true;
     }
 
     @Override
-    public double returnCashPayment(Integer returnId) throws InvalidTransactionIdException, UnauthorizedException {
-        return 0;
+    public double returnCashPayment(Integer returnId)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return -1;
+        ReturnTransaction r = ezShopDb.getReturnTransaction(returnId);
+        if (r == null) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+        if (!r.getStatus().equalsIgnoreCase("closed")) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+
+        // TODO insert balance operation
+
+        return r.getTotal();
     }
 
     @Override
-    public double returnCreditCardPayment(Integer returnId, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
+    public double returnCreditCardPayment(Integer returnId, String creditCard)
+            throws InvalidTransactionIdException, InvalidCreditCardException,
+            UnauthorizedException {
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+        if (creditCard == null || creditCard.isEmpty() || !Utils.validateCreditCard(creditCard))
+            throw new InvalidCreditCardException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return -1;
+        ReturnTransaction r = ezShopDb.getReturnTransaction(returnId);
+        if (r == null) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+        if (!r.getStatus().equalsIgnoreCase("closed")) {
+            ezShopDb.closeConnection();
+            return -1;
+        }
+
+        // TODO check if card is not registered
+
+        // TODO insert balance operation
         return 0;
     }
 
