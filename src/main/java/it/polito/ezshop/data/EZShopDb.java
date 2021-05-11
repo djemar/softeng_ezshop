@@ -1,14 +1,14 @@
 package it.polito.ezshop.data;
 
-import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sqlite.SQLiteConnection;
@@ -402,6 +402,41 @@ public class EZShopDb {
             pstmt.executeUpdate();
 
             // TODO insert sold products (ticket entry) in sales table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void updateSaleTransaction(Integer transactionId,
+            HashMap<String, Integer> returnedProducts) {
+        try {
+            SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
+            // get sales
+            // update amount
+            // update price
+            // update db
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "update sales set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, saleTransaction.getTicketNumber());
+            pstmt.setDouble(2, saleTransaction.getDiscountRate());
+            pstmt.setDouble(3, saleTransaction.getPrice());
+
+            pstmt.executeUpdate();
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
