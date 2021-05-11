@@ -40,5 +40,15 @@ public class Utils {
         return (nSum % 10 == 0);
     }
 
+    public static boolean containsProduct(final List<TicketEntry> list, final String productCode) {
+        return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst()
+                .isPresent();
+    }
+
+    public static TicketEntry getProductFromEntries(final List<TicketEntry> list,
+            final String productCode) {
+        return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst().get();
+    }
+
 }
 
