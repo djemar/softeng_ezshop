@@ -478,12 +478,13 @@ public class EZShopDb {
         // to be called by endReturnTransaction
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into returntransactions values(?, ?)");
+                    connection.prepareStatement("insert into returntransactions values(?, ?, ?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
             pstmt.setInt(1, returnTransaction.getReturnId());
             pstmt.setInt(2, returnTransaction.getTransactionId());
+            pstmt.setBoolean(3, false); // payed?
 
             pstmt.executeUpdate();
 
