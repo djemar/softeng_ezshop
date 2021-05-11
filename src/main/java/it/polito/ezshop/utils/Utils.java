@@ -2,16 +2,16 @@ package it.polito.ezshop.utils;
 
 public class Utils {
     public static boolean validateBarcode(String code) {
-        if (code.length() == 13) {
+        if (code.length() >= 12 && code.length() <= 14) {
             int sum = 0;
-            for (int i = 0; i < 12; i++) {
+            for (int i = code.length() - 1; i >= 0; i--) {
                 if ((i + 1) % 2 == 0)
                     sum += Character.getNumericValue(code.charAt(i)) * 3;
                 else
                     sum += Character.getNumericValue(code.charAt(i));
             }
             if (Math.round((sum + 5) / 10.0) * 10 - sum == Character
-                    .getNumericValue(code.charAt(12)))
+                    .getNumericValue(code.charAt(code.length() - 1)))
                 return true;
         }
 
