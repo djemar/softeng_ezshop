@@ -18,6 +18,10 @@ public class SaleTransactionImpl implements SaleTransaction {
 		this.price = price;
 	}
 
+	public SaleTransactionImpl(int i) {
+		transactionID=i;
+	}
+
 	public String getStatus() {
 		return this.status;
 	}
