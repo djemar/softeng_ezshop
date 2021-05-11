@@ -1,17 +1,14 @@
 package it.polito.ezshop.data;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
+import java.util.HashMap;
 
 import org.sqlite.SQLiteConnection;
 import org.sqlite.SQLiteUpdateListener;
@@ -42,15 +39,16 @@ public class EZShopDb {
         return true;
     }
 
-
-    public void closeConnection() {
+    public boolean closeConnection() {
         try {
             if (connection != null)
                 connection.close();
         } catch (SQLException e) {
             // connection close failed.
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     public Integer insertUser(UserImpl user) {
@@ -1042,6 +1040,391 @@ public class EZShopDb {
         return i;
 
     }
-}
 
+    public boolean insertSaleTransaction(SaleTransactionImpl saleTransaction) {
+        // to be called by endSaleTransaction
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into saletransactions values(?, ?, ?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, saleTransaction.getTicketNumber());
+            pstmt.setDouble(2, saleTransaction.getDiscountRate());
+            pstmt.setDouble(3, saleTransaction.getPrice());
+
+            pstmt.executeUpdate();
+
+            // TODO insert sold products (ticket entry) in ticketentries table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public void updateSaleTransaction(Integer transactionId,
+            HashMap<String, Integer> returnedProducts) {
+        try {
+            SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
+            // get sales
+            // update amount
+            // update price
+            // update db
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            // TODO wtf
+            pstmt.setDouble(2, saleTransaction.getDiscountRate());
+            pstmt.setDouble(3, saleTransaction.getPrice());
+            pstmt.setInt(3, saleTransaction.getTicketNumber());
+
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public boolean deleteSaleTransaction(Integer transactionId) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from saletransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
+
+            pstmt.executeUpdate();
+
+            // TODO delete sold products in sales table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out
+                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+
+    public SaleTransactionImpl getSaleTransaction(Integer transactionId) {
+        SaleTransactionImpl s = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from saletransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+
+            s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
+                    rs.getDouble("price"), rs.getString("status"));
+
+            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
+            rs = pstmt.executeQuery();
+            List<TicketEntry> entries = new ArrayList<>();
+            while (rs.next()) {
+                entries.add(new TicketEntryImpl(rs.getString("barcode"),
+                        rs.getString("productString"), rs.getInt("amount"),
+                        rs.getDouble("priceperunit"), rs.getDouble("discountRate")));
+            }
+            s.setEntries(entries);
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return null;
+        }
+        return s;
+    }
+
+    public Integer newReturnTransactionId() {
+        Integer id = 1;
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from returntransactions");
+            if (rs.next() == true)
+                id = rs.getInt("ID") + 1;
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return -1;
+        }
+        System.out.println(id);
+        return id;
+    }
+
+
+    public boolean insertReturnTransaction(ReturnTransaction returnTransaction) {
+        // to be called by endReturnTransaction
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into returntransactions values(?, ?, ?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnTransaction.getReturnId());
+            pstmt.setInt(2, returnTransaction.getTransactionId());
+            pstmt.setBoolean(3, false); // not payed
+
+            int count = pstmt.executeUpdate();
+            if (count < 0)
+                return false;
+
+            // TODO add returned products to returns table
+            // returnTransaction.getReturnedProductsMap()
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from returntransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
+                        + rs.getInt("transactionid"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteReturnTransaction(Integer returnId) {
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("delete from returntransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnId);
+
+            pstmt.executeUpdate();
+
+            // TODO delete returned products in returns table
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from returntransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
+                        + rs.getInt("transactionid"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public ReturnTransaction getReturnTransaction(Integer returnId) {
+        ReturnTransaction r = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from returntransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, returnId);
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+
+            r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
+
+            pstmt = connection.prepareStatement("select * from returnentries where id=?");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                r.addProductToReturn(rs.getString("barcode"), rs.getInt("amount"));
+            }
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return null;
+        }
+        return r;
+    }
+
+
+    public void insertCreditCard(String creditCard) {
+        // to be called by receiveCreditCardPayment
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("insert into creditcards values(?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from creditcards");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("cc id = " + rs.getString("creditcard"));
+            }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+
+    public String getCreditCard(String creditCard) {
+        // to be called by receiveCreditCardPayment
+        String cc = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from creditcards where creditcard=(?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
+
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            cc = rs.getString("creditcard");
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return cc;
+
+    }
+
+    public boolean recordBalanceUpdate(double toBeAdded) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into balanceoperation(date, money, type) values=(?,?,?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+
+            pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            pstmt.setDouble(2, toBeAdded);
+            String type = toBeAdded < 0 ? "debit" : "credit";
+            pstmt.setString(3, type);
+            int count = pstmt.executeUpdate();
+            if (count < 0)
+                return false;
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from balanceoperations");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("date = " + rs.getDate("date") + ", money = "
+                        + rs.getDouble("money") + ", type = " + rs.getString("type"));
+            }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
+        // to be called by receiveCreditCardPayment
+        List<BalanceOperation> list = new ArrayList<BalanceOperation>();
+        try {
+            // TODO date column name may cause issues?
+            PreparedStatement pstmt;
+            if (from == null && to == null) {
+                pstmt = connection.prepareStatement("select * from balanceoperation");
+            } else if (from == null && to != null) {
+                pstmt = connection
+                        .prepareStatement("select * from balanceoperation where date<=(?)");
+            } else if (from != null && to == null) {
+                pstmt = connection
+                        .prepareStatement("select * from balanceoperation where date>=(?)");
+            } else {
+                pstmt = connection.prepareStatement(
+                        "select * from balanceoperation where date>=(?) and date<=(?)");
+            }
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // date format?
+            pstmt.setDate(1, java.sql.Date.valueOf(from)); // the index refers to the ? in the
+                                                           // statement
+            pstmt.setDate(2, java.sql.Date.valueOf(to)); // the index refers to the ? in the
+                                                         // statement
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                // read the result set
+                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
+                        rs.getDouble("money"), rs.getString("type")));
+                return new ArrayList<BalanceOperation>();
+            }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return list;
+
+    }
+}
 

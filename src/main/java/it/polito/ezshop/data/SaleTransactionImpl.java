@@ -18,8 +18,16 @@ public class SaleTransactionImpl implements SaleTransaction {
 		this.price = price;
 	}
 
+	public SaleTransactionImpl(Integer transactionID, double discountRate, double price,
+			String status) {
+		this.transactionID = transactionID;
+		this.discountRate = discountRate;
+		this.price = price;
+		this.status = status;
+	}
+
 	public SaleTransactionImpl(int i) {
-		transactionID=i;
+		this.transactionID = i;
 	}
 
 	public String getStatus() {
