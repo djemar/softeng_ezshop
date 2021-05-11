@@ -190,18 +190,85 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    public boolean endSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        return false;
+    public boolean endSaleTransaction(Integer transactionId)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        if (activeSaleTransaction == null
+                || activeSaleTransaction.getStatus().equalsIgnoreCase("closed"))
+            return false;
+        else
+            activeSaleTransaction.setStatus("closed");
+
+        // TODO decrease items in inventory
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+        boolean isSuccess = ezShopDb.insertSaleTransaction(activeSaleTransaction);
+        ezShopDb.closeConnection();
+
+        return isSuccess;
     }
 
     @Override
-    public boolean deleteSaleTransaction(Integer saleNumber) throws InvalidTransactionIdException, UnauthorizedException {
-        return false;
+    public boolean deleteSaleTransaction(Integer saleNumber)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        Integer transactionId = saleNumber;
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return false;
+
+        if (ezShopDb.getSaleTransaction(transactionId).getStatus().equalsIgnoreCase("payed")) {
+            ezShopDb.closeConnection();
+            // TODO add items back to inventory? no info in interface doc cfr.
+            // deleteReturnTransaction
+
+            return false;
+        }
+
+        boolean isSuccess = ezShopDb.deleteSaleTransaction(transactionId);
+
+        ezShopDb.closeConnection();
+
+        return isSuccess;
     }
 
     @Override
-    public SaleTransaction getSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        return null;
+    public SaleTransaction getSaleTransaction(Integer transactionId)
+            throws InvalidTransactionIdException, UnauthorizedException {
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        boolean conn = ezShopDb.createConnection();
+        if (!conn)
+            return null;
+
+        SaleTransactionImpl saleTransaction = ezShopDb.getSaleTransaction(transactionId);
+        if (saleTransaction.getStatus().equalsIgnoreCase("payed")) {
+            ezShopDb.closeConnection();
+            return null;
+        }
+
+        ezShopDb.closeConnection();
+
+        return saleTransaction;
     }
 
     @Override
