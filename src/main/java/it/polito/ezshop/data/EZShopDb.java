@@ -583,7 +583,7 @@ public class EZShopDb {
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1,name); // the index refers to the ? in the statement
             pstmt.setString(2, fidelityCard);
-            pstmt.setInt(3, points);
+            pstmt.setInt(3, points); pstmt.setInt(3, points);
             pstmt.setInt(4, id);
             
             pstmt.executeUpdate();
@@ -605,5 +605,160 @@ public class EZShopDb {
     	
     }
 
+    public int getCustomerCardNumber() {
+        int i=-1;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select count(*) as number from customerCards ");
+        	ResultSet rs;
+        	rs = pstmt.executeQuery(); 
+            i=rs.getInt("number");
+        }catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return i;
+    }
+
+    public void insertCustomerCard(String customerCard) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("insert into customercards values(?, NULL, NULL)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, customerCard); // the index refers to the ? in the statement
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from users");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("card number  = " + rs.getString("card"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public Customer getCustomer(Integer id){
+        Customer c=null;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select * from customers where id=?");
+            pstmt.setInt(1, id);
+            pstmt.setQueryTimeout(30);
+            ResultSet rs;
+            rs = pstmt.executeQuery(); 
+            System.out.println("Customer ID"+rs.getInt("card"));
+            if(!rs.getString("name").equals(null))
+                c=new CustomerImpl(rs.getString("name"), rs.getInt("id"),rs.getString("card"));
+        } catch(SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return c;
+
+    }
+    CustomerCard getCustomerCard(String customerCard){
+        CustomerCard c=null;
+        try{
+            PreparedStatement pstmt = connection.prepareStatement("select * from customerCards where card=?");
+            pstmt.setString(1, customerCard);
+            pstmt.setQueryTimeout(30);
+            ResultSet rs;
+            rs = pstmt.executeQuery(); 
+            System.out.println("Customer Card"+rs.getInt("card"));
+            if(!rs.getString("name").equals(null))
+                c= new CustomerCard(customerCard);
+        } catch(SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return c;
+    }
+    public boolean attachCardToCustomer(String customerCard, Integer customerId) {
+        boolean b=false;
+        try{
+            Customer c=this.getCustomer(customerId);
+            CustomerCard card=this.getCustomerCard(customerCard);
+            if(c==null || card ==null)
+                return b;
+            PreparedStatement pstmt = connection.prepareStatement("select card from customers where card=?");
+            pstmt.setString(1, customerCard);
+            pstmt.setQueryTimeout(30);
+            ResultSet rs;
+            rs = pstmt.executeQuery(); 
+            if(rs.getString("CustomerCard")==null)  {  
+                this.updateCustomer(c.getId(), c.getCustomerName(),customerCard, c.getPoints());
+                this.updateCard(customerId,customerCard,card.getPoints());
+                b=true;
+            }
+            else
+                b=false;
+            
+        }catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return b;
+    }
+
+    public void updateCard(Integer customerId, String customerCard,int points) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("update customercards set customer (?), points = (?),where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setInt(1,customerId); // the index refers to the ? in the statement
+            pstmt.setInt(2, points);
+            pstmt.setString(3, customerCard);
+            
+            
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from customers");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("product Code = " + rs.getString("name") + ", id = "
+                        + rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+    	
+
+    }
+
+    public List<Customer> getAllCustomer() {
+
+        List<Customer> l= new ArrayList<Customer>();
+        try {
+        	Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from customers");
+            while (rs.next()) {
+            	l.add(new CustomerImpl(rs.getString("name"),rs.getInt("id"),rs.getString("card")));
+            }
+            l.forEach(x->System.out.println(x.getId()));
+            while (rs.next()) {
+                // read the result set
+            System.out.println("name = " + rs.getString("name"));
+            }
+            
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return l;
+    	
+    }
     
 }

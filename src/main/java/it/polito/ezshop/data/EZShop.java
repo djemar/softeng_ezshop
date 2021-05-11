@@ -8,7 +8,7 @@ import java.util.List;
 
 public class EZShop implements EZShopInterface {
     EZShopDb db= new EZShopDb();
-    UserImpl currentUser;
+    UserImpl currentUser=new UserImpl("michele", "Soldi", "Administrator", 3);
     public void setCurrentUser(UserImpl user){
         this.currentUser=user;
     }
@@ -149,7 +149,7 @@ public class EZShop implements EZShopInterface {
             if(orderId<=0 || orderId==null)
                 throw new InvalidOrderIdException("Invalid order id");
             
-            if(currentUser==null || currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager"))
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")))
                 throw new UnauthorizedException("Unauthorized user");
             OrderImpl o= db.getOrder(orderId);
             if(o!=null && (o.getStatus()=="ISSUED" || o.getStatus()=="ORDERED")){
@@ -178,7 +178,7 @@ public class EZShop implements EZShopInterface {
             if(orderId<=0 || orderId==null)
                 throw new InvalidOrderIdException("Invalid order id");
             
-            if(currentUser==null || currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager"))
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")))
                 throw new UnauthorizedException("Unauthorized user");
                 OrderImpl o= db.getOrder(orderId);
             if(o!=null && (o.getStatus()=="PAYED" ))   {
@@ -205,7 +205,7 @@ public class EZShop implements EZShopInterface {
     public List<Order> getAllOrders() throws UnauthorizedException {
         List <Order> list =null;
         try{
-            if(currentUser==null || currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager"))
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")))
                 throw new UnauthorizedException("Unauthorized user");
             list= db.getAllOrders();
         }catch(UnauthorizedException e){
@@ -218,7 +218,7 @@ public class EZShop implements EZShopInterface {
     public Integer defineCustomer(String customerName) throws InvalidCustomerNameException, UnauthorizedException {
         int i=-1;
         try{
-            if(currentUser==null || currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier"))
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
                 throw new UnauthorizedException("Unauthorized user");
             if(customerName==null || customerName=="")
                 throw new InvalidCustomerNameException();
@@ -235,50 +235,178 @@ public class EZShop implements EZShopInterface {
 
         return i;
     }
-
+    public static boolean onlyDigits(String str, int n)
+    {
+  
+        // Traverse the string from
+        // start to end
+        for (int i = 0; i < n; i++) {
+  
+            // Check if the sepecified
+            // character is a digit then
+            // return true,
+            // else return false
+            if (Character.isDigit(str.charAt(i))) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        return false;
+        boolean b=false;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+            if(newCustomerName==null || newCustomerName=="")
+                throw new InvalidCustomerNameException();
+
+            if(newCustomerCard == null||newCustomerCard==""||newCustomerCard.length()!=10||onlyDigits(newCustomerCard, newCustomerCard.length()))
+                throw new InvalidCustomerCardException("Invalid customer card");
+            this.attachCardToCustomer(newCustomerCard, id);  
+        }catch (InvalidCustomerNameException e ){
+            System.err.println(e.getMessage());
+        }catch(InvalidCustomerCardException e){
+            System.err.println(e.getMessage());
+        }
+        return b;
     }
 
     @Override
     public boolean deleteCustomer(Integer id) throws InvalidCustomerIdException, UnauthorizedException {
+
         return false;
     }
 
     @Override
     public Customer getCustomer(Integer id) throws InvalidCustomerIdException, UnauthorizedException {
-        return null;
+        Customer c=null;
+        try{
+        if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+        if(id == null || id<=0)
+            throw new InvalidCustomerCardException("Invalid customer id");
+        c=db.getCustomer(id);
+        }catch(InvalidCustomerCardException e){
+            System.err.println(e.getMessage());
+        } catch(UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }
+        return c;
     }
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-        return null;
+        List<Customer> l= null;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")||currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                    throw new UnauthorizedException("Unauthorized user");
+            l=db.getAllCustomer();    
+        }catch(UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }
+        return l;
     }
 
     @Override
     public String createCard() throws UnauthorizedException {
-        return null;
+        String c = null;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")|| currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+
+            int n=db.getCustomerCardNumber()+1;
+            String ns=Integer.toString(n);
+            String customerCard=ns;
+            for(int i=0;10-ns.length()>i;i++){
+                customerCard+="0";
+            }
+            db.insertCustomerCard(customerCard);
+            c=customerCard;
+        } catch (UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }
+        return c;
     }
 
     @Override
     public boolean attachCardToCustomer(String customerCard, Integer customerId) throws InvalidCustomerIdException, InvalidCustomerCardException, UnauthorizedException {
-        return false;
+        boolean b=false;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")|| currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+            if(customerCard == null||customerCard==""||customerCard.length()!=10||!onlyDigits(customerCard,customerCard.length()))
+                throw new InvalidCustomerCardException("Invalid customer card");    
+            
+           
+            b=db.attachCardToCustomer(customerCard,customerId);
+            
+        } catch (UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }
+        return b;
     }
 
     @Override
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
-        return false;
+        boolean b=false;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")|| currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+            if(customerCard == null||customerCard==""||customerCard.length()!=10||!onlyDigits(customerCard,customerCard.length()))
+                throw new InvalidCustomerCardException("Invalid customer card");    
+            CustomerCard c= db.getCustomerCard(customerCard);
+            if(c!=null && pointsToBeAdded+c.getPoints()<0){
+                int points=c.getPoints()+pointsToBeAdded;
+                db.updateCard(c.getCustomerId(), customerCard, points);
+                b=true;
+            }
+        } catch (UnauthorizedException e){
+            System.err.println(e.getMessage());
+        } catch (InvalidCustomerCardException e){
+            System.err.println(e.getMessage());
+        }    
+        
+        return true;
     }
 
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
-        return null;
+        int i=-1;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")|| currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+            i=db.getSaleTransactionNumber()+1;
+            db.insertSaleTransaction(i);
+        } catch (UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }
+        return i;
     }
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        return false;
+        boolean b=false;
+        try{
+            if(currentUser==null || !(currentUser.getRole().equals("Administrator")|| currentUser.getRole().equals("ShopManager")||currentUser.getRole().equals("Cashier")))
+                throw new UnauthorizedException("Unauthorized user");
+            if(transactionId==null || transactionId<=0)
+                throw new InvalidTransactionIdException("Invalid transaction ID");
+            ProductTypeImpl p=db.getProductTypeByBarCode(productCode);
+            SaleTransactionImpl s=db.getSaleTransaction(transactionId);
+            if(p!=null && s!= null){
+                
+                b=true;
+            }
+        }catch (UnauthorizedException e){
+            System.err.println(e.getMessage());
+        }catch (InvalidTransactionIdException e){
+            System.err.println(e.getMessage());
+        }
+        return b;
     }
 
     @Override

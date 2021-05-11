@@ -4,14 +4,16 @@ import it.polito.ezshop.data.EZShopDb;
 import it.polito.ezshop.data.EZShopInterface;
 import it.polito.ezshop.data.ProductTypeImpl;
 import it.polito.ezshop.data.UserImpl;
+import it.polito.ezshop.exceptions.UnauthorizedException;
 import it.polito.ezshop.view.EZShopGUI;
 
 public class EZShop {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnauthorizedException {
         EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
-        EZShopGUI gui = new EZShopGUI(ezShop);
-
+        //EZShopGUI gui = new EZShopGUI(ezShop);
+        String s=ezShop.createCard();
+        
         testDb();
 
     }
@@ -29,7 +31,7 @@ public class EZShop {
         ezshopDb.deleteUser(0);
         ezshopDb.getUser(1);
         ezshopDb.updateUserRights(1,"engineer");
-        
+
         ProductTypeImpl product0 = new  ProductTypeImpl(0, "panino alla nutella", "4562738492", 5, "nutella");
         ProductTypeImpl product1 = new  ProductTypeImpl(1, "formaggio", "45662738492", 6, "fontina");
         ProductTypeImpl product2 = new  ProductTypeImpl(2, "cioccolato", "45668492", 3, "fondente");
@@ -46,6 +48,7 @@ public class EZShop {
         ezshopDb.updateQuantity(2, 10);
         ezshopDb.updatePosition(2, "magazzino n3");
         
+
         
         
         ezshopDb.closeConnection();
