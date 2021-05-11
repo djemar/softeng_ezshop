@@ -391,7 +391,7 @@ public class EZShopDb {
 
     }
 
-    public void insertSaleTransaction(SaleTransactionImpl saleTransaction) {
+    public boolean insertSaleTransaction(SaleTransactionImpl saleTransaction) {
         // to be called by endSaleTransaction
         try {
             PreparedStatement pstmt =
@@ -405,7 +405,7 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            // TODO insert sold products (ticket entry) in sales table
+            // TODO insert sold products (ticket entry) in ticketentries table
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
@@ -420,7 +420,9 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     public void updateSaleTransaction(Integer transactionId,
@@ -432,13 +434,14 @@ public class EZShopDb {
             // update price
             // update db
             PreparedStatement pstmt = connection.prepareStatement(
-                    "update sales set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
+                    "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
-            pstmt.setInt(1, saleTransaction.getTicketNumber());
+            // TODO wtf
             pstmt.setDouble(2, saleTransaction.getDiscountRate());
             pstmt.setDouble(3, saleTransaction.getPrice());
+            pstmt.setInt(3, saleTransaction.getTicketNumber());
 
             pstmt.executeUpdate();
 
@@ -458,7 +461,7 @@ public class EZShopDb {
         }
     }
 
-    public void deleteSaleTransaction(Integer transactionId) {
+    public boolean deleteSaleTransaction(Integer transactionId) {
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("delete from saletransactions where id=?");
@@ -484,7 +487,9 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
 
@@ -502,12 +507,24 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
 
             s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
-                    rs.getDouble("price"));
+                    rs.getDouble("price"), rs.getString("status"));
+
+            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
+            rs = pstmt.executeQuery();
+            List<TicketEntry> entries = new ArrayList<>();
+            while (rs.next()) {
+                entries.add(new TicketEntryImpl(rs.getString("barcode"),
+                        rs.getString("productString"), rs.getInt("amount"),
+                        rs.getDouble("priceperunit"), rs.getDouble("discountRate")));
+            }
+            s.setEntries(entries);
+
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return null;
         }
         return s;
     }
