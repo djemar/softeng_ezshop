@@ -698,7 +698,7 @@ public class EZShop implements EZShopInterface {
         if (discountRate < 0 || discountRate >= 1.00)
             throw new InvalidDiscountRateException();
         //check su activetrans è corretto?
-        if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && this.activeSaleTransaction.getEntries().stream().anyMatch(x-> x.getBarCode().equals(productCode))) { 
+        if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && Utils.containsProduct(activeSaleTransaction.getEntries(), productCode)) { 
         	TicketEntry t = this.activeSaleTransaction.getEntries().stream().filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
         	t.setDiscountRate(discountRate);
         	done = true;
@@ -773,6 +773,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean deleteSaleTransaction(Integer saleNumber)
             throws InvalidTransactionIdException, UnauthorizedException {
+    	boolean isSuccess = false;
         Integer transactionId = saleNumber;
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
@@ -780,23 +781,20 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
-
-        boolean conn = ezshopDb.createConnection();
-        if (!conn)
-            return false;
-
-        if (ezshopDb.getSaleTransaction(transactionId).getStatus().equalsIgnoreCase("payed")) {
-            ezshopDb.closeConnection();
-            // TODO add items back to inventory? no info in interface doc cfr.
+        if(ezshopDb.createConnection()) {
+        SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
+        if (s != null && !s.getStatus().equalsIgnoreCase("payed")) {
+        	s.getEntries().stream().forEach(x->{
+        		int amount = - x.getAmount();
+        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(), amount);
+        	});
+        
+            // TODO add items back to inventory? no info in interface doc cfr.--> fatto
             // deleteReturnTransaction
-
-            return false;
-        }
-
-        boolean isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
-
+        	}
+        isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
         ezshopDb.closeConnection();
-
+        }
         return isSuccess;
     }
 
@@ -928,9 +926,23 @@ public class EZShop implements EZShopInterface {
 
         if (activeReturnTransaction == null)
             return false;
-        else
+        else {
             activeReturnTransaction.setStatus("closed");
-
+            // add items back to inventory
+            activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x->{
+        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(), x.getValue()); 		
+            });
+            //di s devo modificare il prezzo totale
+    		/*SaleTransactionImpl s = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
+            activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x->{
+            	String barcode = x.getKey();
+            	double amount = x.getValue();
+            	
+        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(), x.getValue()); 		
+            });*/
+    		
+    		
+        }
         // TODO decrease saleTransaction items and total price and add items back to inventory
 
         boolean conn = ezshopDb.createConnection();
@@ -992,7 +1004,6 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    //settare stato "payed"
     public double receiveCashPayment(Integer ticketNumber, double cash)
             throws InvalidTransactionIdException, InvalidPaymentException, UnauthorizedException {
         Integer transactionID = ticketNumber;
@@ -1020,6 +1031,7 @@ public class EZShop implements EZShopInterface {
             return -1;
         }
         // TODO insertBalanceOperation
+        s.setStatus("payed");
         return cash - totalPrice;
     }
 
@@ -1049,7 +1061,7 @@ public class EZShop implements EZShopInterface {
         // TODO check credit cards
 
         // TODO insertBalanceOperation
-
+        s.setStatus("payed");
         return true;
     }
 

@@ -11,7 +11,7 @@ public class ReturnTransaction {
 	private int amount;
 	private double total = 0;
 
-	private HashMap<String, Integer> returnedProductsMap;
+	private HashMap<String, Integer> returnedProductsMap = new HashMap<String, Integer>();
 
 	public ReturnTransaction(Integer returnId, String productCode, int amount) {
 		// this should be a useless constructor

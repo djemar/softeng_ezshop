@@ -46,6 +46,7 @@ public class Utils {
     }
 
     public static boolean containsProduct(final List<TicketEntry> list, final String productCode) {
+    	//list.stream().anyMatch(x-> x.getBarCode().equals(productCode)
         return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst()
                 .isPresent();
     }
