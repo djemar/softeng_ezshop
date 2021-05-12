@@ -206,24 +206,6 @@ public class EZShopDb {
         return u;
     	
     }
-    public Integer getUserId() {
-    	Integer id = 1;
-        try {
-        	Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from users");
-            if(rs.next() == true) 
-                id = rs.getInt("ID") + 1;
-            
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-    	System.out.println("prossimo id" +id);
-        return id;
-    	
-    }
-    
     public Integer insertProductType(ProductTypeImpl product) {
     	Integer id = -1;
         try {
@@ -511,6 +493,39 @@ public class EZShopDb {
         return done;
     }
 
+    public SaleTransactionImpl getSaleTransaction(Integer transactionId) {
+        SaleTransactionImpl s = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from saletransactions where id=?");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
+
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+
+
+            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
+            rs = pstmt.executeQuery();
+            List<TicketEntry> entries = new ArrayList<>();
+            while (rs.next()) {
+                entries.add(new TicketEntryImpl(rs.getString("barcode"),
+                        rs.getString("productString"), rs.getInt("amount"),
+                        rs.getDouble("priceperunit"), rs.getDouble("discountRate")));
+            }
+            s.setEntries(entries);
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return null;
+        }
+        return s;
+    }
     
     
     

@@ -373,8 +373,9 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
+
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
-        return false;
+    	return false;
     }
 
     @Override
@@ -403,8 +404,32 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
+    /**
+     * This method returns the number of points granted by a specific sale transaction.
+     * Every 10€ the number of points is increased by 1 (i.e. 19.99€ returns 1 point, 20.00€ returns 2 points).
+     * If the transaction with given id does not exist then the number of points returned should be -1.
+     * The transaction may be in any state (open, closed, payed).
+     * It can be invoked only after a user with role "Administrator", "ShopManager" or "Cashier" is logged in.
+     *
+     * @param transactionId the id of the Sale transaction
+     *
+     * @return the points of the sale (1 point for each 10€) or -1 if the transaction does not exists
+     *
+     * @throws InvalidTransactionIdException if the transaction id less than or equal to 0 or if it is null
+     * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
+     */
+
     public int computePointsForSale(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        return 0;
+    	int points = -1;
+    	if(transactionId == null || transactionId <= 0)
+        	throw new InvalidTransactionIdException();
+        if(this.loggedUser == null || (this.loggedUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.loggedUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.loggedUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        	throw new UnauthorizedException();
+        SaleTransaction s = ezshopDb.getSaleTransaction(transactionId);
+        if (s != null) {
+        	points = (int) (s.getPrice() / 10);
+        }
+        return points;
     }
 
     @Override
