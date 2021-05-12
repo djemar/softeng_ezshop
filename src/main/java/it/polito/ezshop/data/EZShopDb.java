@@ -223,25 +223,6 @@ public class EZShopDb {
         return u;
 
     }
-
-    public Integer getUserId() {
-        Integer id = 1;
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from users");
-            if (rs.next() == true)
-                id = rs.getInt("ID") + 1;
-
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-        System.out.println("prossimo id" + id);
-        return id;
-
-    }
-
     public Integer insertProductType(ProductTypeImpl product) {
         Integer id = -1;
         try {
@@ -311,24 +292,6 @@ public class EZShopDb {
         return done;
     }
 
-    public Integer getProductId() {
-        Integer id = 1;
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from producttypes");
-            if (rs.next() == true)
-                id = rs.getInt("ID") + 1;
-
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-        System.out.println(id);
-        return id;
-    }
-
-    // check
     public ProductTypeImpl getProductTypeById(Integer id) {
         ProductTypeImpl product = null;
         try {
@@ -532,21 +495,22 @@ public class EZShopDb {
         return pos;
     }
 
-    public void insertOrder(OrderImpl order) {
+    public Integer insertOrder(OrderImpl order) {
+    	int id = -1;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into orders values(?, ?, ?, ?, ?, ?)");
+                    connection.prepareStatement("insert into orders values(null, ?, ?, ?, ?, ?)",
+                            Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
-            pstmt.setInt(1, order.getOrderId());
-            pstmt.setString(2, order.getProductCode());
-            pstmt.setDouble(3, order.getPricePerUnit());
-            pstmt.setInt(4, order.getQuantity());
-            pstmt.setString(5, order.getStatus());
-            pstmt.setInt(6, order.getBalanceId());
+            pstmt.setString(1, order.getProductCode());
+            pstmt.setDouble(2, order.getPricePerUnit());
+            pstmt.setInt(3, order.getQuantity());
+            pstmt.setString(4, order.getStatus());
+            pstmt.setInt(5, order.getBalanceId());
 
             pstmt.executeUpdate();
-
+            id = (int) pstmt.getGeneratedKeys().getLong(1);
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from orders");
@@ -561,6 +525,7 @@ public class EZShopDb {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+        return id;
     }
 
     public boolean resetTables() {

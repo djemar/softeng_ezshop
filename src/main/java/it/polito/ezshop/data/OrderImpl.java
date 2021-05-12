@@ -8,12 +8,12 @@ public class OrderImpl implements Order {
 	private String status;
 	private Integer orderId;
 
-	public OrderImpl(Integer orderId, String productCode, double pricePerUnit, int quantity) {
+	public OrderImpl(String productCode, double pricePerUnit, int quantity) {
 		this.productCode = productCode;
 		this.pricePerUnit = pricePerUnit;
 		this.quantity = quantity;
 		this.status = "issued";
-		this.orderId = orderId;
+		this.balanceId = -1;
 	}
 	public OrderImpl(Integer orderId, String productCode, double pricePerUnit, int quantity, String status,Integer balanceId) {
 		this.balanceId = balanceId;
@@ -23,8 +23,6 @@ public class OrderImpl implements Order {
 		this.status = status;
 		this.orderId = orderId;
 	}
-
-
 	
 
 	@Override

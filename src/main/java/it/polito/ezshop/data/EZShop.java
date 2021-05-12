@@ -341,10 +341,10 @@ public class EZShop implements EZShopInterface {
             throw new InvalidQuantityException();
         if (pricePerUnit <= 0)
             throw new InvalidPricePerUnitException();
-        ezshopDb.createConnection();
-        // gestire id
-        // insertOrder(OrderImpl order)
-        ezshopDb.closeConnection();
+        if(ezshopDb.createConnection() && ezshopDb.getProductTypeByBarCode(productCode)!=null) {
+        	id = ezshopDb.insertOrder(new OrderImpl(productCode, pricePerUnit, quantity));
+        	ezshopDb.closeConnection();
+        }
         return id;
     }
 
@@ -666,7 +666,8 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
 
-            if (p != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && p.getQuantity() >= amount && activeSaleTransaction != null)
+            if (p != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") 
+            		&& p.getQuantity() >= amount && activeSaleTransaction != null)
             	activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(), p.getProductDescription(),
                         amount, p.getPricePerUnit(), -1));
             b = true;
@@ -689,17 +690,23 @@ public class EZShop implements EZShopInterface {
             double discountRate) throws InvalidTransactionIdException, InvalidProductCodeException,
             InvalidDiscountRateException, UnauthorizedException {
         boolean done = false;
-        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && 
+        		this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 
+        		&& this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
         	throw new UnauthorizedException();
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?") || !Utils.validateBarcode(productCode))
+        if (productCode == null || productCode.isEmpty() 
+        		|| !productCode.matches("-?\\d+(\\.\\d+)?") 
+        		|| !Utils.validateBarcode(productCode))
             throw new InvalidProductCodeException();
         if (discountRate < 0 || discountRate >= 1.00)
             throw new InvalidDiscountRateException();
         //check su activetrans è corretto?
-        if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && Utils.containsProduct(activeSaleTransaction.getEntries(), productCode)) { 
-        	TicketEntry t = this.activeSaleTransaction.getEntries().stream().filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
+        if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") 
+        		&& Utils.containsProduct(activeSaleTransaction.getEntries(), productCode)) { 
+        	TicketEntry t = this.activeSaleTransaction.getEntries().stream()
+        			.filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
         	t.setDiscountRate(discountRate);
         	done = true;
         }
@@ -711,7 +718,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidTransactionIdException, InvalidDiscountRateException,
             UnauthorizedException {
         boolean done = false;
-        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 
+        		&& this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 
+        		&& this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
         	throw new UnauthorizedException();
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
@@ -730,7 +739,9 @@ public class EZShop implements EZShopInterface {
     	int points = -1;
     	if(transactionId == null || transactionId <= 0)
         	throw new InvalidTransactionIdException();
-        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 
+        		&& this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 
+        		&& this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
         	throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
         	SaleTransaction s = ezshopDb.getSaleTransaction(transactionId);
