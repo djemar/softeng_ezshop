@@ -7,7 +7,7 @@ public class SaleTransactionImpl implements SaleTransaction {
 
 	Integer transactionID;
 	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();;
-	private double discountRate = -1;
+	private double discountRate = 0;
 	private double price;
 	// (open, closed, payed)
 	private String status = "open";
@@ -78,14 +78,19 @@ public class SaleTransactionImpl implements SaleTransaction {
 
 	@Override
 	public double getPrice() {
-
+		
+		
 		return this.price;
 	}
-
+	public void estimate_price(){
+		this.price=ticketsList.stream().
+		mapToDouble(a->a.getPricePerUnit()*a.getAmount()*(1-a.getDiscountRate())).sum()*(1-this.discountRate);
+	}
 	@Override
 	public void setPrice(double price) {
 
 		this.price = price;
 	}
+	
 
 }

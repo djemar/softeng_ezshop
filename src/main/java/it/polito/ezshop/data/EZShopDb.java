@@ -1010,13 +1010,14 @@ public class EZShopDb {
         // to be called by endSaleTransaction
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into saletransactions values(?, ?, ?)");
+                    connection.prepareStatement("insert into saletransactions values(?, ?, ?, ?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
             pstmt.setInt(1, saleTransaction.getTicketNumber());
             pstmt.setDouble(2, saleTransaction.getDiscountRate());
             pstmt.setDouble(3, saleTransaction.getPrice());
+            pstmt.setString(4, "CLOSED");
 
             pstmt.executeUpdate();
 
@@ -1112,7 +1113,7 @@ public class EZShopDb {
         SaleTransactionImpl s = null;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("select * from saletransactions where id=?");
+                    connection.prepareStatement("select * from saletransactions where ID=?");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
@@ -1124,7 +1125,7 @@ public class EZShopDb {
             s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
                     rs.getDouble("price"), rs.getString("status"));
 
-            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
+            pstmt = connection.prepareStatement("select * from saletransactions where id=?");
             rs = pstmt.executeQuery();
             List<TicketEntry> entries = new ArrayList<>();
             while (rs.next()) {
@@ -1359,19 +1360,19 @@ public class EZShopDb {
             } else if (from == null && to != null) {
                 pstmt = connection
                         .prepareStatement("select * from balanceoperation where date<=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(to));
             } else if (from != null && to == null) {
                 pstmt = connection
                         .prepareStatement("select * from balanceoperation where date>=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(from));
             } else {
                 pstmt = connection.prepareStatement(
                         "select * from balanceoperation where date>=(?) and date<=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(from));
+                pstmt.setDate(2, java.sql.Date.valueOf(to));
             }
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // date format?
-            pstmt.setDate(1, java.sql.Date.valueOf(from)); // the index refers to the ? in the
-                                                           // statement
-            pstmt.setDate(2, java.sql.Date.valueOf(to)); // the index refers to the ? in the
-                                                         // statement
 
             ResultSet rs;
             rs = pstmt.executeQuery();

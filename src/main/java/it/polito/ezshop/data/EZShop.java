@@ -282,8 +282,8 @@ public class EZShop implements EZShopInterface {
         if (productId == null || productId <= 0)
             throw new InvalidProductIdException();
         if (this.currentUser == null
-                || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
-                        && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
+                || !(currentUser.getRole().equals("Administrator")
+                || currentUser.getRole().equals("ShopManager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
             ProductType p = ezshopDb.getProductTypeById(productId);
@@ -378,9 +378,9 @@ public class EZShop implements EZShopInterface {
 
 
             BalanceOperationImpl balanceOp =
-                    new BalanceOperationImpl(bn, LocalDate.now(), quantity * pricePerUnit, "ORDER");
+                    new BalanceOperationImpl(bn, LocalDate.now(), quantity * pricePerUnit, "order");
             OrderImpl o =
-                    new OrderImpl(orderId + 1, productCode, pricePerUnit, quantity, "PAYED", bn);
+                    new OrderImpl(orderId + 1, productCode, pricePerUnit, quantity, "payed", bn);
             ezshopDb.insertOrder(o);
             ezshopDb.insertBalanceOperation(balanceOp);
             i = orderId;
@@ -405,15 +405,15 @@ public class EZShop implements EZShopInterface {
         if (b == false)
             return b;
         OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus() == "ISSUED" || o.getStatus() == "ORDERED")) {
+        if (o != null && (o.getStatus() == "issued" || o.getStatus() == "ordered")) {
             int bn = ezshopDb.getBalnceOperationsNumber() + 1;
 
 
             BalanceOperationImpl bo = new BalanceOperationImpl(bn, LocalDate.now(),
-                    o.getQuantity() * o.getPricePerUnit(), "ORDER");
+                    o.getQuantity() * o.getPricePerUnit(), "order");
             ezshopDb.insertBalanceOperation(bo);
             ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
-                    o.getQuantity(), "PAYED", bo.getBalanceId());
+                    o.getQuantity(), "payed", bo.getBalanceId());
             b = true;
         }
 
@@ -436,7 +436,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equals("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus() == "PAYED")) {
+        if (o != null && (o.getStatus() == "payed")) {
             if (o.getStatus() == "COMPLETED")
                 return true;
             b = ezshopDb.createConnection();
@@ -667,10 +667,12 @@ public class EZShop implements EZShopInterface {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
 
             if (p != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") 
-            		&& p.getQuantity() >= amount && activeSaleTransaction != null)
-            	activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(), p.getProductDescription(),
-                        amount, p.getPricePerUnit(), -1));
-            b = true;
+            		&& p.getQuantity() >= amount && activeSaleTransaction != null){
+                       activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(), p.getProductDescription(),
+                        amount, p.getPricePerUnit(), 0)); 
+                        activeSaleTransaction.estimate_price();
+                        b = true;
+                    }
         }
         ezshopDb.closeConnection();
 
@@ -708,6 +710,7 @@ public class EZShop implements EZShopInterface {
         	TicketEntry t = this.activeSaleTransaction.getEntries().stream()
         			.filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
         	t.setDiscountRate(discountRate);
+            activeSaleTransaction.estimate_price();
         	done = true;
         }
             return done;
@@ -729,6 +732,7 @@ public class EZShop implements EZShopInterface {
         if (activeSaleTransaction != null || !activeSaleTransaction.getStatus().equalsIgnoreCase("payed")) { 
         	this.activeSaleTransaction.setDiscountRate(discountRate);
         	done = true;
+            activeSaleTransaction.estimate_price();
         }
         return done;
     }
@@ -1157,6 +1161,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public List<BalanceOperation> getCreditsAndDebits(LocalDate from, LocalDate to)
             throws UnauthorizedException {
+        List<BalanceOperation> list= new ArrayList <BalanceOperation>();
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
@@ -1165,25 +1170,27 @@ public class EZShop implements EZShopInterface {
         if (!conn)
             return new ArrayList<BalanceOperation>();
 
-        List<BalanceOperation> list = ezshopDb.getAllBalanceOperations(from, to);
+        list = ezshopDb.getAllBalanceOperations(from, to);
 
         return list;
     }
 
     @Override
     public double computeBalance() throws UnauthorizedException {
+        double balance=0;
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         boolean conn = ezshopDb.createConnection();
-        if (!conn)
-            return -1;
+        if (conn){
+            List<BalanceOperation> list = ezshopDb.getAllBalanceOperations(null, null);
+            ezshopDb.closeConnection();
+            if (!list.isEmpty())
+                balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
+                   
+        }
+         return balance;
 
-        List<BalanceOperation> list = ezshopDb.getAllBalanceOperations(null, null);
-        if (list.isEmpty())
-            return -1;
-
-        double balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
-        return balance;
+        
     }
 }

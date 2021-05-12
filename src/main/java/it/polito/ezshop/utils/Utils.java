@@ -5,6 +5,8 @@ import it.polito.ezshop.data.*;
 
 public class Utils {
     public static boolean validateBarcode(String code) {
+        return true;
+        /*
         if (code.length() >= 12 && code.length() <= 14) {
             int sum = 0;
             for (int i = code.length() - 1; i >= 0; i--) {
@@ -19,6 +21,7 @@ public class Utils {
         }
 
         return false;
+        */
     }
 
     public static boolean isOnlyDigit(String string) {
