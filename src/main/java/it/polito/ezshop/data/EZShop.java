@@ -326,29 +326,6 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    /**
-     * This method issues an order of <quantity> units of product with given <productCode>, each
-     * unit will be payed <pricePerUnit> to the supplier. <pricePerUnit> can differ from the
-     * re-selling price of the same product. The product might have no location assigned in this
-     * step. It can be invoked only after a user with role "Administrator" or "ShopManager" is
-     * logged in.
-     *
-     * @param productCode the code of the product that we should order as soon as possible
-     * @param quantity the quantity of product that we should order
-     * @param pricePerUnit the price to correspond to the supplier (!= than the resale price of the
-     *        shop) per unit of product
-     *
-     * @return the id of the order (> 0) -1 if the product does not exists, if there are problems
-     *         with the db
-     *
-     * @throws InvalidProductCodeException if the productCode is not a valid bar code, if it is null
-     *         or if it is empty
-     * @throws InvalidQuantityException if the quantity is less than or equal to 0
-     * @throws InvalidPricePerUnitException if the price per unit of product is less than or equal
-     *         to 0
-     * @throws UnauthorizedException if there is no logged user or if it has not the rights to
-     *         perform the operation
-     */
     public Integer issueOrder(String productCode, int quantity, double pricePerUnit)
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
@@ -993,15 +970,7 @@ public class EZShop implements EZShopInterface {
         ezshopDb.closeConnection();
 
         return isSuccess;
-    }    			/* if(s.getDiscountRate() != -1) {
-		 Double discount = s.getDiscountRate();
-	 }*/
-    /**    			
-    			if(x.getDiscountRate()!= -1) 
-    				 double discount = x.getDiscountRate();
-    			 return x.getAmount() * x.getPricePerUnit() - x.getAmount() * x.getPricePerUnit() * discount; 
-    			 									})
-    		.sum()*/
+    }    		
     
     public void setFinalPrice(SaleTransactionImpl s) {
     	if(s.getEntries().isEmpty())
