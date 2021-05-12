@@ -7,7 +7,7 @@ public class SaleTransactionImpl implements SaleTransaction {
 
 	Integer transactionID;
 	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();;
-	private double discountRate;
+	private double discountRate = -1;
 	private double price;
 	// (open, closed, payed)
 	private String status = "open";

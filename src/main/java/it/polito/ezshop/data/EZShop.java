@@ -4,14 +4,17 @@ import it.polito.ezshop.exceptions.*;
 import it.polito.ezshop.utils.Utils;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EZShop implements EZShopInterface {
     EZShopDb ezshopDb = new EZShopDb();
     User currentUser = null;
     SaleTransactionImpl activeSaleTransaction = null;
     ReturnTransaction activeReturnTransaction = null;
-    List<TicketEntryImpl> ticketEntries = new ArrayList<TicketEntryImpl>();
+    
 
     // //Michele
     // UserImpl currentUser = new UserImpl("michele", "Soldi", "Administrator", 3);
@@ -667,7 +670,6 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection() && (i = ezshopDb.SaleTransactionNumber() + 1) > 0) {
 
             activeSaleTransaction = new SaleTransactionImpl(i);
-            ticketEntries.clear();
             ezshopDb.closeConnection();
         }
         return i;
@@ -687,9 +689,9 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
 
-            if (p != null && p.getQuantity() >= amount && activeSaleTransaction != null)
-                ticketEntries.add(new TicketEntryImpl(p.getBarCode(), p.getProductDescription(),
-                        amount, p.getPricePerUnit(), 0));
+            if (p != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && p.getQuantity() >= amount && activeSaleTransaction != null)
+            	activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(), p.getProductDescription(),
+                        amount, p.getPricePerUnit(), -1));
             b = true;
         }
         ezshopDb.closeConnection();
@@ -709,20 +711,59 @@ public class EZShop implements EZShopInterface {
     public boolean applyDiscountRateToProduct(Integer transactionId, String productCode,
             double discountRate) throws InvalidTransactionIdException, InvalidProductCodeException,
             InvalidDiscountRateException, UnauthorizedException {
-        return false;
+        boolean done = false;
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        	throw new UnauthorizedException();
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?") || !Utils.validateBarcode(productCode))
+            throw new InvalidProductCodeException();
+        if (discountRate < 0 || discountRate >= 1.00)
+            throw new InvalidDiscountRateException();
+        //check su activetrans è corretto?
+        if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") && this.activeSaleTransaction.getEntries().stream().anyMatch(x-> x.getBarCode().equals(productCode))) { 
+        	TicketEntry t = this.activeSaleTransaction.getEntries().stream().filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
+        	t.setDiscountRate(discountRate);
+        	done = true;
+        }
+            return done;
     }
 
     @Override
     public boolean applyDiscountRateToSale(Integer transactionId, double discountRate)
             throws InvalidTransactionIdException, InvalidDiscountRateException,
             UnauthorizedException {
-        return false;
+        boolean done = false;
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        	throw new UnauthorizedException();
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (discountRate < 0 || discountRate >= 1.00)
+            throw new InvalidDiscountRateException();
+        if (activeSaleTransaction != null || !activeSaleTransaction.getStatus().equalsIgnoreCase("payed")) { 
+        	this.activeSaleTransaction.setDiscountRate(discountRate);
+        	done = true;
+        }
+        return done;
     }
 
     @Override
     public int computePointsForSale(Integer transactionId)
             throws InvalidTransactionIdException, UnauthorizedException {
-        return 0;
+    	int points = -1;
+    	if(transactionId == null || transactionId <= 0)
+        	throw new InvalidTransactionIdException();
+        if(this.currentUser == null || (this.currentUser.getRole().compareToIgnoreCase("Administrator")!=0 && this.currentUser.getRole().compareToIgnoreCase("ShopManager")!=0 && this.currentUser.getRole().compareToIgnoreCase("Cashier")!=0))
+        	throw new UnauthorizedException();
+        if (ezshopDb.createConnection()) {
+        	SaleTransaction s = ezshopDb.getSaleTransaction(transactionId);
+        	if (s != null || this.activeSaleTransaction != null) 
+            	points = (int) (s.getPrice() / 10);
+            ezshopDb.closeConnection();
+        }
+
+        return points;
+
     }
 
     @Override
@@ -952,9 +993,37 @@ public class EZShop implements EZShopInterface {
         ezshopDb.closeConnection();
 
         return isSuccess;
+    }    			/* if(s.getDiscountRate() != -1) {
+		 Double discount = s.getDiscountRate();
+	 }*/
+    /**    			
+    			if(x.getDiscountRate()!= -1) 
+    				 double discount = x.getDiscountRate();
+    			 return x.getAmount() * x.getPricePerUnit() - x.getAmount() * x.getPricePerUnit() * discount; 
+    			 									})
+    		.sum()*/
+    
+    public void setFinalPrice(SaleTransactionImpl s) {
+    	if(s.getEntries().isEmpty())
+    		s.setPrice(0);
+    	else {
+    		double price = s.getEntries().stream().mapToDouble(x->{
+    			double discount;
+    			if(x.getDiscountRate() != -1)
+    				discount = x.getDiscountRate();
+    			else
+    				discount = 0;
+    			return x.getAmount() * x.getPricePerUnit() - x.getAmount() * x.getPricePerUnit() * discount; 
+    		})
+    				.sum();
+    		if(s.getDiscountRate() != -1)
+    			price = price - s.getDiscountRate() * price;
+    		 s.setPrice(price);
+    	}
     }
 
     @Override
+    //settare stato "payed"
     public double receiveCashPayment(Integer ticketNumber, double cash)
             throws InvalidTransactionIdException, InvalidPaymentException, UnauthorizedException {
         Integer transactionID = ticketNumber;
@@ -975,6 +1044,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
+        setFinalPrice(s);
         Double totalPrice = s.getPrice();
         if (cash < totalPrice) {
             ezshopDb.closeConnection();
