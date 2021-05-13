@@ -15,6 +15,13 @@ public class BalanceOperationImpl implements BalanceOperation {
 		this.type = type;
 	}
 
+
+	public BalanceOperationImpl(LocalDate date, double money, String type) {
+		this.date = date;
+		this.money = money;
+		this.type = type;
+	}
+
 	@Override
 	public int getBalanceId() {
 		return balanceId;
