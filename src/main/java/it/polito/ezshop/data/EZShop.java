@@ -1179,8 +1179,11 @@ public class EZShop implements EZShopInterface {
         boolean conn = ezshopDb.createConnection();
         if (!conn)
             return false;
-
-        if (toBeAdded + computeBalance() <= 0)
+        List<BalanceOperation> list = ezshopDb.getAllBalanceOperations(null, null);
+        double balance = 0;
+        if (!list.isEmpty())
+            balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
+        if (toBeAdded + balance <= 0)
             return false;
 
         boolean isSuccess = ezshopDb.recordBalanceUpdate(toBeAdded);

@@ -1374,7 +1374,7 @@ public class EZShopDb {
                     .prepareStatement("insert into balanceoperation values (null, ?,?,?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
 
-            pstmt.setDate(1, Date.valueOf("01/01/2012"));
+            pstmt.setDate(1, Date.valueOf(LocalDate.now().toString()));
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
             pstmt.setString(3, type);
@@ -1389,14 +1389,13 @@ public class EZShopDb {
 
             while (rs.next()) {
                 // read the result set
-                System.out.println("date = " + rs.getDate("date") + ", money = "
+                System.out.println("date = " + rs.getDate("data") + ", money = "
                         + rs.getDouble("money") + ", type = " + rs.getString("type"));
             }
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
-            System.out.println("RECORD BALANCE!!!!!!!!!!!");
             System.err.println(e.getMessage());
             return false;
         }
@@ -1414,17 +1413,17 @@ public class EZShopDb {
                 pstmt = connection.prepareStatement("select * from balanceoperation");
             } else if (from == null && to != null) {
                 pstmt = connection
-                        .prepareStatement("select * from balanceoperation where date<=(?)");
-                pstmt.setDate(1, java.sql.Date.valueOf(to));
+                        .prepareStatement("select * from balanceoperation where data<=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(to.toString()));
             } else if (from != null && to == null) {
                 pstmt = connection
-                        .prepareStatement("select * from balanceoperation where date>=(?)");
-                pstmt.setDate(1, java.sql.Date.valueOf(from));
+                        .prepareStatement("select * from balanceoperation where data>=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
             } else {
                 pstmt = connection.prepareStatement(
-                        "select * from balanceoperation where date>=(?) and date<=(?)");
-                pstmt.setDate(1, java.sql.Date.valueOf(from));
-                pstmt.setDate(2, java.sql.Date.valueOf(to));
+                        "select * from balanceoperation where data>=(?) and data<=(?)");
+                pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
+                pstmt.setDate(2, java.sql.Date.valueOf(to.toString()));
             }
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // date format?
@@ -1433,9 +1432,8 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 // read the result set
-                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
+                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("data").toLocalDate(),
                         rs.getDouble("money"), rs.getString("type")));
-                return new ArrayList<BalanceOperation>();
             }
 
         } catch (SQLException e) {
