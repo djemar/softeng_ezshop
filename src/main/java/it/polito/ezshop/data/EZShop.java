@@ -380,7 +380,7 @@ public class EZShop implements EZShopInterface {
             BalanceOperationImpl balanceOp =
                     new BalanceOperationImpl(bn, LocalDate.now(), quantity * pricePerUnit, "order");
             OrderImpl o =
-                    new OrderImpl(orderId + 1, productCode, pricePerUnit, quantity, "payed", bn);
+                    new OrderImpl(orderId + 1, productCode, pricePerUnit, quantity, "PAYED", bn);
             ezshopDb.insertOrder(o);
             ezshopDb.insertBalanceOperation(balanceOp);
             i = orderId;
@@ -405,7 +405,7 @@ public class EZShop implements EZShopInterface {
         if (b == false)
             return b;
         OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus() == "issued" || o.getStatus() == "ordered")) {
+        if (o != null && (o.getStatus() == "ISSUED" || o.getStatus() == "ordered")) {
             int bn = ezshopDb.getBalnceOperationsNumber() + 1;
 
 
@@ -413,7 +413,7 @@ public class EZShop implements EZShopInterface {
                     o.getQuantity() * o.getPricePerUnit(), "order");
             ezshopDb.insertBalanceOperation(bo);
             ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
-                    o.getQuantity(), "payed", bo.getBalanceId());
+                    o.getQuantity(), "PAYED", bo.getBalanceId());
             b = true;
         }
 
@@ -436,7 +436,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus() == "payed")) {
+        if (o != null && (o.getStatus() == "PAYED")) {
             if (o.getStatus() == "COMPLETED")
                 return true;
             b = ezshopDb.createConnection();
@@ -729,7 +729,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidTransactionIdException();
         if (discountRate < 0 || discountRate >= 1.00)
             throw new InvalidDiscountRateException();
-        if (activeSaleTransaction != null || !activeSaleTransaction.getStatus().equalsIgnoreCase("payed")) { 
+        if (activeSaleTransaction != null || !activeSaleTransaction.getStatus().equalsIgnoreCase("PAYED")) { 
         	this.activeSaleTransaction.setDiscountRate(discountRate);
         	done = true;
             activeSaleTransaction.estimate_price();
@@ -799,7 +799,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         if(ezshopDb.createConnection()) {
         SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
-        if (s != null && !s.getStatus().equalsIgnoreCase("payed")) {
+        if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
         	s.getEntries().stream().forEach(x->{
         		int amount = - x.getAmount();
         		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(), amount);
@@ -829,7 +829,7 @@ public class EZShop implements EZShopInterface {
             return null;
 
         SaleTransactionImpl saleTransaction = ezshopDb.getSaleTransaction(transactionId);
-        if (saleTransaction.getStatus().equalsIgnoreCase("payed")) {
+        if (saleTransaction.getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
             return null;
         }
@@ -856,7 +856,7 @@ public class EZShop implements EZShopInterface {
         if (!conn)
             return -1;
 
-        if (!(ezshopDb.getSaleTransaction(transactionId)).getStatus().equalsIgnoreCase("payed")) {
+        if (!(ezshopDb.getSaleTransaction(transactionId)).getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
             return -1;
         }
@@ -985,7 +985,7 @@ public class EZShop implements EZShopInterface {
         if (!conn)
             return false;
 
-        if (ezshopDb.getReturnTransaction(returnId).getStatus().equalsIgnoreCase("payed")) {
+        if (ezshopDb.getReturnTransaction(returnId).getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
             return false;
         }
@@ -1028,7 +1028,7 @@ public class EZShop implements EZShopInterface {
             return -1;
         }
         // TODO insertBalanceOperation
-        s.setStatus("payed");
+        s.setStatus("PAYED");
         return cash - totalPrice;
     }
 
@@ -1059,7 +1059,7 @@ public class EZShop implements EZShopInterface {
         // TODO check credit cards
 
         // TODO insertBalanceOperation
-        s.setStatus("payed");
+        s.setStatus("PAYED");
         return true;
         }
     }

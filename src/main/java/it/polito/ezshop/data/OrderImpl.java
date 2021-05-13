@@ -12,7 +12,7 @@ public class OrderImpl implements Order {
 		this.productCode = productCode;
 		this.pricePerUnit = pricePerUnit;
 		this.quantity = quantity;
-		this.status = "issued";
+		this.status = "ISSUED";
 		this.balanceId = -1;
 	}
 	public OrderImpl(Integer orderId, String productCode, double pricePerUnit, int quantity, String status,Integer balanceId) {
