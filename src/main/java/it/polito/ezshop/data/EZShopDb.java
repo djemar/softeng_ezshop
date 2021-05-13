@@ -1042,9 +1042,9 @@ public class EZShopDb {
     }
 
     public void updateSaleTransaction(Integer transactionId,
-            HashMap<String, Integer> returnedProducts, double diffPrice) {
+            HashMap<String, Integer> returnedProducts, double diffPrice, boolean added) {
         try {
-            SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
+            //SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
             // get sales
             // update amount
             // update price
@@ -1060,19 +1060,26 @@ public class EZShopDb {
             pstmt.executeUpdate();
             
             //query to update amount ticket
-            /*returnedProducts.entrySet().stream().forEach(x-> {
-            pstmt = connection.prepareStatement(
-                    "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
+            returnedProducts.entrySet().stream().forEach(x-> {
+            try {
+            	PreparedStatement pstm = connection.prepareStatement(
+				        "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
-            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            // the index refers to the ? in the statement
-            // TODO wtf
-            pstmt.setInt(1, x.getValue());
-            pstmt.setInt(2, transactionId);
-            pstmt.setString(3, x.getKey());
+	            pstm.setQueryTimeout(30); // set timeout to 30 sec.
+	            // the index refers to the ? in the statement
+	            // TODO wtf
+	            //nel caso di deletereturn devo riaggiungere amount mentre in endreturn devo togliere amount
+	            pstm.setInt(1, added ? -x.getValue() : x.getValue());
+	            pstm.setInt(2, transactionId);
+	            pstm.setString(3, x.getKey());
 
-            pstmt.executeUpdate();
-        });*/
+	            pstm.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+        });
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from saletransactions");
@@ -1258,7 +1265,7 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
 
             r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
-
+            // table returnentries??
             pstmt = connection.prepareStatement("select * from returnentries where id=?");
             rs = pstmt.executeQuery();
             while (rs.next()) {
