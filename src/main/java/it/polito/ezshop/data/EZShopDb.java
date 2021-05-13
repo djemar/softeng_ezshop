@@ -1,5 +1,6 @@
 package it.polito.ezshop.data;
 
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -223,6 +224,7 @@ public class EZShopDb {
         return u;
 
     }
+
     public Integer insertProductType(ProductTypeImpl product) {
         Integer id = -1;
         try {
@@ -496,7 +498,7 @@ public class EZShopDb {
     }
 
     public Integer insertOrder(OrderImpl order) {
-    	int id = -1;
+        int id = -1;
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("insert into orders values(null, ?, ?, ?, ?, ?)",
@@ -566,7 +568,7 @@ public class EZShopDb {
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
-            rs = stmt.executeQuery("select * from orderds");
+            rs = stmt.executeQuery("select * from orders");
 
             while (rs.next()) {
                 // read the result set
@@ -590,7 +592,7 @@ public class EZShopDb {
             ResultSet rs;
             pstmt.setInt(1, orderId); // Set the Bind Value
             rs = pstmt.executeQuery();
-            OrderImpl o = new OrderImpl(rs.getInt("orderId"), rs.getString("productCode"),
+            OrderImpl o = new OrderImpl(rs.getInt("id"), rs.getString("productCode"),
                     rs.getDouble("pricePerUnit"), rs.getInt("quantity"), rs.getString("status"),
                     rs.getInt("balanceId"));
             System.out.println(o.getOrderId());
@@ -665,7 +667,7 @@ public class EZShopDb {
         return orders;
     }
 
-    public int getBalnceOperationsNumber() {
+    public int getBalanceOperationsNumber() {
         int i = 0;
         try {
             PreparedStatement pstmt = connection
@@ -682,18 +684,18 @@ public class EZShopDb {
         return -1;
     }
 
-    public boolean insertBalanceOperation(BalanceOperationImpl b) {
-        boolean boo = false;
+    public int insertBalanceOperation(BalanceOperationImpl b) {
+        int id = -1;
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into balance values(?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into balance values(null, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
-            pstmt.setInt(1, b.getBalanceId());
             pstmt.setDate(2, java.sql.Date.valueOf(b.getDate()));
             pstmt.setDouble(3, b.getMoney());
             pstmt.setString(4, b.getType());
             pstmt.executeUpdate();
+            id = (int) pstmt.getGeneratedKeys().getLong(1);
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
@@ -703,13 +705,13 @@ public class EZShopDb {
                 // read the result set
                 System.out.println("balance ID = " + rs.getInt("ID"));
             }
-            boo = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return -1;
         }
-        return boo;
+        return id;
     }
 
     public int getCustomerNumber() {
@@ -732,11 +734,11 @@ public class EZShopDb {
         Integer customerId = -1;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into customers values(NULL,(?),0,NULL)",
+                    connection.prepareStatement("insert into customers values((?),NULL,0,NULL)",
                             Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
-            customerId = (int) pstmt.getGeneratedKeys().getLong(1);
+            // customerId = (int) pstmt.getGeneratedKeys().getLong(1);
             pstmt.setString(1, c.getCustomerName());
 
             pstmt.executeUpdate();
@@ -1041,16 +1043,45 @@ public class EZShopDb {
         return true;
     }
 
-    public void updateSaleTransaction(Integer transactionId,
+    public boolean payForSaleTransaction(Integer transactionID) {
+        boolean done = false;
+        try {
+            PreparedStatement pstmt = connection
+                    .prepareStatement("update saletransactions set status = (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, "PAYED"); // the index refers to the ? in the statement
+            pstmt.setInt(2, transactionID);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("description = " + rs.getString("description") + ", id = "
+                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+            done = true;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return done;
+    }
+
+    public boolean updateSaleTransaction(Integer transactionId,
             HashMap<String, Integer> returnedProducts, double diffPrice, boolean added) {
         try {
-            //SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
+            // SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
             // get sales
             // update amount
             // update price
             // update db
-            
-            //query to update sale transaction price
+
+            // query to update sale transaction price
             PreparedStatement pstmt = connection.prepareStatement(
                     "update saletransactions set price = price - (?) where id = (?)");
 
@@ -1058,28 +1089,29 @@ public class EZShopDb {
             pstmt.setDouble(1, diffPrice);
             pstmt.setDouble(2, transactionId);
             pstmt.executeUpdate();
-            
-            //query to update amount ticket
-            returnedProducts.entrySet().stream().forEach(x-> {
-            try {
-            	PreparedStatement pstm = connection.prepareStatement(
-				        "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
-	            pstm.setQueryTimeout(30); // set timeout to 30 sec.
-	            // the index refers to the ? in the statement
-	            // TODO wtf
-	            //nel caso di deletereturn devo riaggiungere amount mentre in endreturn devo togliere amount
-	            pstm.setInt(1, added ? -x.getValue() : x.getValue());
-	            pstm.setInt(2, transactionId);
-	            pstm.setString(3, x.getKey());
+            // query to update amount ticket
+            returnedProducts.entrySet().stream().forEach(x -> {
+                try {
+                    PreparedStatement pstm = connection.prepareStatement(
+                            "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
-	            pstm.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                    pstm.setQueryTimeout(30); // set timeout to 30 sec.
+                    // the index refers to the ? in the statement
+                    // TODO wtf
+                    // nel caso di deletereturn devo riaggiungere amount mentre in endreturn devo
+                    // togliere amount
+                    pstm.setInt(1, added ? -x.getValue() : x.getValue());
+                    pstm.setInt(2, transactionId);
+                    pstm.setString(3, x.getKey());
 
-        });
+                    pstm.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+            });
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from saletransactions");
@@ -1093,7 +1125,9 @@ public class EZShopDb {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     public boolean deleteSaleTransaction(Integer transactionId) {
@@ -1165,7 +1199,7 @@ public class EZShopDb {
     }
 
     public Integer newReturnTransactionId() {
-        Integer id = 1;
+        Integer id = -1;
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("select MAX(ID) as ID from returntransactions");
@@ -1413,5 +1447,7 @@ public class EZShopDb {
         return list;
 
     }
+
+
 }
 
