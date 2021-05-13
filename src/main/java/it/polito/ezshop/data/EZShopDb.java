@@ -1336,21 +1336,22 @@ public class EZShopDb {
 
     public boolean recordBalanceUpdate(double toBeAdded) {
         try {
-            PreparedStatement pstmt = connection.prepareStatement(
-                    "insert into balanceoperation(date, money, type) values=(?,?,?)");
+            PreparedStatement pstmt = connection
+                    .prepareStatement("insert into balanceoperation values (null, ?,?,?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
 
-            pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            pstmt.setDate(1, Date.valueOf("01/01/2012"));
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
             pstmt.setString(3, type);
             int count = pstmt.executeUpdate();
-            if (count < 0)
-                return false;
+            /*
+             * if (count < 0) return false;
+             */
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
-            rs = stmt.executeQuery("select * from balanceoperations");
+            rs = stmt.executeQuery("select * from balanceoperation");
 
             while (rs.next()) {
                 // read the result set
@@ -1361,6 +1362,7 @@ public class EZShopDb {
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
+            System.out.println("RECORD BALANCE!!!!!!!!!!!");
             System.err.println(e.getMessage());
             return false;
         }
