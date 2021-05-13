@@ -10,8 +10,6 @@ public class EZShop {
         public static void main(String[] args) throws UnauthorizedException {
                 EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
                 EZShopGUI gui = new EZShopGUI(ezShop);
-                // EZShopGUI gui = new EZShopGUI(ezShop);
-                String s = ezShop.createCard();
 
                 testDb();
 
