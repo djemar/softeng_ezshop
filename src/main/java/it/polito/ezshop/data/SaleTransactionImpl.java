@@ -78,19 +78,20 @@ public class SaleTransactionImpl implements SaleTransaction {
 
 	@Override
 	public double getPrice() {
-		
-		
 		return this.price;
 	}
 	public void estimate_price(){
-		this.price=ticketsList.stream().
-		mapToDouble(a->a.getPricePerUnit()*a.getAmount()*(1-a.getDiscountRate())).sum()*(1-this.discountRate);
+		if(this.ticketsList.isEmpty())
+			this.setPrice(0);
+		else {
+			this.price=ticketsList.stream().
+				mapToDouble(a->a.getPricePerUnit()*a.getAmount()*(1-a.getDiscountRate())).sum()*(1-this.discountRate);
+		}
 	}
 	@Override
 	public void setPrice(double price) {
 
 		this.price = price;
 	}
-	
 
 }

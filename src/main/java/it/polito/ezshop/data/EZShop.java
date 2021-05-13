@@ -282,8 +282,8 @@ public class EZShop implements EZShopInterface {
         if (productId == null || productId <= 0)
             throw new InvalidProductIdException();
         if (this.currentUser == null
-                || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")))
+                || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
             ProductType p = ezshopDb.getProductTypeById(productId);
@@ -364,8 +364,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidQuantityException("Invalid Quantity");
         if (pricePerUnit <= 0)
             throw new InvalidPricePerUnitException("Invalid price per unit");
-        if (currentUser == null || currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager"))
+        if (currentUser == null || currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager"))
             throw new UnauthorizedException("Unauthorized user");
         boolean b = ezshopDb.createConnection();
         if (b == false)
@@ -398,8 +398,8 @@ public class EZShop implements EZShopInterface {
         if (orderId <= 0 || orderId == null)
             throw new InvalidOrderIdException("Invalid order id");
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         b = ezshopDb.createConnection();
         if (b == false)
@@ -432,8 +432,8 @@ public class EZShop implements EZShopInterface {
         if (orderId <= 0 || orderId == null)
             throw new InvalidOrderIdException("Invalid order id");
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         OrderImpl o = ezshopDb.getOrder(orderId);
         if (o != null && (o.getStatus() == "payed")) {
@@ -460,8 +460,8 @@ public class EZShop implements EZShopInterface {
     public List<Order> getAllOrders() throws UnauthorizedException {
         List<Order> list = null;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
             list = ezshopDb.getAllOrders();
@@ -475,9 +475,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidCustomerNameException, UnauthorizedException {
         int i = -1;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (customerName == null || customerName == "")
             throw new InvalidCustomerNameException();
@@ -498,9 +498,9 @@ public class EZShop implements EZShopInterface {
             InvalidCustomerIdException, UnauthorizedException {
         boolean b = false;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (newCustomerName == null || newCustomerName == "")
             throw new InvalidCustomerNameException();
@@ -519,9 +519,9 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean deleteCustomer(Integer id)
             throws InvalidCustomerIdException, UnauthorizedException {
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (id == null || id <= 0)
             throw new InvalidCustomerIdException("Invalid customer id ");
@@ -538,9 +538,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidCustomerIdException, UnauthorizedException {
         Customer c = null;
         try {
-            if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                    || currentUser.getRole().equals("ShopManager")
-                    || currentUser.getRole().equals("Cashier")))
+            if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                    || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                    || currentUser.getRole().equalsIgnoreCase("Cashier")))
                 throw new UnauthorizedException("Unauthorized user");
             if (id == null || id <= 0)
                 throw new InvalidCustomerCardException("Invalid customer id");
@@ -557,9 +557,9 @@ public class EZShop implements EZShopInterface {
     public List<Customer> getAllCustomers() throws UnauthorizedException {
         List<Customer> l = null;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
             l = ezshopDb.getAllCustomer();
@@ -572,9 +572,9 @@ public class EZShop implements EZShopInterface {
     public String createCard() throws UnauthorizedException {
         String c = null;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
 
 
@@ -596,9 +596,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidCustomerIdException, InvalidCustomerCardException, UnauthorizedException {
         boolean b = false;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (customerCard == null || customerCard == "" || customerCard.length() != 10
                 || !Utils.isOnlyDigit(customerCard))
@@ -617,9 +617,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidCustomerCardException, UnauthorizedException {
         boolean b = false;
 
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (customerCard == null || customerCard == "" || customerCard.length() != 10
                 || !Utils.isOnlyDigit(customerCard))
@@ -640,9 +640,9 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
         int i = -1;
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection() && (i = ezshopDb.SaleTransactionNumber() + 1) > 0) {
 
@@ -657,9 +657,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidTransactionIdException, InvalidProductCodeException,
             InvalidQuantityException, UnauthorizedException {
         boolean b = false;
-        if (currentUser == null || !(currentUser.getRole().equals("Administrator")
-                || currentUser.getRole().equals("ShopManager")
-                || currentUser.getRole().equals("Cashier")))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException("Invalid transaction ID");
@@ -708,7 +708,7 @@ public class EZShop implements EZShopInterface {
         if(activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open") 
         		&& Utils.containsProduct(activeSaleTransaction.getEntries(), productCode)) { 
         	TicketEntry t = this.activeSaleTransaction.getEntries().stream()
-        			.filter(x-> x.getBarCode().equals(productCode)).collect(Collectors.toList()).get(0);
+        			.filter(x-> x.getBarCode().equalsIgnoreCase(productCode)).collect(Collectors.toList()).get(0);
         	t.setDiscountRate(discountRate);
             activeSaleTransaction.estimate_price();
         	done = true;
@@ -771,9 +771,10 @@ public class EZShop implements EZShopInterface {
         if (activeSaleTransaction == null
                 || activeSaleTransaction.getStatus().equalsIgnoreCase("closed"))
             return false;
-        else
+        else {
             activeSaleTransaction.setStatus("closed");
-
+            activeSaleTransaction.estimate_price();
+        }
         // TODO decrease items in inventory
 
         boolean conn = ezshopDb.createConnection();
@@ -998,25 +999,6 @@ public class EZShop implements EZShopInterface {
 
         return isSuccess;
     }    		
-    
-    public void setFinalPrice(SaleTransactionImpl s) {
-    	if(s.getEntries().isEmpty())
-    		s.setPrice(0);
-    	else {
-    		double price = s.getEntries().stream().mapToDouble(x->{
-    			double discount;
-    			if(x.getDiscountRate() != -1)
-    				discount = x.getDiscountRate();
-    			else
-    				discount = 0;
-    			return x.getAmount() * x.getPricePerUnit() - x.getAmount() * x.getPricePerUnit() * discount; 
-    		})
-    				.sum();
-    		if(s.getDiscountRate() != -1)
-    			price = price - s.getDiscountRate() * price;
-    		 s.setPrice(price);
-    	}
-    }
 
     @Override
     public double receiveCashPayment(Integer ticketNumber, double cash)
@@ -1039,7 +1021,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-        setFinalPrice(s);
+        s.estimate_price();
         Double totalPrice = s.getPrice();
         if (cash < totalPrice) {
             ezshopDb.closeConnection();
@@ -1072,12 +1054,14 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return false;
         }
-
+        else {
+        s.estimate_price();
         // TODO check credit cards
 
         // TODO insertBalanceOperation
         s.setStatus("payed");
         return true;
+        }
     }
 
     @Override
