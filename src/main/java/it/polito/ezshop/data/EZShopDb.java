@@ -1042,25 +1042,37 @@ public class EZShopDb {
     }
 
     public void updateSaleTransaction(Integer transactionId,
-            HashMap<String, Integer> returnedProducts) {
+            HashMap<String, Integer> returnedProducts, double diffPrice) {
         try {
             SaleTransactionImpl saleTransaction = getSaleTransaction(transactionId);
             // get sales
             // update amount
             // update price
             // update db
+            
+            //query to update sale transaction price
             PreparedStatement pstmt = connection.prepareStatement(
+                    "update saletransactions set price = price - (?) where id = (?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setDouble(1, diffPrice);
+            pstmt.setDouble(2, transactionId);
+            pstmt.executeUpdate();
+            
+            //query to update amount ticket
+            /*returnedProducts.entrySet().stream().forEach(x-> {
+            pstmt = connection.prepareStatement(
                     "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
             // TODO wtf
-            pstmt.setDouble(2, saleTransaction.getDiscountRate());
-            pstmt.setDouble(3, saleTransaction.getPrice());
-            pstmt.setInt(3, saleTransaction.getTicketNumber());
+            pstmt.setInt(1, x.getValue());
+            pstmt.setInt(2, transactionId);
+            pstmt.setString(3, x.getKey());
 
             pstmt.executeUpdate();
-
+        });*/
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from saletransactions");

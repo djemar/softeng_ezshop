@@ -942,23 +942,7 @@ public class EZShop implements EZShopInterface {
 
         if (activeReturnTransaction == null)
             return false;
-        else {
-            activeReturnTransaction.setStatus("closed");
-            // add items back to inventory
-            activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x->{
-        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(), x.getValue()); 		
-            });
-            //di s devo modificare il prezzo totale
-    		/*SaleTransactionImpl s = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
-            activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x->{
-            	String barcode = x.getKey();
-            	double amount = x.getValue();
-            	
-        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(), x.getValue()); 		
-            });*/
-    		
-    		
-        }
+
         // TODO decrease saleTransaction items and total price and add items back to inventory
 
         boolean conn = ezshopDb.createConnection();
@@ -966,6 +950,18 @@ public class EZShop implements EZShopInterface {
             return false;
 
         boolean isSuccess = ezshopDb.insertReturnTransaction(activeReturnTransaction);
+        if(isSuccess) {
+            activeReturnTransaction.setStatus("closed");
+            // add items back to inventory
+            activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x->{
+        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(), x.getValue()); 		
+            });
+            SaleTransaction s = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
+            double diffPrice = activeReturnTransaction.getAmount() * (1 - s.getDiscountRate()); //considerare se c'è sconto totale?
+            //decrease saleTransaction items             
+            //decrease sale transaction total price 
+    		ezshopDb.updateSaleTransaction(activeReturnTransaction.getTransactionId(), activeReturnTransaction.getReturnedProductsMap(), diffPrice);
+        }
         conn = ezshopDb.closeConnection();
 
         return isSuccess;
@@ -984,14 +980,21 @@ public class EZShop implements EZShopInterface {
         boolean conn = ezshopDb.createConnection();
         if (!conn)
             return false;
-
-        if (ezshopDb.getReturnTransaction(returnId).getStatus().equalsIgnoreCase("PAYED")) {
+        //ezshopDb.getReturnTransaction(returnId) se è null??
+        ReturnTransaction returnTrans = ezshopDb.getReturnTransaction(returnId);
+        if (returnTrans == null || returnTrans.getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
             return false;
         }
 
         boolean isSuccess = ezshopDb.deleteReturnTransaction(returnId);
-
+        if(isSuccess) {
+        	SaleTransaction s = ezshopDb.getSaleTransaction(returnTrans.getTransactionId());
+        	s.getEntries().stream().forEach(x->{
+        		int amount = - x.getAmount();
+        		ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(), amount);
+        	});
+        }
         // TODO undo decrease saleTransaction items and total price and add items back to inventory
 
 

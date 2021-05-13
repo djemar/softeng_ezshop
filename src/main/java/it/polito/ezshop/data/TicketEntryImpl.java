@@ -45,7 +45,10 @@ public class TicketEntryImpl implements TicketEntry {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
-
+	
+	public void decreaseAmount(int damount) {
+		this.amount -= damount;
+	}
 	@Override
 	public double getPricePerUnit() {
 		return pricePerUnit;
