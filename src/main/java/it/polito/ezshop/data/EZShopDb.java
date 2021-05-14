@@ -1071,6 +1071,36 @@ public class EZShopDb {
         }
         return done;
     }
+	public boolean setSaleDiscount(Integer transactionId, Double discountRate) {
+		//method that update discountrate and sale trans price
+        boolean done = false;
+        try {
+            PreparedStatement pstmt = connection
+                 .prepareStatement("update saletransactions set discountrate = (?), price = price * (1 - (?)) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setDouble(1, discountRate); // the index refers to the ? in the statement
+            pstmt.setDouble(2, discountRate);
+            pstmt.setInt(3, transactionId);
+            pstmt.executeUpdate();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select * from saletransactions");
+
+            while (rs.next()) {
+                // read the result set
+                System.out.println("description = " + rs.getString("description") + ", id = "
+                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
+            }
+            done = true;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return done;
+	}
 
     public boolean updateSaleTransaction(Integer transactionId,
             HashMap<String, Integer> returnedProducts, double diffPrice, boolean added) {
@@ -1445,6 +1475,8 @@ public class EZShopDb {
         return list;
 
     }
+
+
 
 
 }

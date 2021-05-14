@@ -736,7 +736,6 @@ public class EZShop implements EZShopInterface {
     public boolean applyDiscountRateToSale(Integer transactionId, double discountRate)
             throws InvalidTransactionIdException, InvalidDiscountRateException,
             UnauthorizedException {
-        boolean done = false;
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0
@@ -747,14 +746,21 @@ public class EZShop implements EZShopInterface {
         if (discountRate < 0 || discountRate >= 1.00)
             throw new InvalidDiscountRateException();
 
-        // TODO check transactionId == activeSaleTransaction ID
-        if (activeSaleTransaction != null
-                || !activeSaleTransaction.getStatus().equalsIgnoreCase("PAYED")) {
+        if (activeSaleTransaction != null && activeSaleTransaction.getTicketNumber() == transactionId) {
             this.activeSaleTransaction.setDiscountRate(discountRate);
-            done = true;
             activeSaleTransaction.estimatePrice();
-        } // else retrieve from DB
-        return done;
+            return true;
+        } 
+        if (ezshopDb.createConnection() && ezshopDb.getSaleTransaction(transactionId) != null) {
+        	  boolean isSuccess = false;
+        	  SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
+        	  if(!s.getStatus().equalsIgnoreCase("PAYED")) {
+        		  isSuccess = ezshopDb.setSaleDiscount(transactionId, discountRate);
+        	  }
+              ezshopDb.closeConnection();
+              return isSuccess;
+        }
+        return false;
     }
 
     @Override
@@ -1097,7 +1103,12 @@ public class EZShop implements EZShopInterface {
         } else {
             s.estimatePrice();
             // TODO check credit cards
-
+            if(Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")) {
+            	//proceed
+            	
+            	//method to update card amount
+            	Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
+            }
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "CREDIT"));
 
