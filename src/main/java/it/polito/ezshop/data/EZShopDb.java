@@ -601,20 +601,11 @@ public class EZShopDb {
 
     public Double getBalance() {
         Double balance = 0.0;
-        try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select * from balanceOperations ");
-            ResultSet rs;
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                balance += rs.getDouble("money");
-            }
 
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
+        List<BalanceOperation> list = getAllBalanceOperations(null, null);
+        if (!list.isEmpty())
+            balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
+
         return balance;
     }
 
