@@ -1,7 +1,16 @@
 package it.polito.ezshop.utils;
 
+import static java.util.stream.Collectors.toList;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import it.polito.ezshop.data.*;
+
 
 public class Utils {
     public static boolean validateBarcode(String code) {
@@ -57,6 +66,25 @@ public class Utils {
             final String productCode) {
         return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst().get();
     }
+	private static List<String> readData(String file) {
+		try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+			return in.lines().collect(toList());
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return null;
+		}
+	}
+	public static boolean fromFile(String creditcard, double total, String file) {
+		List<String> lines = Utils.readData(file);
+		return lines.stream().anyMatch(row -> {
+			if(!row.startsWith("#")) {
+				String[] cells = row.split(";");
+				return cells[0].equalsIgnoreCase(creditcard) && Double.parseDouble(cells[1]) >= total;
 
+			}
+			return false;
+		});
+	
+	}
 }
 
