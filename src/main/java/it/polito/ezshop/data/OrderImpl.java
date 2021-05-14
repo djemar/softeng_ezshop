@@ -23,6 +23,13 @@ public class OrderImpl implements Order {
 		this.status = status;
 		this.orderId = orderId;
 	}
+	public OrderImpl(String productCode, double pricePerUnit, int quantity, String status,Integer balanceId) {
+		this.balanceId = balanceId;
+		this.productCode = productCode;
+		this.pricePerUnit = pricePerUnit;
+		this.quantity = quantity;
+		this.status = status;
+	}
 	
 
 	@Override

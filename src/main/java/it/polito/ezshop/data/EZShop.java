@@ -353,14 +353,9 @@ public class EZShop implements EZShopInterface {
     public Integer payOrderFor(String productCode, int quantity, double pricePerUnit)
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
-
-        int i = -1;
-
-
+    	int id = -1;
         if (productCode == null || productCode == "")
             throw new InvalidProductCodeException("Invalid product Code ");
-
-
         if (quantity <= 0)
             throw new InvalidQuantityException("Invalid Quantity");
         if (pricePerUnit <= 0)
@@ -368,101 +363,77 @@ public class EZShop implements EZShopInterface {
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        boolean b = ezshopDb.createConnection();
-        if (b == false)
-            return -1;
+        if(ezshopDb.createConnection()) {
         ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(productCode);
         if (prod != null && ezshopDb.getBalance() > pricePerUnit * quantity) {
-
-            int orderId = ezshopDb.getOrderNumber() + 1; // diego- function
-            int bn = ezshopDb.getBalanceOperationsNumber() + 1;
-
-
-            BalanceOperationImpl balanceOp =
-                    new BalanceOperationImpl(bn, LocalDate.now(), quantity * pricePerUnit, "order");
+        	BalanceOperationImpl balanceOp =
+                    new BalanceOperationImpl(LocalDate.now(), -quantity * pricePerUnit, "ORDER");
+        	int idBOp = ezshopDb.insertBalanceOperation(balanceOp);
+        	if(idBOp == -1)
+        		return -1;
             OrderImpl o =
-                    new OrderImpl(orderId + 1, productCode, pricePerUnit, quantity, "PAYED", bn);
-            ezshopDb.insertOrder(o);
-            ezshopDb.insertBalanceOperation(balanceOp);
-            i = orderId;
+                    new OrderImpl(productCode, pricePerUnit, quantity, "PAYED", idBOp);
+            id = ezshopDb.insertOrder(o);
         }
-
         ezshopDb.closeConnection();
-        return i;
+        }
+        return id;
     }
 
     @Override
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
-        boolean b = false;
-
-
+        boolean isSuccess = false;
         if (orderId <= 0 || orderId == null)
             throw new InvalidOrderIdException("Invalid order id");
-
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        b = ezshopDb.createConnection();
-        if (b == false)
-            return b;
-        OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus().equalsIgnoreCase("ISSUED")
-                || o.getStatus().equalsIgnoreCase("ORDERED")) && ezshopDb.getBalance()>o.getQuantity()*o.getPricePerUnit()) {
-            // int bn = ezshopDb.getBalanceOperationsNumber() + 1;
-
-            // TODO check why this IF is always false
-            System.out.print("PAY ORDER!!!!!!!!!!!!!!!!!");
-
+        if(ezshopDb.createConnection()) {
+        	OrderImpl o = ezshopDb.getOrder(orderId);
+        	if (o != null && (o.getStatus().equalsIgnoreCase("ISSUED") || o.getStatus().equalsIgnoreCase("ORDERED"))
+        			&& (ezshopDb.getBalance() >= o.getQuantity() * o.getPricePerUnit())) {
             BalanceOperationImpl bo = new BalanceOperationImpl(LocalDate.now(),
-                    o.getQuantity() * o.getPricePerUnit(), "order");
-            int id = ezshopDb.insertBalanceOperation(bo);
-            ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
-                    o.getQuantity(), "PAYED", id);
-            b = true;
+                    -o.getQuantity() * o.getPricePerUnit(), "ORDER");
+            int idBOp = ezshopDb.insertBalanceOperation(bo);
+        	if(idBOp == -1)
+        		return false;
+            if((ezshopDb.updateOrder(o.getOrderId(), "PAYED", idBOp))) 
+	            isSuccess = true;
+            
         }
-
-
-        ezshopDb.closeConnection();
-        return b;
+        	ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
 
     @Override
     public boolean recordOrderArrival(Integer orderId)
             throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
-        boolean b = false;
-
-
-
+        boolean isSuccess = false;
         if (orderId <= 0 || orderId == null)
             throw new InvalidOrderIdException("Invalid order id");
-
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         if(ezshopDb.createConnection()){
             OrderImpl o = ezshopDb.getOrder(orderId);
-            if (o != null && (o.getStatus().equals("PAYED"))) {
-                if (o.getStatus().equals("COMPLETED"))
-                    return true;
-                b = ezshopDb.createConnection();
-                if (b == false)
-                    return false;
+        	if (o!= null && o.getStatus().equals("COMPLETED"))
+        		return true;
+            if (o != null && o.getStatus().equals("PAYED")) {
                 ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
-                if (prod == null || prod.getLocation() == null)
+                if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
+                	ezshopDb.closeConnection();
                     throw new InvalidLocationException("Invalid Location");
-                if(ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
-                        o.getQuantity(), "COMPLETED", o.getBalanceId()) &&
-                        ezshopDb.updateProductType(prod.getId(), prod.getProductDescription(),
-                        prod.getBarCode(), prod.getPricePerUnit(), prod.getNote()))
-                
-                    b = true;
-                ezshopDb.closeConnection();
+                }
+                if(ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId()) &&
+                		!ezshopDb.updateQuantity(prod.getId(), -o.getQuantity())) {
+                	System.out.print("ciao");
+                	isSuccess = true;
+                }
             }
-
             ezshopDb.closeConnection();
-        }
-        
-        return b;
+        }       
+        return isSuccess;         
     }
 
     @Override

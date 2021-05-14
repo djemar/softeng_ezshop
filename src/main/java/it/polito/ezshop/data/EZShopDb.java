@@ -551,22 +551,16 @@ public class EZShopDb {
         return done;
     }
 
-    public boolean updateOrder(int orderId, String productCode, Double pricePerUnit, int quantity,
-            String status, Integer balanceId) {
+    public boolean updateOrder(int orderId, String status, int balanceid) {
         boolean b=false;
         try {
             PreparedStatement pstmt = connection
-                    .prepareStatement("update orders set productCode = (?), pricePerUnit = (?),"
-                            + " quantity = (?), status = (?),balanceId= (?) where id = (?)");
+                    .prepareStatement("update orders set status = (?), balanceid = (?) where id = (?)");
             //pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            pstmt.setString(1, productCode); // the index refers to the ? in the statement
-            pstmt.setDouble(2, pricePerUnit);
-            pstmt.setInt(3, quantity);
-            pstmt.setString(4, status);
-            pstmt.setInt(5, balanceId);
-            pstmt.setInt(6, orderId);
+            pstmt.setString(1, status);
+            pstmt.setInt(2, balanceid);
+            pstmt.setInt(3, orderId); // the index refers to the ? in the statement
             pstmt.executeUpdate();
-
             b=true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
