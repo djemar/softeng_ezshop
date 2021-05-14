@@ -1440,7 +1440,7 @@ public class EZShopDb {
 
             while (rs.next()) {
                 // read the result set
-                System.out.println("date = " + rs.getDate("data") + ", money = "
+                System.out.println("date = " + rs.getDate("date") + ", money = "
                         + rs.getDouble("money") + ", type = " + rs.getString("type"));
             }
 
@@ -1464,15 +1464,15 @@ public class EZShopDb {
                 pstmt = connection.prepareStatement("select * from balanceoperation");
             } else if (from == null && to != null) {
                 pstmt = connection
-                        .prepareStatement("select * from balanceoperation where data<=(?)");
+                        .prepareStatement("select * from balanceoperation where date<=(?)");
                 pstmt.setDate(1, java.sql.Date.valueOf(to.toString()));
             } else if (from != null && to == null) {
                 pstmt = connection
-                        .prepareStatement("select * from balanceoperation where data>=(?)");
+                        .prepareStatement("select * from balanceoperation where date>=(?)");
                 pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
             } else {
                 pstmt = connection.prepareStatement(
-                        "select * from balanceoperation where data>=(?) and data<=(?)");
+                        "select * from balanceoperation where data>=(?) and date<=(?)");
                 pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
                 pstmt.setDate(2, java.sql.Date.valueOf(to.toString()));
             }
@@ -1483,7 +1483,7 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 // read the result set
-                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("data").toLocalDate(),
+                list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
                         rs.getDouble("money"), rs.getString("type")));
             }
 
