@@ -837,7 +837,6 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    //rivedere!!! non rimette quantity in inventario perchè getentries è nullo
     public boolean deleteSaleTransaction(Integer saleNumber)
             throws InvalidTransactionIdException, UnauthorizedException {
         boolean isSuccess = false;
@@ -849,15 +848,14 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
+        	// TODO metodo non funzionante
             SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
             if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
-                	System.out.print("prodotti da rimettere" + x.getAmount() + x.getBarCode());
+                	System.out.print("prodotti da rimettere    " + x.getAmount() + x.getBarCode());
                     ezshopDb.updateQuantity(
-                            ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),
-                            (x.getAmount()));
+                            ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),x.getAmount());
                 });
-
                 isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
             }
             ezshopDb.closeConnection();

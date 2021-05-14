@@ -1147,6 +1147,7 @@ public class EZShopDb {
 
 
     public SaleTransactionImpl getSaleTransaction(Integer transactionId) {
+    	//TODO ritorna una lista di entries vuota!!
         SaleTransactionImpl s = null;
         try {
             PreparedStatement pstmt =
