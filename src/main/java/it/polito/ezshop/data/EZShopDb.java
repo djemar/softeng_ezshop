@@ -1003,7 +1003,8 @@ public class EZShopDb {
         // to be called by endSaleTransaction
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into saletransactions values(?, ?, ?, ?)");
+                    connection.prepareStatement("insert into saletransactions values(?, ?, ?, ?)",
+                            Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
@@ -1014,7 +1015,27 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            // TODO insert sold products (ticket entry) in ticketentries table
+            int id = (int) pstmt.getGeneratedKeys().getLong(1);
+
+            saleTransaction.getEntries().stream().forEach(t -> {
+                try {
+                    PreparedStatement pstm = connection
+                            .prepareStatement("insert into ticketentries values (?,?,?,?,?,?)");
+
+                    pstm.setQueryTimeout(30); // set timeout to 30 sec.
+                    pstm.setInt(1, id);
+                    pstm.setInt(2, 0); // TODO is it really necessary to insert productID too?
+                    pstm.setInt(3, t.getAmount());
+                    pstm.setString(4, t.getBarCode());
+                    pstm.setDouble(5, t.getPricePerUnit());
+                    pstm.setDouble(6, t.getDiscountRate());
+
+                    pstm.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            });
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
