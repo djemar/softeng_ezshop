@@ -990,8 +990,6 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery();
             i = rs.getInt("number");
-            if (i == null)
-                i = 0;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
