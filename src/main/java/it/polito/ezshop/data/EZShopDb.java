@@ -433,7 +433,7 @@ public class EZShopDb {
             ris.setInt(1, productId);
             ResultSet rs = ris.executeQuery();
             int quant = toBeAdded + rs.getInt("quantity");
-            if (quant > 0) {
+            if (quant >= 0) {
                 PreparedStatement pstmt = connection
                         .prepareStatement("update producttypes set quantity= (?) where id = (?)");
                 pstmt.setQueryTimeout(30); // set timeout to 30 sec.
