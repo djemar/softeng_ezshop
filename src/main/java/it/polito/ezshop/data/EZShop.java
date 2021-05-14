@@ -875,7 +875,7 @@ public class EZShop implements EZShopInterface {
             return null;
 
         SaleTransactionImpl saleTransaction = ezshopDb.getSaleTransaction(transactionId);
-        if (saleTransaction == null || !saleTransaction.getStatus().equalsIgnoreCase("CLOSED")) {
+        if (saleTransaction == null) {
             ezshopDb.closeConnection();
             return null;
         }
