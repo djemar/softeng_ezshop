@@ -670,14 +670,15 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
 
-            if (p != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
-                    && p.getQuantity() >= amount && activeSaleTransaction != null) {
+            if (p != null && activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
+                    && p.getQuantity() >= amount) {
                 activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
                         p.getProductDescription(), amount, p.getPricePerUnit(), 0));
+                activeSaleTransaction.getEntries().forEach(x-> System.out.print("trovato" +x.getBarCode()));
                 activeSaleTransaction.estimatePrice();
-                b = true;
                 // decrease quantity from inventory
-                ezshopDb.updateQuantity(p.getId(), -amount);
+                if(!ezshopDb.updateQuantity(p.getId(), -amount))
+                    b = true;
             }
         }
         ezshopDb.closeConnection();
@@ -820,6 +821,7 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
+    //rivedere!!! non rimette quantity in inventario perchè getentries è nullo
     public boolean deleteSaleTransaction(Integer saleNumber)
             throws InvalidTransactionIdException, UnauthorizedException {
         boolean isSuccess = false;
@@ -831,16 +833,18 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
-            SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
-            if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
+            //SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
+        	SaleTransactionImpl s = this.activeSaleTransaction;
+            //if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
+                	System.out.print("prodotti da rimettere" + x.getAmount() + x.getBarCode());
                     ezshopDb.updateQuantity(
                             ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),
                             (x.getAmount()));
                 });
 
                 isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
-            }
+            //}
             ezshopDb.closeConnection();
         }
         return isSuccess;
