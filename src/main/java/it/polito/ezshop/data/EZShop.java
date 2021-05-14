@@ -844,9 +844,8 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
-            //SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
-        	SaleTransactionImpl s = this.activeSaleTransaction;
-            //if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
+            SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
+            if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
                 	System.out.print("prodotti da rimettere" + x.getAmount() + x.getBarCode());
                     ezshopDb.updateQuantity(
@@ -855,7 +854,7 @@ public class EZShop implements EZShopInterface {
                 });
 
                 isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
-            //}
+            }
             ezshopDb.closeConnection();
         }
         return isSuccess;
