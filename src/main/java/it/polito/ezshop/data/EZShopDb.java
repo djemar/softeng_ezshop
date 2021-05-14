@@ -1183,7 +1183,16 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            // TODO delete sold products in sales table
+            // delete sold products in sales table
+            pstmt = connection
+                    .prepareStatement("delete from ticketentries where transactionid = (?)");
+
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setInt(1, transactionId);
+
+
+            pstmt.executeUpdate();
+
 
             Statement stmt = connection.createStatement();
             ResultSet rs;
