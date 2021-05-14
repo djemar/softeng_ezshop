@@ -12,8 +12,6 @@ public class EZShop {
                 EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
                 EZShopGUI gui = new EZShopGUI(ezShop);
 
-                //testDb();
-
 
         }
 

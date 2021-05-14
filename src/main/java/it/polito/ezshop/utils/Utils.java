@@ -3,7 +3,9 @@ package it.polito.ezshop.utils;
 import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -78,13 +80,41 @@ public class Utils {
 		List<String> lines = Utils.readData(file);
 		return lines.stream().anyMatch(row -> {
 			if(!row.startsWith("#")) {
+				System.out.print(row);
 				String[] cells = row.split(";");
 				return cells[0].equalsIgnoreCase(creditcard) && Double.parseDouble(cells[1]) >= total;
 
 			}
 			return false;
 		});
-	
 	}
+
+	public static void updateFile(String file, String creditcard, double total){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line, newline,content = null;
+			while((line = br.readLine())!= null){
+				if(line.startsWith("#")) {
+					content=content+line+"\n";
+					continue;
+				}
+				newline = line;
+				String l[] = line.split(";");
+				if(l[0].equalsIgnoreCase(creditcard)) {
+					total = Double.parseDouble(l[1]) - total;
+					newline= new String(l[0] + ";"+ String.valueOf(total) );
+				}
+				content=content+ newline+ "\n";
+			}
+			br.close();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			bw.write(content);
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 
