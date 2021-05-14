@@ -331,8 +331,8 @@ public class EZShop implements EZShopInterface {
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
         Integer id = -1;
-        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
-                || !Utils.validateBarcode(productCode))
+        if (productCode == null || productCode.isEmpty()/*|| !productCode.matches("-?\\d+(\\.\\d+)?")
+                || !Utils.validateBarcode(productCode)*/)
             throw new InvalidProductCodeException();
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
@@ -365,8 +365,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidQuantityException("Invalid Quantity");
         if (pricePerUnit <= 0)
             throw new InvalidPricePerUnitException("Invalid price per unit");
-        if (currentUser == null || currentUser.getRole().equalsIgnoreCase("Administrator")
-                || currentUser.getRole().equalsIgnoreCase("ShopManager"))
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         boolean b = ezshopDb.createConnection();
         if (b == false)
@@ -407,7 +407,7 @@ public class EZShop implements EZShopInterface {
             return b;
         OrderImpl o = ezshopDb.getOrder(orderId);
         if (o != null && (o.getStatus().equalsIgnoreCase("ISSUED")
-                || o.getStatus().equalsIgnoreCase("ORDERED"))) {
+                || o.getStatus().equalsIgnoreCase("ORDERED")) && ezshopDb.getBalance()>o.getQuantity()*o.getPricePerUnit()) {
             // int bn = ezshopDb.getBalanceOperationsNumber() + 1;
 
             // TODO check why this IF is always false
@@ -439,24 +439,29 @@ public class EZShop implements EZShopInterface {
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        OrderImpl o = ezshopDb.getOrder(orderId);
-        if (o != null && (o.getStatus() == "PAYED")) {
-            if (o.getStatus() == "COMPLETED")
-                return true;
-            b = ezshopDb.createConnection();
-            if (b == false)
-                return false;
-            ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
-            if (prod == null || prod.getLocation() != null)
-                throw new InvalidLocationException("Invalid Location");
-            ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
-                    o.getQuantity(), "COMPLETED", o.getBalanceId());
-            ezshopDb.updateProductType(prod.getId(), prod.getProductDescription(),
-                    prod.getBarCode(), prod.getPricePerUnit(), prod.getNote());
-            b = true;
+        if(ezshopDb.createConnection()){
+            OrderImpl o = ezshopDb.getOrder(orderId);
+            if (o != null && (o.getStatus().equals("PAYED"))) {
+                if (o.getStatus().equals("COMPLETED"))
+                    return true;
+                b = ezshopDb.createConnection();
+                if (b == false)
+                    return false;
+                ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
+                if (prod == null || prod.getLocation() == null)
+                    throw new InvalidLocationException("Invalid Location");
+                if(ezshopDb.updateOrder(o.getOrderId(), o.getProductCode(), o.getPricePerUnit(),
+                        o.getQuantity(), "COMPLETED", o.getBalanceId()) &&
+                        ezshopDb.updateProductType(prod.getId(), prod.getProductDescription(),
+                        prod.getBarCode(), prod.getPricePerUnit(), prod.getNote()))
+                
+                    b = true;
+                ezshopDb.closeConnection();
+            }
+
             ezshopDb.closeConnection();
         }
-
+        
         return b;
     }
 
@@ -559,7 +564,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-        List<Customer> l = null;
+        List<Customer> l = new ArrayList <Customer>();
 
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
@@ -583,14 +588,20 @@ public class EZShop implements EZShopInterface {
 
 
         // TODO IT DOESN'T WORK IN THE GUI
-        int n = ezshopDb.getCustomerCardNumber() + 1;
-        String ns = Integer.toString(n);
-        String customerCard = ns;
-        for (int i = 0; 10 - ns.length() > i; i++) {
-            customerCard += "0";
+        if(ezshopDb.createConnection()){
+            int n = ezshopDb.getCustomerCardNumber() + 1;
+            String ns = Integer.toString(n);
+            String customerCard = "";
+            for (int i = 0; 10 - ns.length() > i; i++) {
+                customerCard += "0";
+            }
+            customerCard+=ns;
+            ezshopDb.insertCustomerCard(customerCard);
+            c = customerCard;
+            ezshopDb.closeConnection();
         }
-        ezshopDb.insertCustomerCard(customerCard);
-        c = customerCard;
+
+       
 
         return c;
     }
