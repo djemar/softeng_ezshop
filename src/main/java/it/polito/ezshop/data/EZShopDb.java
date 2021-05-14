@@ -957,7 +957,7 @@ public class EZShopDb {
 
                     pstm.setQueryTimeout(30); // set timeout to 30 sec.
                     pstm.setInt(1, id);
-                    pstm.setInt(2, 0); // TODO is it really necessary to insert productID too?
+                    pstm.setInt(2, 0); // TODO delete column !! is it really necessary to insert productID too?
                     pstm.setInt(3, t.getAmount());
                     pstm.setString(4, t.getBarCode());
                     pstm.setDouble(5, t.getPricePerUnit());

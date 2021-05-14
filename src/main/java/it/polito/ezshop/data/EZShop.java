@@ -427,7 +427,6 @@ public class EZShop implements EZShopInterface {
                 }
                 if(ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId()) &&
                 		!ezshopDb.updateQuantity(prod.getId(), -o.getQuantity())) {
-                	System.out.print("ciao");
                 	isSuccess = true;
                 }
             }
@@ -638,7 +637,6 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection() && (i = ezshopDb.SaleTransactionNumber() + 1) > 0) {
-
             activeSaleTransaction = new SaleTransactionImpl(i);
             ezshopDb.closeConnection();
         }
@@ -649,30 +647,40 @@ public class EZShop implements EZShopInterface {
     public boolean addProductToSale(Integer transactionId, String productCode, int amount)
             throws InvalidTransactionIdException, InvalidProductCodeException,
             InvalidQuantityException, UnauthorizedException {
-        boolean b = false;
+        boolean isSuccess = false;
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
-            throw new InvalidTransactionIdException("Invalid transaction ID");
+            throw new InvalidTransactionIdException();
+        /*if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+                || !Utils.validateBarcode(productCode))
+        	 throw new InvalidProductCodeException();*/
+        if (amount < 0)
+            throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
-
             if (p != null && activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
                     && p.getQuantity() >= amount) {
+            	//check if same product is present in the entries list otherwise new object in the list
+            	if(!activeSaleTransaction.getEntries().stream().anyMatch(x-> x.getBarCode().equals(productCode)))
                 activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
                         p.getProductDescription(), amount, p.getPricePerUnit(), 0));
-                activeSaleTransaction.getEntries().forEach(x-> System.out.print("trovato" +x.getBarCode()));
+            	else {
+            		TicketEntry t = activeSaleTransaction.getEntries().stream().filter(x-> x.getBarCode().equals(productCode))
+                								.findFirst().get();
+            		int amountf = t.getAmount() + amount;
+            		t.setAmount(amountf);
+            	}
                 activeSaleTransaction.estimatePrice();
-                // decrease quantity from inventory
+                activeSaleTransaction.getEntries().stream().forEach(x-> System.out.print(x.getProductDescription()+ x.getAmount() + "\n"));
                 if(!ezshopDb.updateQuantity(p.getId(), -amount))
-                    b = true;
+                    isSuccess = true;
             }
+            ezshopDb.closeConnection();
         }
-        ezshopDb.closeConnection();
-
-        return b;
+        return isSuccess;
 
     }
 
@@ -680,14 +688,40 @@ public class EZShop implements EZShopInterface {
     public boolean deleteProductFromSale(Integer transactionId, String productCode, int amount)
             throws InvalidTransactionIdException, InvalidProductCodeException,
             InvalidQuantityException, UnauthorizedException {
-        // TODO !! update the active sale transaction here
-
-
-        // ADD BACK to inventory the quantity
-        ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
-        ezshopDb.updateQuantity(p.getId(), amount);
-
-        return false;
+        boolean isSuccess = false;
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        /*if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+                || !Utils.validateBarcode(productCode))
+        	 throw new InvalidProductCodeException();*/
+        if (amount < 0)
+            throw new InvalidQuantityException();
+        if (ezshopDb.createConnection()) {
+            ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
+            if (p != null && activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
+                    && p.getQuantity() >= amount) {
+                TicketEntry t = activeSaleTransaction.getEntries().stream()
+                	.filter(x-> x.getBarCode().equals(productCode))
+                	.findFirst().get();
+                int a = t.getAmount();
+                if(a < amount)
+                	return false;
+                else if(a == amount)
+                	activeSaleTransaction.getEntries().remove(t);
+                else
+                	t.setAmount(a - amount);
+                activeSaleTransaction.getEntries().stream().forEach(x-> System.out.print(x.getProductDescription()+ x.getAmount() + "\n"));
+                activeSaleTransaction.estimatePrice();
+                if(!ezshopDb.updateQuantity(p.getId(), amount))
+                    isSuccess = true;
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
 
     @Override
@@ -792,12 +826,6 @@ public class EZShop implements EZShopInterface {
             activeSaleTransaction.setStatus("CLOSED");
             activeSaleTransaction.estimatePrice();
         }
-        // TODO decrease items in inventory ASK MORISIO
-        /*
-         * activeSaleTransaction.getEntries().stream().forEach(x -> {
-         * ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),
-         * (-x.getAmount())); });
-         */
         boolean conn = ezshopDb.createConnection();
         if (!conn)
             return false;
@@ -805,7 +833,6 @@ public class EZShop implements EZShopInterface {
         if (isSuccess)
             activeSaleTransaction = null;
         ezshopDb.closeConnection();
-
         return isSuccess;
     }
 
