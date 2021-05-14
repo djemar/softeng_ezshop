@@ -514,14 +514,19 @@ public class EZShop implements EZShopInterface {
         if (newCustomerName == null || newCustomerName == "")
             throw new InvalidCustomerNameException();
 
-        if (newCustomerCard == null || newCustomerCard == "" || newCustomerCard.length() != 10
-                || Utils.isOnlyDigit(newCustomerCard))
+        if (newCustomerCard != null && newCustomerCard!="" &&(newCustomerCard.length() != 10
+                || !Utils.isOnlyDigit(newCustomerCard)))
             throw new InvalidCustomerCardException("Invalid customer card");
-        CustomerImpl c = ezshopDb.getCustomer(id);
-        if (c != null) {
-            b = ezshopDb.updateCustomer(id, newCustomerName, c.getCustomerCard(), c.getPoints());
-            b &= ezshopDb.attachCardToCustomer(newCustomerCard, id);
+        if(ezshopDb.createConnection()){
+            CustomerImpl c = ezshopDb.getCustomer(id);
+            if (c != null) {
+                b = ezshopDb.updateCustomer(id, newCustomerName, c.getCustomerCard(), c.getPoints());
+                if(newCustomerCard!=null &&newCustomerCard!="")
+                    b &= ezshopDb.attachCardToCustomer(newCustomerCard, id);
+            }
+            ezshopDb.closeConnection();
         }
+        
         return b;
     }
 
@@ -596,9 +601,11 @@ public class EZShop implements EZShopInterface {
                 customerCard += "0";
             }
             customerCard+=ns;
-            ezshopDb.insertCustomerCard(customerCard);
-            c = customerCard;
-            ezshopDb.closeConnection();
+            if(ezshopDb.insertCustomerCard(customerCard)){
+                c = customerCard;
+                ezshopDb.closeConnection();
+            }
+            
         }
 
        

@@ -4,18 +4,28 @@ public class CustomerImpl implements Customer {
     private String customerName;
     private Integer id;
     private String customerCard;
-    Integer points;
+    Integer points=0;
 
     public CustomerImpl(String customerName) {
         this.customerName = customerName;
         
     }
 
-    public CustomerImpl(String string, int int1, String string2) {
-        
+    public CustomerImpl(String name, int id, String card) {
+        this.customerName=name;
+        this.id=id;
+        this.customerCard=card;
+
     }
 
     public CustomerImpl(int id, String name, String card, int points) {
+        this.id=id;
+        this.customerName=name;
+        this.customerCard=card;
+        this.points=points;
+    }
+
+    public CustomerImpl(String name, int id, int points, String card) {
         this.id=id;
         this.customerName=name;
         this.customerCard=card;
