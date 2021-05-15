@@ -6,23 +6,15 @@ public class ReturnTransaction {
 
 	private Integer returnId;
 	private Integer transactionId;
-	private String productCode;
 	private String status;
-	private int amount;
 	private double total = 0;
 
 	private HashMap<String, Integer> returnedProductsMap = new HashMap<String, Integer>();
 
-	public ReturnTransaction(Integer returnId, String productCode, int amount) {
-		// this should be a useless constructor
-		this.returnId = returnId;
-		this.productCode = productCode;
-		this.amount = amount;
-	}
-
 	public ReturnTransaction(Integer returnId, Integer transactionId) {
 		this.returnId = returnId;
 		this.transactionId = transactionId;
+		this.status = "OPEN";
 	}
 
 	public Integer getReturnId() {
@@ -31,22 +23,6 @@ public class ReturnTransaction {
 
 	public void setReturnId(Integer returnId) {
 		this.returnId = returnId;
-	}
-
-	public String getProductCode() {
-		return productCode;
-	}
-
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
-
-	public int getAmount() {
-		return amount;
-	}
-
-	public void setAmount(int amount) {
-		this.amount = amount;
 	}
 
 	public Integer getTransactionId() {

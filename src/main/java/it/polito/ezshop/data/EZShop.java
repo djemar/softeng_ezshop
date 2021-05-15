@@ -950,7 +950,7 @@ public class EZShop implements EZShopInterface {
         }
         TicketEntryImpl ticketEntry =
                 (TicketEntryImpl) Utils.getProductFromEntries(entries, productCode);
-        if (ticketEntry.getAmount() <= amount) {
+        if (ticketEntry.getAmount() < amount) {
             return false;
         }
 
@@ -996,8 +996,8 @@ public class EZShop implements EZShopInterface {
                                                                                            // sconto
                                                                                            // totale?
         activeReturnTransaction.setTotal(diffPrice); // settare prezzo finale della return ?
-        boolean isSuccess = ezshopDb.insertReturnTransaction(activeReturnTransaction);
         activeReturnTransaction.setStatus("CLOSED");
+        boolean isSuccess = ezshopDb.insertReturnTransaction(activeReturnTransaction);
         if (isSuccess) {
             // add items back to inventory
             activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x -> {
@@ -1116,10 +1116,11 @@ public class EZShop implements EZShopInterface {
             return false;
         } else {
             s.estimatePrice();
-            // TODO check credit cards
-            if(Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt") && Utils.validateCreditCard(creditCard) ) {
-            	Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
+            if(!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt") || !Utils.validateCreditCard(creditCard)) {
+                ezshopDb.closeConnection();
+            	return false;
             }
+            Utils.updateFile("creditcards.txt", creditCard, s.getPrice());          
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "CREDIT"));
 

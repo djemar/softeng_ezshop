@@ -1197,13 +1197,13 @@ public class EZShopDb {
         // to be called by endReturnTransaction
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into returntransactions values(?, ?, ?)");
+                    connection.prepareStatement("insert into returntransactions values(?, ?, ?, ?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            // the index refers to the ? in the statement
             pstmt.setInt(1, returnTransaction.getReturnId());
             pstmt.setInt(2, returnTransaction.getTransactionId());
-            pstmt.setBoolean(3, false); // not payed
+            pstmt.setString(3, returnTransaction.getStatus()); 
+            pstmt.setDouble(4, returnTransaction.getTotal()); 
 
             int count = pstmt.executeUpdate();
             if (count < 0)
@@ -1211,16 +1211,22 @@ public class EZShopDb {
 
             // TODO add returned products to returns table
             // returnTransaction.getReturnedProductsMap()
+            returnTransaction.getReturnedProductsMap().entrySet().stream().forEach(x-> {
+                PreparedStatement pstm;
+				try {
+					pstm = connection.prepareStatement("insert into returnentries values(?, ?, ?)");
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from returntransactions");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
-                        + rs.getInt("transactionid"));
-            }
+	                pstm.setQueryTimeout(30); // set timeout to 30 sec.
+	                pstm.setInt(1, returnTransaction.getReturnId());
+	                pstm.setString(2, x.getKey());
+	                pstm.setInt(3, x.getValue());
+	                pstm.executeUpdate();
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            });
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -1275,7 +1281,6 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
 
             r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
-            // table returnentries??
             pstmt = connection.prepareStatement("select * from returnentries where id=?");
             rs = pstmt.executeQuery();
             while (rs.next()) {
