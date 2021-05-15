@@ -1151,11 +1151,14 @@ public class EZShopDb {
 
             pstmt = connection
                     .prepareStatement("select * from ticketentries where transactionid=?");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            // the index refers to the ? in the statement
+            pstmt.setInt(1, transactionId);
             rs = pstmt.executeQuery();
             List<TicketEntry> entries = new ArrayList<>();
             while (rs.next()) {
                 entries.add(new TicketEntryImpl(rs.getString("productCode"),
-                        rs.getString("productString"), rs.getInt("amount"),
+                        rs.getString("productDescription"), rs.getInt("amount"),
                         rs.getDouble("priceperunit"), rs.getDouble("discountRate")));
             }
             s.setEntries(entries);
