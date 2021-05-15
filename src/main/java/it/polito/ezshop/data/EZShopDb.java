@@ -902,12 +902,8 @@ public class EZShopDb {
 
 
     public CustomerImpl getCustomerByCard(String customerCard) {
+        // TODO
         return null;
-    }
-
-
-    public int insertSaleTransaction(int i) {
-        return 0;
     }
 
 
