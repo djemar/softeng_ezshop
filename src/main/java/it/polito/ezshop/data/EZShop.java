@@ -792,7 +792,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
             SaleTransaction s = ezshopDb.getSaleTransaction(transactionId);
-            if (s != null || this.activeSaleTransaction != null)
+            if (s != null)
                 points = (int) (s.getPrice() / 10);
             ezshopDb.closeConnection();
         }
