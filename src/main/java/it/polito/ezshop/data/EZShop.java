@@ -618,16 +618,12 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
-            
-            if (ezshopDb.closeConnection() && c != null && pointsToBeAdded + c.getPoints() >= 0) {
+            if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
                 int points = c.getPoints() + pointsToBeAdded;
-                if(ezshopDb.createConnection());
-                    b = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
+                b = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
                         points);
-                ezshopDb.closeConnection();
-                
             }
-            
+            ezshopDb.closeConnection();
         }
 
         return b;
@@ -658,9 +654,9 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        /*if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
                 || !Utils.validateBarcode(productCode))
-        	 throw new InvalidProductCodeException();*/
+        	 throw new InvalidProductCodeException();
         if (amount < 0)
             throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
@@ -699,10 +695,10 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        /*if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
                 || !Utils.validateBarcode(productCode))
-        	 throw new InvalidProductCodeException();*/
-        if (amount <= 0)
+        	 throw new InvalidProductCodeException();
+        if (amount < 0)
             throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
