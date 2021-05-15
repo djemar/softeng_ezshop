@@ -552,16 +552,16 @@ public class EZShopDb {
     }
 
     public boolean updateOrder(int orderId, String status, int balanceid) {
-        boolean b=false;
+        boolean b = false;
         try {
-            PreparedStatement pstmt = connection
-                    .prepareStatement("update orders set status = (?), balanceid = (?) where id = (?)");
-            //pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "update orders set status = (?), balanceid = (?) where id = (?)");
+            // pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setString(1, status);
             pstmt.setInt(2, balanceid);
             pstmt.setInt(3, orderId); // the index refers to the ? in the statement
             pstmt.executeUpdate();
-            b=true;
+            b = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -666,7 +666,8 @@ public class EZShopDb {
         int id = -1;
         try {
             PreparedStatement pstmt = connection.prepareStatement(
-                    "insert into balanceOperation values(null, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                    "insert into balanceOperation values(null, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
             pstmt.setDate(1, java.sql.Date.valueOf(b.getDate()));
@@ -695,8 +696,8 @@ public class EZShopDb {
     public int getCustomerNumber() {
         int i = -1;
         try {
-            PreparedStatement pstmt = connection
-                    .prepareStatement("select count(*) as number from balanceOperation ");
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select count(*) as number from balanceOperation ");
             ResultSet rs;
             rs = pstmt.executeQuery();
             i = rs.getInt("number");
@@ -741,7 +742,7 @@ public class EZShopDb {
             pstmt.setString(2, fidelityCard);
             pstmt.setInt(3, points);
             pstmt.setInt(4, id);
-            pstmt.executeUpdate();            
+            pstmt.executeUpdate();
             boo = true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -769,13 +770,13 @@ public class EZShopDb {
     public boolean insertCustomerCard(String customerCard) {
         boolean boo = false;
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into customercards values((?), null, null)");
+            PreparedStatement pstmt = connection
+                    .prepareStatement("insert into customercards values((?), null, null)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.s
             pstmt.setString(1, customerCard); // the index refers to the ? in the statement
             pstmt.executeUpdate();
 
-            
+
             boo = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -784,7 +785,8 @@ public class EZShopDb {
         }
         return boo;
     }
-    //datestare
+
+    // datestare
     public CustomerImpl getCustomer(Integer id) {
         CustomerImpl c = null;
         try {
@@ -796,7 +798,8 @@ public class EZShopDb {
             rs = pstmt.executeQuery();
             System.out.println("Customer ID" + rs.getInt("id"));
             if (rs.next() == true)
-                c = new CustomerImpl(rs.getInt("id"),rs.getString("name"), rs.getString("customercard"),rs.getInt("points"));
+                c = new CustomerImpl(rs.getInt("id"), rs.getString("name"),
+                        rs.getString("customercard"), rs.getInt("points"));
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -809,14 +812,14 @@ public class EZShopDb {
     String getCustomerCard(String customerCard) {
         String c = null;
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select count(*) as number from customerCards where card=(?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "select count(*) as number from customerCards where card=(?)");
             pstmt.setString(1, customerCard);
             pstmt.setQueryTimeout(30);
             ResultSet rs;
             rs = pstmt.executeQuery();
-            if (rs.getInt("number")==1)
-                c=customerCard;
+            if (rs.getInt("number") == 1)
+                c = customerCard;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -832,8 +835,8 @@ public class EZShopDb {
             String card = this.getCustomerCard(customerCard);
             if (c == null || card == null)
                 return b;
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select count(*) as number from customers where customercard=(?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "select count(*) as number from customers where customercard=(?)");
             pstmt.setString(1, customerCard);
             pstmt.setQueryTimeout(30);
             ResultSet rs;
@@ -841,7 +844,7 @@ public class EZShopDb {
             if (rs.getInt("number") == 0) {
                 b = this.updateCustomer(c.getId(), c.getCustomerName(), customerCard,
                         c.getPoints());
-                
+
             } else
                 b = false;
 
@@ -852,7 +855,7 @@ public class EZShopDb {
         }
         return b;
     }
-    
+
     public List<Customer> getAllCustomers() {
 
         List<Customer> l = new ArrayList<Customer>();
@@ -861,8 +864,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = stmt.executeQuery("select * from customers");
             while (rs.next()) {
-                l.add(new CustomerImpl(rs.getInt("id"),rs.getString("name"), 
-                		rs.getString("customercard"),rs.getInt("points")));
+                l.add(new CustomerImpl(rs.getInt("id"), rs.getString("name"),
+                        rs.getString("customercard"), rs.getInt("points")));
             }
             l.forEach(x -> System.out.println(x.getId()));
             while (rs.next()) {
@@ -888,7 +891,7 @@ public class EZShopDb {
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1, c.getId());
             pstmt.executeUpdate();
-            
+
             boo = true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -907,7 +910,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery();
             if (rs.next() == true)
-                c = new CustomerImpl(rs.getInt("id"),rs.getString("name"), rs.getString("customercard"),rs.getInt("points"));
+                c = new CustomerImpl(rs.getInt("id"), rs.getString("name"),
+                        rs.getString("customercard"), rs.getInt("points"));
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -1004,12 +1008,13 @@ public class EZShopDb {
         }
         return done;
     }
-	public boolean setSaleDiscount(Integer transactionId, Double discountRate) {
-		//method that update discountrate and sale trans price
+
+    public boolean setSaleDiscount(Integer transactionId, Double discountRate) {
+        // method that update discountrate and sale trans price
         boolean done = false;
         try {
-            PreparedStatement pstmt = connection
-                 .prepareStatement("update saletransactions set discountrate = (?), price = price * (1 - (?)) where id = (?)");
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "update saletransactions set discountrate = (?), price = price * (1 - (?)) where id = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setDouble(1, discountRate); // the index refers to the ? in the statement
             pstmt.setDouble(2, discountRate);
@@ -1033,7 +1038,7 @@ public class EZShopDb {
             return false;
         }
         return done;
-	}
+    }
 
     public boolean updateSaleTransaction(Integer transactionId,
             HashMap<String, Integer> returnedProducts, double diffPrice, boolean added) {
@@ -1196,14 +1201,14 @@ public class EZShopDb {
     public boolean insertReturnTransaction(ReturnTransaction returnTransaction) {
         // to be called by endReturnTransaction
         try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into returntransactions values(?, ?, ?, ?)");
+            PreparedStatement pstmt = connection
+                    .prepareStatement("insert into returntransactions values(?, ?, ?, ?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1, returnTransaction.getReturnId());
             pstmt.setInt(2, returnTransaction.getTransactionId());
-            pstmt.setString(3, returnTransaction.getStatus()); 
-            pstmt.setDouble(4, returnTransaction.getTotal()); 
+            pstmt.setString(3, returnTransaction.getStatus());
+            pstmt.setDouble(4, returnTransaction.getTotal());
 
             int count = pstmt.executeUpdate();
             if (count < 0)
@@ -1211,21 +1216,21 @@ public class EZShopDb {
 
             // TODO add returned products to returns table
             // returnTransaction.getReturnedProductsMap()
-            returnTransaction.getReturnedProductsMap().entrySet().stream().forEach(x-> {
+            returnTransaction.getReturnedProductsMap().entrySet().stream().forEach(x -> {
                 PreparedStatement pstm;
-				try {
-					pstm = connection.prepareStatement("insert into returnentries values(?, ?, ?)");
+                try {
+                    pstm = connection.prepareStatement("insert into returnentries values(?, ?, ?)");
 
-	                pstm.setQueryTimeout(30); // set timeout to 30 sec.
-	                pstm.setInt(1, returnTransaction.getReturnId());
-	                pstm.setString(2, x.getKey());
-	                pstm.setInt(3, x.getValue());
-	                pstm.executeUpdate();
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    pstm.setQueryTimeout(30); // set timeout to 30 sec.
+                    pstm.setInt(1, returnTransaction.getReturnId());
+                    pstm.setString(2, x.getKey());
+                    pstm.setInt(3, x.getValue());
+                    pstm.executeUpdate();
+
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             });
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -1282,9 +1287,10 @@ public class EZShopDb {
 
             r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
             pstmt = connection.prepareStatement("select * from returnentries where id=?");
+            pstmt.setInt(1, returnId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                r.addProductToReturn(rs.getString("barcode"), rs.getInt("amount"));
+                r.addProductToReturn(rs.getString("productcode"), rs.getInt("amount"));
             }
 
 
@@ -1426,7 +1432,6 @@ public class EZShopDb {
         return list;
 
     }
-
 
 
 

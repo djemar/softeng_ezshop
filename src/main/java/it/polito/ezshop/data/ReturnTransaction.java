@@ -17,6 +17,13 @@ public class ReturnTransaction {
 		this.status = "OPEN";
 	}
 
+	public ReturnTransaction(Integer returnId, Integer transactionId, String status, double total) {
+		this.returnId = returnId;
+		this.transactionId = transactionId;
+		this.status = status;
+		this.total = total;
+	}
+
 	public Integer getReturnId() {
 		return returnId;
 	}
