@@ -1085,8 +1085,11 @@ public class EZShop implements EZShopInterface {
         }
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), totalPrice, "CREDIT"));
-        if (!ezshopDb.payForSaleTransaction(transactionID))
+        if (!ezshopDb.payForSaleTransaction(transactionID)) {
+        	ezshopDb.closeConnection();
             return -1;
+        }
+        ezshopDb.closeConnection();
         return cash - totalPrice;
     }
 
