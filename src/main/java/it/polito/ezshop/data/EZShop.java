@@ -618,12 +618,16 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
-            if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
+            
+            if (ezshopDb.closeConnection() && c != null && pointsToBeAdded + c.getPoints() >= 0) {
                 int points = c.getPoints() + pointsToBeAdded;
-                b = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
+                if(ezshopDb.createConnection());
+                    b = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
                         points);
+                ezshopDb.closeConnection();
+                
             }
-            ezshopDb.closeConnection();
+            
         }
 
         return b;
@@ -698,7 +702,7 @@ public class EZShop implements EZShopInterface {
         /*if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
                 || !Utils.validateBarcode(productCode))
         	 throw new InvalidProductCodeException();*/
-        if (amount < 0)
+        if (amount <= 0)
             throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
