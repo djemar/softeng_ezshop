@@ -523,66 +523,58 @@ public class EZShop implements EZShopInterface {
     public Customer getCustomer(Integer id)
             throws InvalidCustomerIdException, UnauthorizedException {
         Customer c = null;
-        try {
             if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                     || currentUser.getRole().equalsIgnoreCase("ShopManager")
                     || currentUser.getRole().equalsIgnoreCase("Cashier")))
                 throw new UnauthorizedException("Unauthorized user");
             if (id == null || id <= 0)
-                throw new InvalidCustomerCardException("Invalid customer id");
-            c = ezshopDb.getCustomer(id);
-        } catch (InvalidCustomerCardException e) {
-            System.err.println(e.getMessage());
-        } catch (UnauthorizedException e) {
-            System.err.println(e.getMessage());
-        }
+                throw new InvalidCustomerIdException("Invalid customer id");
+            if(ezshopDb.createConnection()){
+                c = ezshopDb.getCustomer(id);
+                ezshopDb.closeConnection();
+            }
+
         return c;
     }
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-        List<Customer> l = new ArrayList <Customer>();
+        List<Customer> customers = new ArrayList <Customer>();
 
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
-            l = ezshopDb.getAllCustomer();
+            customers = ezshopDb.getAllCustomers();
             ezshopDb.closeConnection();
         }
-        return (List<Customer>) l;
+        return customers;
     }
 
     @Override
     public String createCard() throws UnauthorizedException {
-        String c = null;
+        String customerCard = null;
 
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
-
-
-        // TODO IT DOESN'T WORK IN THE GUI
         if(ezshopDb.createConnection()){
             int n = ezshopDb.getCustomerCardNumber() + 1;
             String ns = Integer.toString(n);
-            String customerCard = "";
+            customerCard = "";
             for (int i = 0; 10 - ns.length() > i; i++) {
                 customerCard += "0";
             }
             customerCard+=ns;
-            if(ezshopDb.insertCustomerCard(customerCard)){
-                c = customerCard;
+            if(!ezshopDb.insertCustomerCard(customerCard)){
                 ezshopDb.closeConnection();
+                return null;
             }
-            
+            ezshopDb.closeConnection();
         }
-
-       
-
-        return c;
+        return customerCard;
     }
 
     @Override
@@ -609,8 +601,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded)
             throws InvalidCustomerCardException, UnauthorizedException {
-        boolean b = false;
-
+        boolean isSuccess = false;
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
@@ -622,13 +613,13 @@ public class EZShop implements EZShopInterface {
             CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
             if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
                 int points = c.getPoints() + pointsToBeAdded;
-                b = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
+                isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
                         points);
             }
             ezshopDb.closeConnection();
         }
 
-        return b;
+        return isSuccess;
     }
 
     @Override
@@ -738,7 +729,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
+        if (productCode == null || productCode.isEmpty() || !Utils.isOnlyDigit(productCode)
                 || !Utils.validateBarcode(productCode))
             throw new InvalidProductCodeException();
         if (discountRate < 0 || discountRate >= 1.00)

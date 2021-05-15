@@ -786,7 +786,7 @@ public class EZShopDb {
         }
         return boo;
     }
-
+    //datestare
     public CustomerImpl getCustomer(Integer id) {
         CustomerImpl c = null;
         try {
@@ -797,8 +797,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery();
             System.out.println("Customer ID" + rs.getInt("id"));
-            if (!rs.getString("name").equals(null))
-                c = new CustomerImpl(rs.getString("name"), rs.getInt("id"),rs.getInt("points"),rs.getString("CustomerCard"));
+            if (rs.next() == true)
+                c = new CustomerImpl(rs.getInt("id"),rs.getString("name"), rs.getString("customercard"),rs.getInt("points"));
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -854,8 +854,8 @@ public class EZShopDb {
         }
         return b;
     }
-
-    public List<Customer> getAllCustomer() {
+    
+    public List<Customer> getAllCustomers() {
 
         List<Customer> l = new ArrayList<Customer>();
         try {
@@ -863,8 +863,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = stmt.executeQuery("select * from customers");
             while (rs.next()) {
-                l.add(new CustomerImpl(rs.getInt("id"), rs.getString("name"), rs.getString("customercard"),
-                        rs.getInt("points")));
+                l.add(new CustomerImpl(rs.getInt("id"),rs.getString("name"), 
+                		rs.getString("customercard"),rs.getInt("points")));
             }
             l.forEach(x -> System.out.println(x.getId()));
             while (rs.next()) {

@@ -29,7 +29,7 @@ public class Utils {
 					x3 = true;
 				}	
 			}
-			if (Math.round((sum + 5) / 10.0) * 10 - sum == Character.getNumericValue(code.charAt(code.length()-1)))
+			if (Math.ceil((sum + 5) / 10.0) * 10 - sum == Character.getNumericValue(code.charAt(code.length()-1)))
 				return true;
 		}
 	

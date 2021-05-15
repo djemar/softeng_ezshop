@@ -25,13 +25,6 @@ public class CustomerImpl implements Customer {
         this.points=points;
     }
 
-    public CustomerImpl(String name, int id, int points, String card) {
-        this.id=id;
-        this.customerName=name;
-        this.customerCard=card;
-        this.points=points;
-    }
-
     @Override
     public String getCustomerName() {
 
