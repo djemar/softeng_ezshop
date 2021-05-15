@@ -1117,17 +1117,17 @@ public class EZShop implements EZShopInterface {
         } else {
             s.estimatePrice();
             // TODO check credit cards
-            if(Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")) {
-            	//proceed
-            	
-            	//method to update card amount
+            if(Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt") && Utils.validateCreditCard(creditCard) ) {
             	Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
             }
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "CREDIT"));
 
-            if (!ezshopDb.payForSaleTransaction(transactionID))
+            if (!ezshopDb.payForSaleTransaction(transactionID)) {
+                ezshopDb.closeConnection();
                 return false;
+            }
+            ezshopDb.closeConnection();
             return true;
         }
     }
