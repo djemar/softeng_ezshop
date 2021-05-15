@@ -932,8 +932,7 @@ public class EZShopDb {
         // to be called by endSaleTransaction
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into saletransactions values(?, ?, ?, ?)",
-                            Statement.RETURN_GENERATED_KEYS);
+                    connection.prepareStatement("insert into saletransactions values(?, ?, ?, ?)");
 
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
@@ -944,20 +943,18 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            int id = (int) pstmt.getGeneratedKeys().getLong(1);
-
             saleTransaction.getEntries().stream().forEach(t -> {
                 try {
                     PreparedStatement pstm = connection
                             .prepareStatement("insert into ticketentries values (?,?,?,?,?,?)");
 
                     pstm.setQueryTimeout(30); // set timeout to 30 sec.
-                    pstm.setInt(1, id);
-                    pstm.setInt(2, 0); // TODO delete column !! is it really necessary to insert productID too?
-                    pstm.setInt(3, t.getAmount());
-                    pstm.setString(4, t.getBarCode());
-                    pstm.setDouble(5, t.getPricePerUnit());
-                    pstm.setDouble(6, t.getDiscountRate());
+                    pstm.setInt(1, saleTransaction.getTicketNumber());
+                    pstm.setInt(2, t.getAmount());
+                    pstm.setString(3, t.getBarCode());
+                    pstm.setDouble(4, t.getPricePerUnit());
+                    pstm.setDouble(5, t.getDiscountRate());
+                    pstm.setString(6, t.getProductDescription());
 
                     pstm.executeUpdate();
                 } catch (SQLException e) {
