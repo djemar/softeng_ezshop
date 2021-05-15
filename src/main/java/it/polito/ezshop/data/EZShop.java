@@ -1127,8 +1127,7 @@ public class EZShop implements EZShopInterface {
             return false;
         } else {
             s.estimatePrice();
-            if (!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")
-                    || !Utils.validateCreditCard(creditCard)) {
+            if(!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")) {
                 ezshopDb.closeConnection();
                 return false;
             }
@@ -1200,7 +1199,11 @@ public class EZShop implements EZShopInterface {
             return -1;
         }
 
-        // TODO check if card is not registered and add back money to txt file
+        if(!Utils.fromFile(creditCard, r.getTotal(), "creditcards.txt")) {
+            ezshopDb.closeConnection();
+        	return -1;
+        }
+        Utils.updateFile("creditcards.txt", creditCard, -r.getTotal()); 
 
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "DEBIT"));
