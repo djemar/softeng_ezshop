@@ -611,6 +611,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
+            if(c == null)
+            	System.out.print("customer non trovato!!!!!!!!!");
             if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
                 int points = c.getPoints() + pointsToBeAdded;
                 isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),

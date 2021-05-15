@@ -744,8 +744,6 @@ public class EZShopDb {
             pstmt.executeUpdate();            
             boo = true;
         } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
             System.err.println(e.getMessage());
         }
         return boo;
@@ -893,8 +891,6 @@ public class EZShopDb {
             
             boo = true;
         } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
             System.err.println(e.getMessage());
         }
         return boo;
@@ -902,8 +898,20 @@ public class EZShopDb {
 
 
     public CustomerImpl getCustomerByCard(String customerCard) {
-        // TODO
-        return null;
+        CustomerImpl c = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from customers where customercard=(?)");
+            pstmt.setString(1, customerCard);
+            pstmt.setQueryTimeout(30);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            if (rs.next() == true)
+                c = new CustomerImpl(rs.getInt("id"),rs.getString("name"), rs.getString("customercard"),rs.getInt("points"));
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return c;
     }
 
 
