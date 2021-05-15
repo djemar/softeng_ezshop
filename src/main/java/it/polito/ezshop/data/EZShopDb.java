@@ -1143,7 +1143,6 @@ public class EZShopDb {
 
 
     public SaleTransactionImpl getSaleTransaction(Integer transactionId) {
-    	//TODO ritorna una lista di entries vuota!!
         SaleTransactionImpl s = null;
         try {
             PreparedStatement pstmt =
@@ -1159,11 +1158,12 @@ public class EZShopDb {
             s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
                     rs.getDouble("price"), rs.getString("status"));
 
-            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
+            pstmt = connection
+                    .prepareStatement("select * from ticketentries where transactionid=?");
             rs = pstmt.executeQuery();
             List<TicketEntry> entries = new ArrayList<>();
             while (rs.next()) {
-                entries.add(new TicketEntryImpl(rs.getString("barcode"),
+                entries.add(new TicketEntryImpl(rs.getString("productCode"),
                         rs.getString("productString"), rs.getInt("amount"),
                         rs.getDouble("priceperunit"), rs.getDouble("discountRate")));
             }
