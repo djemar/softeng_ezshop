@@ -1159,7 +1159,7 @@ public class EZShopDb {
             s = new SaleTransactionImpl(transactionId, rs.getDouble("discountrate"),
                     rs.getDouble("price"), rs.getString("status"));
 
-            pstmt = connection.prepareStatement("select * from saletransactions where id=?");
+            pstmt = connection.prepareStatement("select * from ticketentries where id=?");
             rs = pstmt.executeQuery();
             List<TicketEntry> entries = new ArrayList<>();
             while (rs.next()) {
