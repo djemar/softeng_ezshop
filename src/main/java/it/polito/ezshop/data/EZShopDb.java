@@ -712,13 +712,12 @@ public class EZShopDb {
         Integer customerId = -1;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into customers values((?),NULL,0,NULL)",
+                    connection.prepareStatement("insert into customers values((?),NULL,0,(?))",
                             Statement.RETURN_GENERATED_KEYS);
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             // the index refers to the ? in the statement
-            // customerId = (int) pstmt.getGeneratedKeys().getLong(1);
             pstmt.setString(1, c.getCustomerName());
-
+            pstmt.setString(2, "");
             pstmt.executeUpdate();
             customerId = (int) pstmt.getGeneratedKeys().getLong(1);
 
@@ -742,10 +741,7 @@ public class EZShopDb {
             pstmt.setString(2, fidelityCard);
             pstmt.setInt(3, points);
             pstmt.setInt(4, id);
-
-            pstmt.executeUpdate();
-
-            
+            pstmt.executeUpdate();            
             boo = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -776,8 +772,8 @@ public class EZShopDb {
         boolean boo = false;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("insert into customercards values((?))");
-            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+                    connection.prepareStatement("insert into customercards values((?), null, null)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.s
             pstmt.setString(1, customerCard); // the index refers to the ? in the statement
             pstmt.executeUpdate();
 
@@ -890,7 +886,7 @@ public class EZShopDb {
         try {
 
             PreparedStatement pstmt =
-                    connection.prepareStatement("delete from Customer where ID = (?)");
+                    connection.prepareStatement("delete from customers where ID = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
             pstmt.setInt(1, c.getId());
             pstmt.executeUpdate();

@@ -16,21 +16,24 @@ import it.polito.ezshop.data.*;
 
 public class Utils {
     public static boolean validateBarcode(String code) {
-        return true;
-        // if (code.length() >= 12 && code.length() <= 14) {
-        // int sum = 0;
-        // for (int i = code.length() - 2; i >= 0; i--) {
-        // if ((i + 1) % 2 == 0)
-        // sum += Character.getNumericValue(code.charAt(i)) * 3;
-        // else
-        // sum += Character.getNumericValue(code.charAt(i));
-        // }
-        // if (Math.round((sum + 5) / 10.0) * 10 - sum == Character
-        // .getNumericValue(code.charAt(code.length() - 1)))
-        // return true;
-        // }
-
-        // return false;
+		if (code.length() >= 12 && code.length() <= 14) {
+			int sum = 0;
+			boolean x3 = true;
+			for (int i = code.length()-2; i >= 0; i--) {
+				if (x3) {
+					sum += Character.getNumericValue(code.charAt(i)) * 3;
+					x3 = false;
+				}	
+				else {
+					sum += Character.getNumericValue(code.charAt(i));
+					x3 = true;
+				}	
+			}
+			if (Math.round((sum + 5) / 10.0) * 10 - sum == Character.getNumericValue(code.charAt(code.length()-1)))
+				return true;
+		}
+	
+		return false;
 
     }
 
@@ -59,9 +62,7 @@ public class Utils {
     }
 
     public static boolean containsProduct(final List<TicketEntry> list, final String productCode) {
-        // list.stream().anyMatch(x-> x.getBarCode().equals(productCode)
-        return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst()
-                .isPresent();
+        return list.stream().anyMatch(x-> x.getBarCode().equals(productCode));
     }
 
     public static TicketEntry getProductFromEntries(final List<TicketEntry> list,
@@ -111,7 +112,6 @@ public class Utils {
 			bw.write(content);
 			bw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

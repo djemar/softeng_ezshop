@@ -458,7 +458,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
-        if (customerName == null || customerName == "")
+        if (customerName == null || customerName.isEmpty())
             throw new InvalidCustomerNameException();
 
         if (ezshopDb.createConnection()) {
@@ -475,29 +475,29 @@ public class EZShop implements EZShopInterface {
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard)
             throws InvalidCustomerNameException, InvalidCustomerCardException,
             InvalidCustomerIdException, UnauthorizedException {
-        boolean b = false;
-
+        boolean isSuccess = false;
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (newCustomerName == null || newCustomerName == "")
             throw new InvalidCustomerNameException();
-
-        if (newCustomerCard != null && newCustomerCard!="" &&(newCustomerCard.length() != 10
-                || !Utils.isOnlyDigit(newCustomerCard)))
-            throw new InvalidCustomerCardException("Invalid customer card");
         if(ezshopDb.createConnection()){
             CustomerImpl c = ezshopDb.getCustomer(id);
-            if (c != null) {
-                b = ezshopDb.updateCustomer(id, newCustomerName, c.getCustomerCard(), c.getPoints());
-                if(newCustomerCard!=null &&newCustomerCard!="")
-                    b &= ezshopDb.attachCardToCustomer(newCustomerCard, id);
+            if(c == null)
+            	throw new InvalidCustomerIdException();
+            if(newCustomerCard != null && newCustomerCard.isEmpty())
+            	isSuccess= ezshopDb.updateCustomer(id, newCustomerName, "", 0);
+            else if(newCustomerCard != null) {
+                if (newCustomerCard.length() != 10
+                        || !Utils.isOnlyDigit(newCustomerCard))
+                    throw new InvalidCustomerCardException("Invalid customer card");
+                isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard, c.getPoints());
             }
             ezshopDb.closeConnection();
-        }
+    }
         
-        return b;
+        return isSuccess;
     }
 
     @Override
@@ -510,10 +510,12 @@ public class EZShop implements EZShopInterface {
         if (id == null || id <= 0)
             throw new InvalidCustomerIdException("Invalid customer id ");
         boolean boo = false;
+        if(ezshopDb.createConnection()){
         CustomerImpl c = ezshopDb.getCustomer(id);
         if (c != null)
             boo = ezshopDb.deleteCustomer(c);
-
+        ezshopDb.closeConnection();
+        }
         return boo;
     }
 
