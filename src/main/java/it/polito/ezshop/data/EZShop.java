@@ -739,9 +739,8 @@ public class EZShop implements EZShopInterface {
                 && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
                 && Utils.containsProduct(activeSaleTransaction.getEntries(), productCode)) {
             long count = this.activeSaleTransaction.getEntries().stream().count();
-            TicketEntry t = this.activeSaleTransaction.getEntries().stream()
-                    .filter(x -> x.getBarCode().equalsIgnoreCase(productCode)).skip(count - 1)
-                    .findFirst().get();
+            TicketEntry t = this.activeSaleTransaction.getEntries().stream().skip(count - 1)
+                    .filter(x -> x.getBarCode().equalsIgnoreCase(productCode)).findFirst().get();
             t.setDiscountRate(discountRate);
             activeSaleTransaction.estimatePrice();
             done = true;
