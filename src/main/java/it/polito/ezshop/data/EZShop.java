@@ -331,8 +331,11 @@ public class EZShop implements EZShopInterface {
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
         Integer id = -1;
-        if (productCode == null || productCode.isEmpty()/*|| !productCode.matches("-?\\d+(\\.\\d+)?")
-                || !Utils.validateBarcode(productCode)*/)
+        if (productCode == null
+                || productCode.isEmpty()/*
+                                         * || !productCode.matches("-?\\d+(\\.\\d+)?") ||
+                                         * !Utils.validateBarcode(productCode)
+                                         */)
             throw new InvalidProductCodeException();
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
@@ -353,7 +356,7 @@ public class EZShop implements EZShopInterface {
     public Integer payOrderFor(String productCode, int quantity, double pricePerUnit)
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
-    	int id = -1;
+        int id = -1;
         if (productCode == null || productCode == "")
             throw new InvalidProductCodeException("Invalid product Code ");
         if (quantity <= 0)
@@ -363,19 +366,18 @@ public class EZShop implements EZShopInterface {
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        if(ezshopDb.createConnection()) {
-        ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(productCode);
-        if (prod != null && ezshopDb.getBalance() > pricePerUnit * quantity) {
-        	BalanceOperationImpl balanceOp =
-                    new BalanceOperationImpl(LocalDate.now(), -quantity * pricePerUnit, "ORDER");
-        	int idBOp = ezshopDb.insertBalanceOperation(balanceOp);
-        	if(idBOp == -1)
-        		return -1;
-            OrderImpl o =
-                    new OrderImpl(productCode, pricePerUnit, quantity, "PAYED", idBOp);
-            id = ezshopDb.insertOrder(o);
-        }
-        ezshopDb.closeConnection();
+        if (ezshopDb.createConnection()) {
+            ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(productCode);
+            if (prod != null && ezshopDb.getBalance() > pricePerUnit * quantity) {
+                BalanceOperationImpl balanceOp = new BalanceOperationImpl(LocalDate.now(),
+                        -quantity * pricePerUnit, "ORDER");
+                int idBOp = ezshopDb.insertBalanceOperation(balanceOp);
+                if (idBOp == -1)
+                    return -1;
+                OrderImpl o = new OrderImpl(productCode, pricePerUnit, quantity, "PAYED", idBOp);
+                id = ezshopDb.insertOrder(o);
+            }
+            ezshopDb.closeConnection();
         }
         return id;
     }
@@ -388,20 +390,22 @@ public class EZShop implements EZShopInterface {
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        if(ezshopDb.createConnection()) {
-        	OrderImpl o = ezshopDb.getOrder(orderId);
-        	if (o != null && (o.getStatus().equalsIgnoreCase("ISSUED") || o.getStatus().equalsIgnoreCase("ORDERED"))
-        			&& (ezshopDb.getBalance() >= o.getQuantity() * o.getPricePerUnit())) {
-            BalanceOperationImpl bo = new BalanceOperationImpl(LocalDate.now(),
-                    -o.getQuantity() * o.getPricePerUnit(), "ORDER");
-            int idBOp = ezshopDb.insertBalanceOperation(bo);
-        	if(idBOp == -1)
-        		return false;
-            if((ezshopDb.updateOrder(o.getOrderId(), "PAYED", idBOp))) 
-	            isSuccess = true;
-            
-        }
-        	ezshopDb.closeConnection();
+        if (ezshopDb.createConnection()) {
+            OrderImpl o = ezshopDb.getOrder(orderId);
+            if (o != null
+                    && (o.getStatus().equalsIgnoreCase("ISSUED")
+                            || o.getStatus().equalsIgnoreCase("ORDERED"))
+                    && (ezshopDb.getBalance() >= o.getQuantity() * o.getPricePerUnit())) {
+                BalanceOperationImpl bo = new BalanceOperationImpl(LocalDate.now(),
+                        -o.getQuantity() * o.getPricePerUnit(), "ORDER");
+                int idBOp = ezshopDb.insertBalanceOperation(bo);
+                if (idBOp == -1)
+                    return false;
+                if ((ezshopDb.updateOrder(o.getOrderId(), "PAYED", idBOp)))
+                    isSuccess = true;
+
+            }
+            ezshopDb.closeConnection();
         }
         return isSuccess;
     }
@@ -415,24 +419,24 @@ public class EZShop implements EZShopInterface {
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        if(ezshopDb.createConnection()){
+        if (ezshopDb.createConnection()) {
             OrderImpl o = ezshopDb.getOrder(orderId);
-        	if (o!= null && o.getStatus().equals("COMPLETED"))
-        		return true;
+            if (o != null && o.getStatus().equals("COMPLETED"))
+                return true;
             if (o != null && o.getStatus().equals("PAYED")) {
                 ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
                 if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
-                	ezshopDb.closeConnection();
+                    ezshopDb.closeConnection();
                     throw new InvalidLocationException("Invalid Location");
                 }
-                if(ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId()) &&
-                		!ezshopDb.updateQuantity(prod.getId(), -o.getQuantity())) {
-                	isSuccess = true;
+                if (ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId())
+                        && !ezshopDb.updateQuantity(prod.getId(), -o.getQuantity())) {
+                    isSuccess = true;
                 }
             }
             ezshopDb.closeConnection();
-        }       
-        return isSuccess;         
+        }
+        return isSuccess;
     }
 
     @Override
@@ -482,21 +486,21 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (newCustomerName == null || newCustomerName == "")
             throw new InvalidCustomerNameException();
-        if(ezshopDb.createConnection()){
+        if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
-            if(c == null)
-            	throw new InvalidCustomerIdException();
-            if(newCustomerCard != null && newCustomerCard.isEmpty())
-            	isSuccess= ezshopDb.updateCustomer(id, newCustomerName, "", 0);
-            else if(newCustomerCard != null) {
-                if (newCustomerCard.length() != 10
-                        || !Utils.isOnlyDigit(newCustomerCard))
+            if (c == null)
+                throw new InvalidCustomerIdException();
+            if (newCustomerCard != null && newCustomerCard.isEmpty())
+                isSuccess = ezshopDb.updateCustomer(id, newCustomerName, "", 0);
+            else if (newCustomerCard != null) {
+                if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard))
                     throw new InvalidCustomerCardException("Invalid customer card");
-                isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard, c.getPoints());
+                isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
+                        c.getPoints());
             }
             ezshopDb.closeConnection();
-    }
-        
+        }
+
         return isSuccess;
     }
 
@@ -510,11 +514,11 @@ public class EZShop implements EZShopInterface {
         if (id == null || id <= 0)
             throw new InvalidCustomerIdException("Invalid customer id ");
         boolean boo = false;
-        if(ezshopDb.createConnection()){
-        CustomerImpl c = ezshopDb.getCustomer(id);
-        if (c != null)
-            boo = ezshopDb.deleteCustomer(c);
-        ezshopDb.closeConnection();
+        if (ezshopDb.createConnection()) {
+            CustomerImpl c = ezshopDb.getCustomer(id);
+            if (c != null)
+                boo = ezshopDb.deleteCustomer(c);
+            ezshopDb.closeConnection();
         }
         return boo;
     }
@@ -523,23 +527,23 @@ public class EZShop implements EZShopInterface {
     public Customer getCustomer(Integer id)
             throws InvalidCustomerIdException, UnauthorizedException {
         Customer c = null;
-            if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
-                    || currentUser.getRole().equalsIgnoreCase("ShopManager")
-                    || currentUser.getRole().equalsIgnoreCase("Cashier")))
-                throw new UnauthorizedException("Unauthorized user");
-            if (id == null || id <= 0)
-                throw new InvalidCustomerIdException("Invalid customer id");
-            if(ezshopDb.createConnection()){
-                c = ezshopDb.getCustomer(id);
-                ezshopDb.closeConnection();
-            }
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (id == null || id <= 0)
+            throw new InvalidCustomerIdException("Invalid customer id");
+        if (ezshopDb.createConnection()) {
+            c = ezshopDb.getCustomer(id);
+            ezshopDb.closeConnection();
+        }
 
         return c;
     }
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-        List<Customer> customers = new ArrayList <Customer>();
+        List<Customer> customers = new ArrayList<Customer>();
 
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
@@ -560,15 +564,15 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
-        if(ezshopDb.createConnection()){
+        if (ezshopDb.createConnection()) {
             int n = ezshopDb.getCustomerCardNumber() + 1;
             String ns = Integer.toString(n);
             customerCard = "";
             for (int i = 0; 10 - ns.length() > i; i++) {
                 customerCard += "0";
             }
-            customerCard+=ns;
-            if(!ezshopDb.insertCustomerCard(customerCard)){
+            customerCard += ns;
+            if (!ezshopDb.insertCustomerCard(customerCard)) {
                 ezshopDb.closeConnection();
                 return null;
             }
@@ -611,12 +615,12 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
-            if(c == null)
-            	System.out.print("customer non trovato!!!!!!!!!");
+            if (c == null)
+                System.out.print("customer non trovato!!!!!!!!!");
             if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
                 int points = c.getPoints() + pointsToBeAdded;
-                isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(), c.getCustomerCard(),
-                        points);
+                isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(),
+                        c.getCustomerCard(), points);
             }
             ezshopDb.closeConnection();
         }
@@ -651,26 +655,30 @@ public class EZShop implements EZShopInterface {
             throw new InvalidTransactionIdException();
         if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
                 || !Utils.validateBarcode(productCode))
-        	 throw new InvalidProductCodeException();
+            throw new InvalidProductCodeException();
         if (amount < 0)
             throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
-            if (p != null && activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
+            if (p != null && activeSaleTransaction != null
+                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
                     && p.getQuantity() >= amount) {
-            	//check if same product is present in the entries list otherwise new object in the list
-            	if(!activeSaleTransaction.getEntries().stream().anyMatch(x-> x.getBarCode().equals(productCode)))
-                activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
-                        p.getProductDescription(), amount, p.getPricePerUnit(), 0));
-            	else {
-            		TicketEntry t = activeSaleTransaction.getEntries().stream().filter(x-> x.getBarCode().equals(productCode))
-                								.findFirst().get();
-            		int amountf = t.getAmount() + amount;
-            		t.setAmount(amountf);
-            	}
+                // check if same product is present in the entries list otherwise new object in the
+                // list
+                if (!activeSaleTransaction.getEntries().stream()
+                        .anyMatch(x -> x.getBarCode().equals(productCode)))
+                    activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
+                            p.getProductDescription(), amount, p.getPricePerUnit(), 0));
+                else {
+                    TicketEntry t = activeSaleTransaction.getEntries().stream()
+                            .filter(x -> x.getBarCode().equals(productCode)).findFirst().get();
+                    int amountf = t.getAmount() + amount;
+                    t.setAmount(amountf);
+                }
                 activeSaleTransaction.estimatePrice();
-                activeSaleTransaction.getEntries().stream().forEach(x-> System.out.print(x.getProductDescription()+ x.getAmount() + "\n"));
-                if(!ezshopDb.updateQuantity(p.getId(), -amount))
+                activeSaleTransaction.getEntries().stream().forEach(
+                        x -> System.out.print(x.getProductDescription() + x.getAmount() + "\n"));
+                if (!ezshopDb.updateQuantity(p.getId(), -amount))
                     isSuccess = true;
             }
             ezshopDb.closeConnection();
@@ -692,26 +700,27 @@ public class EZShop implements EZShopInterface {
             throw new InvalidTransactionIdException();
         if (productCode == null || productCode.isEmpty() || !productCode.matches("-?\\d+(\\.\\d+)?")
                 || !Utils.validateBarcode(productCode))
-        	 throw new InvalidProductCodeException();
+            throw new InvalidProductCodeException();
         if (amount < 0)
             throw new InvalidQuantityException();
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
-            if (p != null && activeSaleTransaction != null && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
+            if (p != null && activeSaleTransaction != null
+                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
                     && p.getQuantity() >= amount) {
                 TicketEntry t = activeSaleTransaction.getEntries().stream()
-                	.filter(x-> x.getBarCode().equals(productCode))
-                	.findFirst().get();
+                        .filter(x -> x.getBarCode().equals(productCode)).findFirst().get();
                 int a = t.getAmount();
-                if(a < amount)
-                	return false;
-                else if(a == amount)
-                	activeSaleTransaction.getEntries().remove(t);
+                if (a < amount)
+                    return false;
+                else if (a == amount)
+                    activeSaleTransaction.getEntries().remove(t);
                 else
-                	t.setAmount(a - amount);
-                activeSaleTransaction.getEntries().stream().forEach(x-> System.out.print(x.getProductDescription()+ x.getAmount() + "\n"));
+                    t.setAmount(a - amount);
+                activeSaleTransaction.getEntries().stream().forEach(
+                        x -> System.out.print(x.getProductDescription() + x.getAmount() + "\n"));
                 activeSaleTransaction.estimatePrice();
-                if(!ezshopDb.updateQuantity(p.getId(), amount))
+                if (!ezshopDb.updateQuantity(p.getId(), amount))
                     isSuccess = true;
             }
             ezshopDb.closeConnection();
@@ -764,19 +773,20 @@ public class EZShop implements EZShopInterface {
         if (discountRate < 0 || discountRate >= 1.00)
             throw new InvalidDiscountRateException();
 
-        if (activeSaleTransaction != null && activeSaleTransaction.getTicketNumber() == transactionId) {
+        if (activeSaleTransaction != null
+                && activeSaleTransaction.getTicketNumber() == transactionId) {
             this.activeSaleTransaction.setDiscountRate(discountRate);
             activeSaleTransaction.estimatePrice();
             return true;
-        } 
+        }
         if (ezshopDb.createConnection() && ezshopDb.getSaleTransaction(transactionId) != null) {
-        	  boolean isSuccess = false;
-        	  SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
-        	  if(!s.getStatus().equalsIgnoreCase("PAYED")) {
-        		  isSuccess = ezshopDb.setSaleDiscount(transactionId, discountRate);
-        	  }
-              ezshopDb.closeConnection();
-              return isSuccess;
+            boolean isSuccess = false;
+            SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
+            if (!s.getStatus().equalsIgnoreCase("PAYED")) {
+                isSuccess = ezshopDb.setSaleDiscount(transactionId, discountRate);
+            }
+            ezshopDb.closeConnection();
+            return isSuccess;
         }
         return false;
     }
@@ -842,13 +852,14 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
-        	// TODO metodo non funzionante
+            // TODO metodo non funzionante
             SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
             if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
-                	System.out.print("prodotti da rimettere    " + x.getAmount() + x.getBarCode());
+                    System.out.print("prodotti da rimettere    " + x.getAmount() + x.getBarCode());
                     ezshopDb.updateQuantity(
-                            ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),x.getAmount());
+                            ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),
+                            x.getAmount());
                 });
                 isSuccess = ezshopDb.deleteSaleTransaction(transactionId);
             }
@@ -1086,7 +1097,7 @@ public class EZShop implements EZShopInterface {
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), totalPrice, "CREDIT"));
         if (!ezshopDb.payForSaleTransaction(transactionID)) {
-        	ezshopDb.closeConnection();
+            ezshopDb.closeConnection();
             return -1;
         }
         ezshopDb.closeConnection();
@@ -1116,11 +1127,12 @@ public class EZShop implements EZShopInterface {
             return false;
         } else {
             s.estimatePrice();
-            if(!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt") || !Utils.validateCreditCard(creditCard)) {
+            if (!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")
+                    || !Utils.validateCreditCard(creditCard)) {
                 ezshopDb.closeConnection();
-            	return false;
+                return false;
             }
-            Utils.updateFile("creditcards.txt", creditCard, s.getPrice());          
+            Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "CREDIT"));
 
@@ -1157,7 +1169,7 @@ public class EZShop implements EZShopInterface {
         }
 
         ezshopDb.insertBalanceOperation(
-                new BalanceOperationImpl(LocalDate.now(), r.getTotal(), "DEBIT"));
+                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "DEBIT"));
 
         return r.getTotal();
     }
@@ -1191,7 +1203,7 @@ public class EZShop implements EZShopInterface {
         // TODO check if card is not registered and add back money to txt file
 
         ezshopDb.insertBalanceOperation(
-                new BalanceOperationImpl(LocalDate.now(), r.getTotal(), "DEBIT"));
+                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "DEBIT"));
 
         return r.getTotal();
     }
