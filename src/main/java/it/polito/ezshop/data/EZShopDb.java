@@ -1285,7 +1285,8 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery();
 
-            r = new ReturnTransaction(returnId, rs.getInt("transactionid"));
+            r = new ReturnTransaction(returnId, rs.getInt("transactionid"), rs.getString("status"),
+                    rs.getDouble("total"));
             pstmt = connection.prepareStatement("select * from returnentries where id=?");
             pstmt.setInt(1, returnId);
             rs = pstmt.executeQuery();
