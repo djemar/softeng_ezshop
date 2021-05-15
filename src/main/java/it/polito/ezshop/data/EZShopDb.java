@@ -994,15 +994,6 @@ public class EZShopDb {
             pstmt.setInt(2, transactionID);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from saletransactions");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
