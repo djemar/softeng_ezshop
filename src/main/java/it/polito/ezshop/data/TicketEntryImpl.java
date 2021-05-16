@@ -7,9 +7,9 @@ public class TicketEntryImpl implements TicketEntry {
 	private double pricePerUnit = 0;
 	private double discountRate=0 ;
 
-	public TicketEntryImpl(String barCode, String producString, int amount, double pricePerUnit, double discountRate) {
+	public TicketEntryImpl(String barCode, String productString, int amount, double pricePerUnit, double discountRate) {
 		this.barCode = barCode;
-		this.productDescription = producString;
+		this.productDescription = productString;
 		this.amount = amount;
 		this.pricePerUnit = pricePerUnit;
 		this.discountRate = discountRate;
