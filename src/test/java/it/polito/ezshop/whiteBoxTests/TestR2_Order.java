@@ -9,10 +9,41 @@ import org.junit.Test;
 
 public class TestR2_Order {
 	
-	public void testGetSet() {
-		  Order order = new OrderImpl("3546767564", 5.50 ,10);
+	public void testGetSetProductCode() {
+		  Order order = new OrderImpl("3546767564", 5.50,10);
+		  assertEquals(order.getProductCode(),"3546767564");
+		  order.setProductCode("2456574");
+		  assertEquals(order.getProductCode(),"2456574");
+	}
+	public void testGetSetPrice() {
+		  Order order = new OrderImpl("3546767564", 5.50, 10);
 		  assertEquals(order.getPricePerUnit(), 5.50, 0);
 		  order.setPricePerUnit(6.00);
 		  assertEquals(order.getPricePerUnit(), 6.00, 0);
-		 }
+	}
+	public void testGetSetQuantity() {
+		  Order order = new OrderImpl("3546767564", 5.50, 10);
+		  assertEquals(order.getQuantity(), 10);
+		  order.setQuantity(20);
+		  assertEquals(order.getQuantity(), 20);
+	}
+	public void testGetSetStatus() {
+		  Order order = new OrderImpl("3546767564", 5.50, 10, "PAYED", 3);
+		  assertEquals(order.getStatus(), "PAYED");
+		  order.setStatus("COMPLETED");
+		  assertEquals(order.getStatus(), "COMPLETED");
+	}
+	public void testGetSetBalanceID() {
+		  Order order = new OrderImpl("3546767564", 5.50, 10, "PAYED", 3);
+		  assertEquals(order.getBalanceId(), 3, 0);
+		  order.setBalanceId(4);
+		  assertEquals(order.getBalanceId(), 4, 0);
+	}
+	public void testGetSetOrderID() {
+		  Order order = new OrderImpl(4, "3546767564", 5.50, 10, "PAYED", 3);
+		  assertEquals(order.getOrderId(), 4, 0);
+		  order.setBalanceId(5);
+		  assertEquals(order.getOrderId(), 5, 0);
+	}
+	
 }
