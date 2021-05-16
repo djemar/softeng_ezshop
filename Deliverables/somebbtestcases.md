@@ -149,10 +149,9 @@ Combination of predicates for method isOnlyDigit
 
 **Criteria for method *validateCreditCard*:**
 	
-
- - 
- - 
- -
+ - length of number
+ - format of number
+ -valid number
  -
  -
 
@@ -161,12 +160,14 @@ Combination of predicates for method isOnlyDigit
 
 | Criteria | Predicate |
 | -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
+|length of number|(null,15)|
+|          |[16]             |
+|          |[17,maxstring)|
+|format of number|true(in case of digits)|
+|                |false(others)|
+|real credit card number               |true|
+|                           |false|
+
 
 
 
@@ -179,12 +180,8 @@ Boundaries for method validateCreditCard:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
+|length of number|15,16,17|
+
 
 
 
@@ -192,14 +189,19 @@ Boundaries for method validateCreditCard:
 
 Combination of predicates for method validateCreditCard
 
+|  length of number | format of number |real credit card number | Valid / Invalid |Description of the test case|JUnit test case|
+|-----------------|----------------|-----------------------|-----------------|------------------------------|-----------------|
+|(null,15)        |       *        |         *             |Invalid          |T1(9851648) -> false           |                 |
+|                 |                |                       |                 |Tb1(null) -> false            |                 |
+|                 |                |                       |                 |                              |                 |
+|[17,maxstring)   |       *        |          *            |Invalid          |T2(84216542841568421846) -> false |                 |
+|                 |                |                       |                 |                              |                 |
+|        *        |   not digit    |          *            |Invalid          |T3(xhf54121) -> false        |                 |
+|                 |                |                       |                 |Tb3(mamad4574) -> false|                 |
+|        *        |       *        |        false          |Invalid          |                              |                 |
+|    [16]      |     digits     |        false             |Invalid          |T4(4218632014875236) -> false   |                 |
+|    [16]      |     digits     |        true              |Valid            |T4(4716258050958645)    -> true  |                 |
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-|-------|-------|-------|-------|-------|-------|
-|||||||
-|||||||
-|||||||
-|||||||
-|||||||
 
 ### **Class *Utils * - method *containsProduct***
 
@@ -208,25 +210,19 @@ Combination of predicates for method validateCreditCard
 **Criteria for method *containsProduct*:**
 	
 
- - 
- - 
- -
- -
- -
+ - length of product code
+ - existence of the product in the list
+
 
 
 **Predicates for method *containsProduct*:**
 
 | Criteria | Predicate |
 | -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-
-
+|length of product code|>0|
+|          |=0 (null)      |
+|existence of the product in the list|yes|
+|                                    |no|
 
 
 
@@ -238,11 +234,7 @@ Boundaries for method containsProduct:
 | Criteria | Boundary values |
 | -------- | --------------- |
 |          |                 |
-|          |                 | 
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
+
 
 
 
@@ -251,42 +243,37 @@ Boundaries for method containsProduct:
 Combination of predicates for method containsProduct
 
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-|-------|-------|-------|-------|-------|-------|
-|||||||
-|||||||
-|||||||
-|||||||
-|||||||
+| length of product code | existence of the product in the list | Valid / Invalid | Description of the test case | JUnit test case |
+|------------------------|--------------------------------------|-----------------|------------------------------|-----------------|
+|       >0               |                   yes                |       valid     |t1("item19,item20,item21","item20")         |     |
+|       ''                |                  no                |         invalid    |t2("item35,item33,item34","item29")|            |
+|       =0               |                  *                  |         invalid    |t3("item14,item15,item16","") |               |
+
+
 
 ### **Class *Utils * - method *getProductFromEntries***
-
 
 
 **Criteria for method *getProductFromEntries*:**
 	
 
- - 
- -  
- -
- -
- -
+ - length of product code
+ - existence of the product in the list
+ - Ticketentry is not null
+
+
 
 
 **Predicates for method *getProductFromEntries*:**
 
 | Criteria | Predicate |
 | -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-
-
-
-
+|length of product code|>0|
+|          |=0 (null)      |
+|existence of the product in the list|yes|
+|                                    |no|
+|          Ticketentry is not null           | yes|
+|                                            |no|
 
 **Boundaries**:
 
@@ -309,13 +296,12 @@ Boundaries for method getProductFromEntries:
 Combination of predicates for method getProductFromEntries
 
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-|-------|-------|-------|-------|-------|-------|
-|||||||
-|||||||
-|||||||
-|||||||
-|||||||
+| length of product code | existence of the product in the list|Ticketentry is not null | Valid / Invalid | Description of the test case | JUnit test case |
+|------------------------|--------------------------------------|-------|-----------------|------------------------------|-----------------|
+|       >0              |                   yes                | yes    | valid     |t1("item19,item20,item21","item20")|     |
+|       >0              |                   yes                | no    | invalid     |t1("item19,item20,item21","item20")|     |
+|       ''                |                  no                |  no |     invalid    |t2("item35,item33,item34","item29")|            |
+|       =0               |                  *                  |    * |    invalid    |t3("item14,item15,item16","") |               |
 
 ### **Class *Utils * - method *readData***
 
