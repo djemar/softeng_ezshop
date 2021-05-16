@@ -1065,10 +1065,6 @@ public class EZShopDb {
                             "update ticketentries set amount = (amount-(?)) where transactionid = (?) and productcode = (?)");
 
                     pstm.setQueryTimeout(30); // set timeout to 30 sec.
-                    // the index refers to the ? in the statement
-                    // TODO wtf
-                    // nel caso di deletereturn devo riaggiungere amount mentre in endreturn devo
-                    // togliere amount
                     pstm.setInt(1, added ? -x.getValue() : x.getValue());
                     pstm.setInt(2, transactionId);
                     pstm.setString(3, x.getKey());
@@ -1214,8 +1210,6 @@ public class EZShopDb {
             if (count < 0)
                 return false;
 
-            // TODO add returned products to returns table
-            // returnTransaction.getReturnedProductsMap()
             returnTransaction.getReturnedProductsMap().entrySet().stream().forEach(x -> {
                 PreparedStatement pstm;
                 try {
@@ -1228,7 +1222,6 @@ public class EZShopDb {
                     pstm.executeUpdate();
 
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             });
