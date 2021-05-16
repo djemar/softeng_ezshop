@@ -297,7 +297,10 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    /* check condition! */
+
+    /* TODO se position è vuoto e con update lo lascio vuoto non aggiorna perchè fa
+     * match con stringa vuota, andrà bene?*/
+    
     public boolean updatePosition(Integer productId, String newPos)
             throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
         boolean done = false;
@@ -308,14 +311,11 @@ public class EZShop implements EZShopInterface {
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
             throw new UnauthorizedException();
         String n[] = newPos.split("-");
-        if ((newPos != null && !n[0].isEmpty() && !n[2].isEmpty() && !n[1].isEmpty())
-                && (!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?")))
-            // n[0] and n[2] are integers
+        if ((newPos != null && !newPos.isEmpty()) && (!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?")))
             throw new InvalidLocationException();
+        if(newPos == null || newPos.isEmpty())
+        	newPos = new String("");
         if (ezshopDb.createConnection()) {
-            /* questo controllo non va */
-            if (newPos == null || (n[0].isEmpty() && n[2].isEmpty() && n[1].isEmpty()))
-                newPos = new String("");
             if (ezshopDb.getProductTypeById(productId) != null
                     && !ezshopDb.checkExistingPosition(newPos)) {
                 if (ezshopDb.updatePosition(productId, newPos))
@@ -331,11 +331,8 @@ public class EZShop implements EZShopInterface {
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
         Integer id = -1;
-        if (productCode == null
-                || productCode.isEmpty()/*
-                                         * || !productCode.matches("-?\\d+(\\.\\d+)?") ||
-                                         * !Utils.validateBarcode(productCode)
-                                         */)
+        if (productCode == null || productCode.isEmpty() 
+                     || !Utils.isOnlyDigit(productCode) || !Utils.validateBarcode(productCode))
             throw new InvalidProductCodeException();
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
@@ -852,7 +849,6 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
-            // TODO metodo non funzionante
             SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
             if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
@@ -1026,6 +1022,7 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
+    /*TODO testare*/
     public boolean deleteReturnTransaction(Integer returnId)
             throws InvalidTransactionIdException, UnauthorizedException {
         if (returnId == null || returnId <= 0)
@@ -1038,7 +1035,6 @@ public class EZShop implements EZShopInterface {
         boolean conn = ezshopDb.createConnection();
         if (!conn)
             return false;
-        // ezshopDb.getReturnTransaction(returnId) se è null??
         ReturnTransaction returnTrans = ezshopDb.getReturnTransaction(returnId);
         if (returnTrans == null || returnTrans.getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
@@ -1047,15 +1043,11 @@ public class EZShop implements EZShopInterface {
 
         boolean isSuccess = ezshopDb.deleteReturnTransaction(returnId);
         if (isSuccess) {
-            // TODO undo decrease saleTransaction items and total price and add items back to
-            // inventory
-            // substract items to inventory, ho venduto prodotti
             returnTrans.getReturnedProductsMap().entrySet().forEach(x -> {
                 ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(),
                         (-x.getValue()));
             });
             double diffPrice = -returnTrans.getTotal();
-            // add saleTransaction items && add sale transaction total price
             ezshopDb.updateSaleTransaction(returnTrans.getTransactionId(),
                     returnTrans.getReturnedProductsMap(), diffPrice, true);
         }
