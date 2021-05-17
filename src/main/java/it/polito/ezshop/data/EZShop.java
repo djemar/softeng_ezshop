@@ -296,12 +296,6 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-
-    /*
-     * TODO se position è vuoto e con update lo lascio vuoto non aggiorna perchè fa match con
-     * stringa vuota, andrà bene?
-     */
-
     public boolean updatePosition(Integer productId, String newPos)
             throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
         boolean done = false;
@@ -319,7 +313,7 @@ public class EZShop implements EZShopInterface {
             newPos = new String("");
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getProductTypeById(productId) != null
-                    && !ezshopDb.checkExistingPosition(newPos)) {
+                    && (!ezshopDb.checkExistingPosition(newPos) || newPos.isEmpty())) {
                 if (ezshopDb.updatePosition(productId, newPos))
                     done = true;
             }
