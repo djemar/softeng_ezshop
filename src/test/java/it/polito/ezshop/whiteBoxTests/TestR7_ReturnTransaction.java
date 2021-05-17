@@ -55,7 +55,16 @@ public class TestR7_ReturnTransaction {
     }
 
     @Test
-    public void testSetGetReturnedMap() {
+    public void testUpdateTotal() {
+        double total = 20;
+        returnTransaction.setTotal(total);
+        returnTransaction.updateTotal(30);
+        total = 50;
+        assertEquals(total, returnTransaction.getTotal(), 0.001);
+    }
+
+    @Test
+    public void testGetSetReturnedProductMap() {
         returnTransaction.setReturnedProductsMap(returnedProductsMap);
         assertEquals(returnedProductsMap, returnTransaction.getReturnedProductsMap());
     }
