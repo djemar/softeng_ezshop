@@ -315,45 +315,48 @@ Combination of predicates for method fromFile
 
 **Criteria for method _updateFile_:**
 
--
--
--
--
+- Validity of the String parameter
+- Length of the String   
+- Sign of the updated amount parameter
+- Existence of the Credit Card 
+- File opened correctly 
+
 - **Predicates for method _updateFile_:**
 
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
+| Criterion                             | Predicate |
+| ------------------------------------- | --------- |
+| Validity of the String parameter      | Valid     |
+|                                       | NULL      |
+| Length of the String                  | > 0       |
+|                                       | = 0 ("")  |
+| Existence of the Credit Card          | Yes       |
+|                                       | No        |
+| Sign of the updated amount parameter  | >=0       |
+|                                       | <0        |
+| File opened correctly                 | Yes       |
+|                                       | No        |
 
 **Boundaries**:
 
 Boundaries for method updateFile:
 
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
+| Criteria                              | Boundary values |
+| ------------------------------------- | --------------- |
+| Sign of the updated amount parameter  | -1,0            |
 
 **Combination of predicates**:
 
 Combination of predicates for method updateFile
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-| ---------- | ---------- | --- | --------------- | ---------------------------- | --------------- |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
+| Validity of the String parameter | Length of the String | Existence of the Credit Card | Sign of the updated amount parameter |File opened correctly | Valid/Invalid | Description of the test case: example of input and output | JUnit test case |
+| -------------------------------- | -------------------- | ------------------------ | -------------------------------- | ------------------------------ | ------------- | --------------------------------------------------------- | --------------- |
+| Valid                            | >0                   | Yes                      | <0                               | Yes                              | Valid       | T0 -> False                                               |testValidUpdateFile()                  |
+| ''                               | ''                   | ''                       | >=0                              | *                             | Valid       | T1 -> True                             |testInvalidUpdateFile()                 |
+| ''                               | ''                   | ''                       | ''                               | No                            | Invalid         | T2 -> throw IO Exception                             |testInvalidUpdateFile()                 |
+| ''                               | ''                   | No                       | ''                                | -                              | Valid       | T3 -> False                                |testInvalidUpdateFile()                 |
+| *                                | 0                    | -                        | -                                | -                              | Valid       | T4(""; error)                                             |testInvalidUpdateFile()                 |
+| NULL                             | -                    | -                        | -                                | -                              | Valid       | T5(NULL; error)                                           |testInvalidUpdateFile()                 |
+
 
 # White Box Unit Tests
 
