@@ -366,12 +366,23 @@ Combination of predicates for method updateFile
     <Report here all the created JUnit test cases, and the units/classes under test >
     <For traceability write the class and method name that contains the test case>
 
-| Unit name | JUnit test case |
-| --------- | --------------- | --- |
-|           |                 |
-|           |                 |
-|           |                 |     |
-
+| Unit name               | JUnit test case                 |Java Class     |
+| -----------------------:| -------------------------------:| ---:|
+|Order             |testGetSetProductCode()           |TestR2_Order |
+|Order             |testGetSetPrice()                 |TestR2_Order |
+|Order             |testGetSetQuantity()              |TestR2_Order |
+|Order             |testGetSetStatus()                |TestR2_Order |
+|Order             |testGetSetBalanceID()             |TestR2_Order |
+|Order             |testGetSetOrderID()               |TestR2_Order |
+|BalanceOperation  |testGetSetBalanceID()             |TestR4_BalanceOperation |
+|BalanceOperation  |testGetSetDate()                  |TestR4_BalanceOperation |
+|BalanceOperation  |testGetSetMoney()                 |TestR4_BalanceOperation |
+|BalanceOperation  |testGetSetType()                  |TestR4_BalanceOperation |
+|TicketEntry       |testGetSetBarCode()               |TestR5_TicketEntry      |
+|TicketEntry       |testGetSetPrice()                 |TestR5_TicketEntry      |
+|TicketEntry       |testGetSetQuantity()              |TestR5_TicketEntry      |
+|TicketEntry       |testGetSetProductDescription()    |TestR5_TicketEntry      |
+|TicketEntry       |testGetSetDiscountRate()          |TestR5_TicketEntry      |
 ### Code coverage report
 
     <Add here the screenshot report of the statement and branch coverage obtained using
