@@ -19,7 +19,7 @@ public class TestR7_ReturnTransaction {
     }
 
     @Test
-    public void testSetGetReturnId() {
+    public void testGetSetReturnId() {
         Integer id = 1;
         assertEquals(id, returnTransaction.getReturnId());
         id = 2;
@@ -28,7 +28,7 @@ public class TestR7_ReturnTransaction {
     }
 
     @Test
-    public void testSetGetTransactionId() {
+    public void testGetSetTransactionId() {
         Integer id = 5;
         assertEquals(id, returnTransaction.getTransactionId());
         id = 10;
@@ -37,7 +37,7 @@ public class TestR7_ReturnTransaction {
     }
 
     @Test
-    public void testSetGetStatus() {
+    public void testGetSetStatus() {
         String status = "OPEN";
         assertEquals(status, returnTransaction.getStatus());
         status = "CLOSED";
@@ -46,7 +46,7 @@ public class TestR7_ReturnTransaction {
     }
 
     @Test
-    public void testSetGetTotal() {
+    public void testGetSetTotal() {
         double total = 20;
         assertEquals(total, returnTransaction.getTotal(), 0.001);
         total = 10;

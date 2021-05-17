@@ -15,7 +15,7 @@ public class TestR8_SaleTransaction {
 
 
     @Test
-    public void testSetGetTransactionId() {
+    public void testGetSetTransactionId() {
         Integer id = 1;
         assertEquals(id, saleTransaction.getTicketNumber());
         id = 10;
@@ -24,7 +24,7 @@ public class TestR8_SaleTransaction {
     }
 
     @Test
-    public void testSetGetStatus() {
+    public void testGetSetStatus() {
         String status = "OPEN";
         assertEquals(status, saleTransaction.getStatus());
         status = "CLOSED";
@@ -33,7 +33,7 @@ public class TestR8_SaleTransaction {
     }
 
     @Test
-    public void testSetGetPrice() {
+    public void testGetSetPrice() {
         double price = 20;
         assertEquals(price, saleTransaction.getPrice(), 0.001);
         price = 10;
@@ -42,7 +42,7 @@ public class TestR8_SaleTransaction {
     }
 
     @Test
-    public void testSetGetDiscountRate() {
+    public void testGetSetDiscountRate() {
         double discountRate = 0;
         assertEquals(discountRate, saleTransaction.getDiscountRate(), 0.001);
         discountRate = 0.5;
