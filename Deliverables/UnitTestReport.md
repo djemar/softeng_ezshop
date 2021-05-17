@@ -967,6 +967,8 @@ Combination of predicates for method _setStatus_:
 | ReturnTransaction |      testGetSetTransactionId() | TestR7_ReturnTransaction |
 | ReturnTransaction |             testGetSetStatus() | TestR7_ReturnTransaction |
 | ReturnTransaction |              testGetSetTotal() | TestR7_ReturnTransaction |
+| ReturnTransaction |              testUpdateTotal() | TestR7_ReturnTransaction |
+| ReturnTransaction | testGetSetReturnedProductMap() | TestR7_ReturnTransaction |
 |   SaleTransaction |       testGetSetTicketNumber() |   TestR8_SaleTransaction |
 |   SaleTransaction |             testGetSetStatus() |   TestR8_SaleTransaction |
 |   SaleTransaction |              testGetSetPrice() |   TestR8_SaleTransaction |
