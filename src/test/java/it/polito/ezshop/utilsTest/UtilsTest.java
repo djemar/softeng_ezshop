@@ -106,6 +106,10 @@ public class UtilsTest {
     public void testUnregisteredCreditCard() {
         assertFalse(Utils.fromFile("5255189604838575", 20, file));
         assertFalse(Utils.fromFile("5100293991053009", 50, file));
+        assertThrows(NullPointerException.class, () -> {
+            Utils.fromFile("5100293991053009", 50, null);
+        });
+        assertFalse(Utils.fromFile("5100293991053009", 50, ""));
     }
 
     @Test
@@ -115,9 +119,13 @@ public class UtilsTest {
 
     @Test
     public void testInvalidUpdateFile() {
-        // assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
+        assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
         assertFalse(Utils.updateFile(file, "5255189604838570", 20));
         assertFalse(Utils.updateFile(file, "5100293991053009", 42));
+        assertThrows(NullPointerException.class, () -> {
+            Utils.updateFile(null, "5100293991053009", 42);
+        });
+        assertFalse(Utils.updateFile("", "5100293991053009", 42));
     }
 
     @Test
