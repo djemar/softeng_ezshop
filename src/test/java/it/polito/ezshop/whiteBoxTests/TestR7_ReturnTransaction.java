@@ -3,7 +3,7 @@ package it.polito.ezshop.whiteBoxTests;
 import org.junit.Test;
 import it.polito.ezshop.data.ReturnTransaction;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import org.junit.Before;
 
@@ -67,5 +67,12 @@ public class TestR7_ReturnTransaction {
     public void testGetSetReturnedProductMap() {
         returnTransaction.setReturnedProductsMap(returnedProductsMap);
         assertEquals(returnedProductsMap, returnTransaction.getReturnedProductsMap());
+    }
+
+    @Test
+    public void testAddProductToReturn() {
+        returnTransaction.addProductToReturn("65164684113337", 1);
+        assertTrue(returnTransaction.getReturnedProductsMap().containsKey("65164684113337"));
+        assertEquals(1, returnTransaction.getReturnedProductsMap().get("65164684113337"), 0);
     }
 }
