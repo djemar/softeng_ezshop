@@ -387,8 +387,7 @@ Combination of predicates for method updateFile
 | ReturnTransaction |      testGetSetTransactionId() | TestR7_ReturnTransaction |
 | ReturnTransaction |             testGetSetStatus() | TestR7_ReturnTransaction |
 | ReturnTransaction |              testGetSetTotal() | TestR7_ReturnTransaction |
-| ReturnTransaction |        testGetSetReturnedMap() | TestR7_ReturnTransaction |
-|   SaleTransaction |      testGetSetTransactionId() |   TestR8_SaleTransaction |
+|   SaleTransaction |       testGetSetTicketNumber() |   TestR8_SaleTransaction |
 |   SaleTransaction |             testGetSetStatus() |   TestR8_SaleTransaction |
 |   SaleTransaction |              testGetSetPrice() |   TestR8_SaleTransaction |
 |   SaleTransaction |       testGetSetDiscountRate() |   TestR8_SaleTransaction |
