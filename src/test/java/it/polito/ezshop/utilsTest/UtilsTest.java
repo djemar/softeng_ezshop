@@ -1,17 +1,24 @@
 package it.polito.ezshop.utilsTest;
 
 import org.junit.Test;
+import it.polito.ezshop.data.TicketEntry;
+import it.polito.ezshop.data.TicketEntryImpl;
 import it.polito.ezshop.utils.Utils;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.Before;
 
 public class UtilsTest {
-
+    List<TicketEntry> list;
     static String file;
     static {
         File outFile;
@@ -37,7 +44,15 @@ public class UtilsTest {
     }
 
     @Before
-    public void setUp() throws IOException {}
+    public void setUp() throws IOException {
+        list = new ArrayList<TicketEntry>();
+        TicketEntry t1 = new TicketEntryImpl("12345678912237", "Test", 1, 1, 0);
+        TicketEntry t2 = new TicketEntryImpl("2905911158926", "Test", 1, 1, 0);
+        TicketEntry t3 = new TicketEntryImpl("65164684113337", "Test", 1, 1, 0);
+        list.add(t1);
+        list.add(t2);
+        list.add(t3);
+    }
 
     @Test
     public void testValidBarcode() {
@@ -81,8 +96,6 @@ public class UtilsTest {
         assertFalse(Utils.validateCreditCard("3779505441550891"));
     }
 
-
-
     @Test
     public void testRegisteredCreditCard() {
         assertTrue(Utils.fromFile("4485370086510891", 20, file));
@@ -105,6 +118,24 @@ public class UtilsTest {
         // assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
         assertFalse(Utils.updateFile(file, "5255189604838570", 20));
         assertFalse(Utils.updateFile(file, "5100293991053009", 42));
+    }
+
+    @Test
+    public void testContainsProduct() {
+        assertTrue(Utils.containsProduct(list, "2905911158926"));
+    }
+
+    @Test
+    public void testDoesntContainProduct() {
+        assertFalse(Utils.containsProduct(list, "2905911058926"));
+    }
+
+    @Test
+    public void testGetProductFromEntries() {
+        assertNotNull(Utils.getProductFromEntries(list, "65164684113337"));
+        assertThrows(NoSuchElementException.class, () -> {
+            Utils.getProductFromEntries(list, "productCode");
+        });
     }
 
 }
