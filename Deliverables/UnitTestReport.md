@@ -357,6 +357,394 @@ Combination of predicates for method updateFile
 | \*                               | 0                    | -                            | -                                    | -                     | Valid         | T4(""; error)                                             | testInvalidUpdateFile() |
 | NULL                             | -                    | -                            | -                                    | -                     | Valid         | T5(NULL; error)                                           | testInvalidUpdateFile() |
 
+### **Class _BalanceOperation_ - method _setBalanceId_**
+
+**Criteria for method _setBalanceId_:**
+
+**Predicates for method _setBalanceId_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setBalanceId:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setBalanceId
+
+| Criteria 1 | Valid / Invalid | Description of the test case     | JUnit test case       |
+| ---------- | --------------- | -------------------------------- | --------------------- |
+| /          | Valid           | balanceOperation.setBalanceId(2) | testGetSetBalanceId() |
+
+### **Class _BalanceOperation_ - method _setDate_**
+
+**Criteria for method _setDate_:**
+
+**Predicates for method _setDate_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setDate:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setDate
+
+| Criteria 1 | Valid / Invalid | Description of the test case           | JUnit test case  |
+| ---------- | --------------- | -------------------------------------- | ---------------- |
+| /          | Valid           | balanceOperation.setDate("2020-10-05") | testGetSetDate() |
+
+### **Class _BalanceOperation_ - method _setMoney_**
+
+**Criteria for method _setMoney_:**
+
+**Predicates for method _setMoney_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setMoney:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setMoney
+
+| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case   |
+| ---------- | --------------- | ------------------------------- | ----------------- |
+| /          | Valid           | balanceOperation.setMoney(50.5) | testGetSetMoney() |
+
+### **Class _BalanceOperation_ - method _setType_**
+
+**Criteria for method _setType_:**
+
+**Predicates for method _setType_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setType:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setType
+
+| Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case  |
+| ---------- | --------------- | ---------------------------------- | ---------------- |
+| /          | Valid           | balanceOperation.setType("CREDIT") | testGetSetType() |
+
+### **Class _Order_ - method _setBalanceId_**
+
+**Criteria for method _setBalanceId_:**
+
+**Predicates for method _setBalanceId_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setBalanceId:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setBalanceId
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case       |
+| ---------- | --------------- | ---------------------------- | --------------------- |
+| /          | Valid           | order.setBalanceId(10)       | testGetSetBalanceID() |
+
+### **Class _Order_ - method _setProductCode_**
+
+**Criteria for method _setProductCode_:**
+
+**Predicates for method _setProductCode_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setProductCode:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setProductCode
+
+| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case         |
+| ---------- | --------------- | ------------------------------- | ----------------------- |
+| /          | Valid           | order.setProductCode("4567890") | testGetSetProductCode() |
+
+### **Class _Order_ - method _setPricePerUnit_**
+
+**Criteria for method _setPricePerUnit_:**
+
+**Predicates for method _setPricePerUnit_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setPricePerUnit:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setProductCode
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
+| ---------- | --------------- | ---------------------------- | ----------------- |
+| /          | Valid           | order.setPricePerUnit(34)    | testGetSetPrice() |
+
+### **Class _Order_ - method _setQuantity_**
+
+**Criteria for method _setQuantity_:**
+
+**Predicates for method _setQuantity_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setQuantity:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setQuantity
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case      |
+| ---------- | --------------- | ---------------------------- | -------------------- |
+| /          | Valid           | order.setQuantity(10)        | testGetSetQuantity() |
+
+### **Class _Order_ - method _setStatus_**
+
+**Criteria for method _setStatus_:**
+
+**Predicates for method _setStatus_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setStatus:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setStatus
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case    |
+| ---------- | --------------- | ---------------------------- | ------------------ |
+| /          | Valid           | order.setStatus("PAYED")     | testGetSetStatus() |
+
+### **Class _Order_ - method _setOrderId_**
+
+**Criteria for method _setOrderId_:**
+
+**Predicates for method _setOrderId_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setOrderId:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setOrderId
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case     |
+| ---------- | --------------- | ---------------------------- | ------------------- |
+| /          | Valid           | order.setOrderId(10)         | testGetSetOrderID() |
+
+### **Class _TicketEntry_ - method _setBarCode_**
+
+**Criteria for method _setBarCode_:**
+
+**Predicates for method _setBarCode_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setBarCode:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setBarCode
+
+| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case     |
+| ---------- | --------------- | ------------------------------- | ------------------- |
+| /          | Valid           | ticketEntry.setBarCode("36487") | testGetSetBarCode() |
+
+### **Class _TicketEntry_ - method _setProductDescription_**
+
+**Criteria for method _setProductDescription_:**
+
+**Predicates for method _setProductDescription_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setProductDescription:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setProductDescription
+
+| Criteria 1 | Valid / Invalid | Description of the test case                   | JUnit test case                |
+| ---------- | --------------- | ---------------------------------------------- | ------------------------------ |
+| /          | Valid           | ticketEntry.setProductDescription("chocolate") | testGetSetProductDescription() |
+
+### **Class _TicketEntry_ - method _setAmount_**
+
+**Criteria for method _setAmount_:**
+
+**Predicates for method _setAmount_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setAmount:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setAmount
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case      |
+| ---------- | --------------- | ---------------------------- | -------------------- |
+| /          | Valid           | ticketEntry.setAmount(49)    | testGetSetQuantity() |
+
+### **Class _TicketEntry_ - method _setPricePerUnit_**
+
+**Criteria for method _setPricePerUnit_:**
+
+**Predicates for method _setPricePerUnit_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setPricePerUnit:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setPricePerUnit
+
+| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case   |
+| ---------- | --------------- | ------------------------------- | ----------------- |
+| /          | Valid           | ticketEntry.setPricePerUnit(49) | testGetSetPrice() |
+
+### **Class _TicketEntry_ - method _setDiscountRate_**
+
+**Criteria for method _setDiscountRate_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method _setDiscountRate_:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method _setDiscountRate_:
+
+| Criteria 1 | Valid / Invalid | Description of the test case     | JUnit test case          |
+| ---------- | --------------- | -------------------------------- | ------------------------ |
+| /          | Valid           | ticketEntry.setDiscountRate(0.5) | testGetSetDiscountRate() |
+
 ### **Class _ReturnTransaction_ - method _setReturnId_**
 
 **Criteria for method _setReturnId_:**
@@ -434,6 +822,32 @@ Combination of predicates for method _setReturnedProductMap_:
 | Criteria 1 | Valid / Invalid | Description of the test case               | JUnit test case                |
 | ---------- | --------------- | ------------------------------------------ | ------------------------------ |
 | /          | Valid           | saleTransaction.setReturnedProductMap(map) | testGetsetReturnedProductMap() |
+
+### **Class _ReturnTransaction_ - method _addProductToReturn_**
+
+**Criteria for method _addProductToReturn_:**
+
+**Predicates for method _addProductToReturn_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method _addProductToReturn_:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method _addProductToReturn_:
+
+| Criteria 1 | Valid / Invalid | Description of the test case                            | JUnit test case             |
+| ---------- | --------------- | ------------------------------------------------------- | --------------------------- |
+| /          | Valid           | saleTransaction.addProductToReturn("65164684113337", 1) | testGetAddProductToReturn() |
 
 ### **Class _ReturnTransaction_ - method _setStatus_**
 
@@ -535,9 +949,9 @@ Boundaries for method _setTicketNumber_:
 
 Combination of predicates for method _setTicketNumber_:
 
-| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case       |
-| ---------- | --------------- | ------------------------------- | --------------------- |
-| /          | Valid           | saleTransaction.setBalanceId(2) | testGetSetBalanceID() |
+| Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case          |
+| ---------- | --------------- | ---------------------------------- | ------------------------ |
+| /          | Valid           | saleTransaction.setTicketNumber(2) | testGetsetTicketNumber() |
 
 ### **Class _SaleTransaction_ - method _setStatus_**
 
@@ -589,11 +1003,9 @@ Combination of predicates for method _setDiscountRate_:
 | ---------- | --------------- | ------------------------------------ | ------------------------ |
 | /          | Valid           | saleTransaction.setDiscountRate(0.5) | testGetSetDiscountRate() |
 
-### **Class _BalanceOperation_ - method _setBalanceId_**
+### **Class _SaleTransaction_ - method _setPrice_**
 
-**Criteria for method _setBalanceId_:**
-
-**Predicates for method _setBalanceId_:**
+**Criteria for method _setPrice_:**
 
 | Criteria | Predicate |
 | -------- | --------- |
@@ -601,7 +1013,7 @@ Combination of predicates for method _setDiscountRate_:
 
 **Boundaries**:
 
-Boundaries for method setBalanceId:
+Boundaries for method _setPrice_:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
@@ -609,334 +1021,11 @@ Boundaries for method setBalanceId:
 
 **Combination of predicates**:
 
-Combination of predicates for method setBalanceId
-
-| Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case          |
-| ---------- | --------------- | ---------------------------------- | ------------------------ |
-| /          | Valid           | saleTransaction.setTicketNumber(2) | testGetSetTicketNumber() |
-
-### **Class _BalanceOperation_ - method _setDate_**
-
-**Criteria for method _setDate_:**
-
-**Predicates for method _setDate_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setDate:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setDate
-
-| Criteria 1 | Valid / Invalid | Description of the test case        | JUnit test case  |
-| ---------- | --------------- | ----------------------------------- | ---------------- |
-| /          | Valid           | saleTransaction.setDate(2020-10-05) | testGetSetDate() |
-
-### **Class _BalanceOperation_ - method _setMoney_**
-
-**Criteria for method _setMoney_:**
-
-**Predicates for method _setMoney_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setMoney:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setMoney
-
-| Criteria 1 | Valid / Invalid | Description of the test case   | JUnit test case   |
-| ---------- | --------------- | ------------------------------ | ----------------- |
-| /          | Valid           | saleTransaction.setMoney(50.5) | testGetSetMoney() |
-
-### **Class _BalanceOperation_ - method _setType_**
-
-**Criteria for method _setType_:**
-
-**Predicates for method _setType_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setType:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setType
-
-| Criteria 1 | Valid / Invalid | Description of the test case      | JUnit test case   |
-| ---------- | --------------- | --------------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setType("CREDIT") | testGetSetMoney() |
-
-### **Class _Order_ - method _setBalanceId_**
-
-**Criteria for method _setBalanceId_:**
-
-**Predicates for method _setBalanceId_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setBalanceId:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setBalanceId
-
-| Criteria 1 | Valid / Invalid | Description of the test case     | JUnit test case       |
-| ---------- | --------------- | -------------------------------- | --------------------- |
-| /          | Valid           | saleTransaction.setBalanceId(10) | testGetSetBalanceID() |
-
-### **Class _Order_ - method _setProductCode_**
-
-**Criteria for method _setProductCode_:**
-
-**Predicates for method _setProductCode_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setProductCode:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setProductCode
-
-| Criteria 1 | Valid / Invalid | Description of the test case              | JUnit test case         |
-| ---------- | --------------- | ----------------------------------------- | ----------------------- |
-| /          | Valid           | saleTransaction.setProductCode("4567890") | testGetSetProductCode() |
-
-### **Class _Order_ - method _setPricePerUnit_**
-
-**Criteria for method _setPricePerUnit_:**
-
-**Predicates for method _setPricePerUnit_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setPricePerUnit:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setProductCode
-
-| Criteria 1 | Valid / Invalid | Description of the test case        | JUnit test case   |
-| ---------- | --------------- | ----------------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setPricePerUnit(34) | testGetSetPrice() |
-
-### **Class _Order_ - method _setQuantity_**
-
-**Criteria for method _setQuantity_:**
-
-**Predicates for method _setQuantity_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setQuantity:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setQuantity
-
-| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case      |
-| ---------- | --------------- | ------------------------------- | -------------------- |
-| /          | Valid           | saleTransaction.setQuantity(10) | testGetSetQuantity() |
-
-### **Class _Order_ - method _setStatus_**
-
-### **Class _Order_ - method _setOrderId_**
-
-**Criteria for method _setOrderId_:**
-
-**Predicates for method _setOrderId_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setOrderId:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setOrderId
-
-| Criteria 1 | Valid / Invalid | Description of the test case   | JUnit test case     |
-| ---------- | --------------- | ------------------------------ | ------------------- |
-| /          | Valid           | saleTransaction.setOrderId(10) | testGetSetOrderID() |
-
-### **Class _TicketEntry_ - method _setBarCode_**
-
-**Criteria for method _setBarCode_:**
-
-**Predicates for method _setBarCode_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setBarCode:
-Boundaries for method _setStatus_:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setBarCode
-
-| Criteria 1 | Valid / Invalid | Description of the test case        | JUnit test case     |
-| ---------- | --------------- | ----------------------------------- | ------------------- |
-| /          | Valid           | saleTransaction.setBarCode("36487") | testGetSetBarCode() |
-
-### **Class _TicketEntry_ - method _setProductDescription_**
-
-**Criteria for method _setProductDescription_:**
-
-**Predicates for method _setProductDescription_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setProductDescription:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setProductDescription
-
-| Criteria 1 | Valid / Invalid | Description of the test case                       | JUnit test case                |
-| ---------- | --------------- | -------------------------------------------------- | ------------------------------ |
-| /          | Valid           | saleTransaction.setProductDescription("chocolate") | testGetSetProductDescription() |
-
-### **Class _TicketEntry_ - method _setAmount_**
-
-**Criteria for method _setAmount_:**
-
-**Predicates for method _setAmount_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setAmount:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setAmount
-
-| Criteria 1 | Valid / Invalid | Description of the test case  | JUnit test case      |
-| ---------- | --------------- | ----------------------------- | -------------------- |
-| /          | Valid           | saleTransaction.setAmount(49) | testGetSetQuantity() |
-
-### **Class _TicketEntry_ - method _setPricePerUnit_**
-
-**Criteria for method _setPricePerUnit_:**
-
-**Predicates for method _setPricePerUnit_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method setPricePerUnit:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method setPricePerUnit
-
-| Criteria 1 | Valid / Invalid | Description of the test case        | JUnit test case   |
-| ---------- | --------------- | ----------------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setPricePerUnit(49) | testGetSetPrice() |
-
-### **Class _TicketEntry_ - method _setDiscountRate_**
-
-Combination of predicates for method _setStatus_:
-
-| Criteria 1 | Valid / Invalid | Description of the test case        | JUnit test case    |
-| ---------- | --------------- | ----------------------------------- | ------------------ |
-| /          | Valid           | saleTransaction.setStatus("CLOSED") | testGetSetStatus() |
+Combination of predicates for method _setPrice_:
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
+| ---------- | --------------- | ---------------------------- | ----------------- |
+| /          | Valid           | saleTransaction.setPrice(5)  | testGetSetPrice() |
 
 # White Box Unit Tests
 
