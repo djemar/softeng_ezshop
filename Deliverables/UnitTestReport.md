@@ -271,20 +271,25 @@ Combination of predicates for method readData
 
 **Criteria for method _fromFile_:**
 
--
--
--
--
-- **Predicates for method _fromFile_:**
+- Validity of the String parameter
+- Total < Credit card balance
+- Length of the String
+- Existence of the Credit Card
+- File opened correctly
 
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
+  **Predicates for method _fromFile_:**
+  | Criterion | Predicate |
+  | ------------------------------------ | --------- |
+  | Validity of the String parameter | Valid |
+  | | NULL |
+  | Length of the String | > 0 |
+  | | = 0 ("") |
+  | Existence of the Credit Card | Yes |
+  | | No |
+  | File opened correctly | Yes |
+  | | No |
+  |Total < Credit card balance| True|
+  || False|
 
 **Boundaries**:
 
@@ -292,24 +297,19 @@ Boundaries for method fromFile:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
 
 **Combination of predicates**:
 
 Combination of predicates for method fromFile
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-| ---------- | ---------- | --- | --------------- | ---------------------------- | --------------- |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
+| Validity of the String parameter | Length of the String | Existence of the Credit Card | Total < Credit card balance | File opened correctly | Valid/Invalid | Description of the test case: example of input and output | JUnit test case              |
+| -------------------------------- | -------------------- | ---------------------------- | --------------------------- | --------------------- | ------------- | --------------------------------------------------------- | ---------------------------- |
+| Valid                            | >0                   | Yes                          | True                        | Yes                   | Valid         | T0 -> False                                               | testUnregisteredCreditCard() |
+| ''                               | ''                   | ''                           | False                       | \*                    | Valid         | T1 -> True                                                | testRegisteredCreditCard()   |
+| ''                               | ''                   | ''                           | ''                          | No                    | Invalid       | T2 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
+| ''                               | ''                   | No                           | ''                          | -                     | Valid         | T3 -> False                                               | testUnregisteredCreditCard() |
+| \*                               | 0                    | -                            | -                           | -                     | Valid         | T4 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
+| NULL                             | -                    | -                            | -                           | -                     | Invalid       | T5(NULL; throw NullPointerException)                      | testUnregisteredCreditCard() |
 
 ### **Class _Utils _ - method _updateFile_**
 
@@ -321,7 +321,7 @@ Combination of predicates for method fromFile
 - Existence of the Credit Card
 - File opened correctly
 
-- **Predicates for method _updateFile_:**
+  **Predicates for method _updateFile_:**
 
 | Criterion                            | Predicate |
 | ------------------------------------ | --------- |
@@ -350,12 +350,12 @@ Combination of predicates for method updateFile
 
 | Validity of the String parameter | Length of the String | Existence of the Credit Card | Sign of the updated amount parameter | File opened correctly | Valid/Invalid | Description of the test case: example of input and output | JUnit test case         |
 | -------------------------------- | -------------------- | ---------------------------- | ------------------------------------ | --------------------- | ------------- | --------------------------------------------------------- | ----------------------- |
-| Valid                            | >0                   | Yes                          | <0                                   | Yes                   | Valid         | T0 -> False                                               | testValidUpdateFile()   |
-| ''                               | ''                   | ''                           | >=0                                  | \*                    | Valid         | T1 -> True                                                | testInvalidUpdateFile() |
-| ''                               | ''                   | ''                           | ''                                   | No                    | Invalid       | T2 -> throw IO Exception                                  | testInvalidUpdateFile() |
+| Valid                            | >0                   | Yes                          | <0                                   | Yes                   | Valid         | T0 -> False                                               | testInvalidUpdateFile() |
+| ''                               | ''                   | ''                           | >=0                                  | \*                    | Valid         | T1 -> True                                                | testValidUpdateFile()   |
+| ''                               | ''                   | ''                           | ''                                   | No                    | Invalid       | T2 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
 | ''                               | ''                   | No                           | ''                                   | -                     | Valid         | T3 -> False                                               | testInvalidUpdateFile() |
-| \*                               | 0                    | -                            | -                                    | -                     | Valid         | T4(""; error)                                             | testInvalidUpdateFile() |
-| NULL                             | -                    | -                            | -                                    | -                     | Valid         | T5(NULL; error)                                           | testInvalidUpdateFile() |
+| \*                               | 0                    | -                            | -                                    | -                     | Valid         | T4 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
+| NULL                             | -                    | -                            | -                                    | -                     | Invalid       | T5(NULL; throw NullPointerException)                      | testInvalidUpdateFile() |
 
 ### **Class _BalanceOperation_ - method _setBalanceId_**
 
