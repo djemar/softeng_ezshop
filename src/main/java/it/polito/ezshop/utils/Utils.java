@@ -7,9 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.polito.ezshop.data.*;
 
@@ -81,17 +79,24 @@ public class Utils {
 	}
 
 	public static boolean fromFile(String creditcard, double total, String file) {
-		List<String> lines = Utils.readData(file);
-		return lines.stream().anyMatch(row -> {
-			if (!row.startsWith("#")) {
-				System.out.print(row);
-				String[] cells = row.split(";");
-				return cells[0].equalsIgnoreCase(creditcard)
-						&& Double.parseDouble(cells[1]) >= total;
-
-			}
+		BufferedReader in;
+		try {
+			in = new BufferedReader(new FileReader(file));
+			List<String> lines = in.lines().collect(toList());
+			in.close();
+			return lines.stream().anyMatch(row -> {
+				if (!row.startsWith("#")) {
+					System.out.print(row);
+					String[] cells = row.split(";");
+					return cells[0].equalsIgnoreCase(creditcard)
+							&& Double.parseDouble(cells[1]) >= total;
+				}
+				return false;
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
-		});
+		}
 	}
 
 	public static boolean updateFile(String file, String creditcard, double total) {
@@ -112,6 +117,7 @@ public class Utils {
 					total = Double.parseDouble(l[1]) - total;
 					if (total < 0) {
 						System.out.println(total);
+						br.close();
 						return false;
 					}
 					newline = new String(l[0] + ";" + String.valueOf(total));
