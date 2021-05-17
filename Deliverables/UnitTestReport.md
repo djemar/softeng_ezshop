@@ -356,7 +356,31 @@ Combination of predicates for method updateFile
 | ''                               | ''                   | No                       | ''                                | -                              | Valid       | T3 -> False                                |testInvalidUpdateFile()                 |
 | *                                | 0                    | -                        | -                                | -                              | Valid       | T4(""; error)                                             |testInvalidUpdateFile()                 |
 | NULL                             | -                    | -                        | -                                | -                              | Valid       | T5(NULL; error)                                           |testInvalidUpdateFile()                 |
+### **Class _SaleTransaction_ - method _setTicketNumber_**
 
+**Criteria for method _setTicketNumber_:**
+
+**Predicates for method _setTicketNumber_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method fromFile:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method fromFile
+
+| Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case          |
+| ---------- | --------------- | ---------------------------------- | ------------------------ |
+| /          | Valid           | saleTransaction.setTicketNumber(2) | testGetSetTicketNumber() |
 
 # White Box Unit Tests
 
