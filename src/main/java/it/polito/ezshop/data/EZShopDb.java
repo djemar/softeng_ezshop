@@ -274,7 +274,7 @@ public class EZShopDb {
 
     public boolean deleteProductType(Integer id) {
         boolean done = false;
-        try {
+        try { 
             PreparedStatement pstmt =
                     connection.prepareStatement("delete from producttypes where ID = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.

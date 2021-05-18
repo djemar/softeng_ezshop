@@ -19,7 +19,7 @@ public class TestR3_Customer {
 
 	@Test
     public void testSetGetCustomerCard(){
-        Customer customer=new CustomerImpl(1,"John","0000000001",0);
+        Customer customer=new CustomerImpl("John",1,"0000000001");
         assertEquals(customer.getCustomerCard(), "0000000001");
        
         customer.setCustomerCard("0000000011");

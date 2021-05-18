@@ -21,5 +21,6 @@ public class TestR9_OrderDb {
 			assertTrue(ezshopDb.updateOrder(id, "PAYED", 5));
 			ezshopDb.closeConnection();
 		  }
+		  
 }
-
+ 
