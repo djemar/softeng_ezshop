@@ -21,7 +21,7 @@ public class EZShopDb {
     public boolean createConnection() {
         try {
             // create a database connection
-            this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl); 
+            this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl);
             connection.addUpdateListener(new SQLiteUpdateListener() {
                 @Override
                 public void onUpdate(Type type, String db, String table, long rowId) {
@@ -65,15 +65,6 @@ public class EZShopDb {
             pstmt.executeUpdate();
             userId = (int) pstmt.getGeneratedKeys().getLong(1);
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from users");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("name = " + rs.getString("username") + ", id = "
-                        + rs.getInt("id") + ", role = " + rs.getString("role"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -92,15 +83,6 @@ public class EZShopDb {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from users");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("name = " + rs.getString("username") + ", id = "
-                        + rs.getInt("id") + ", role = " + rs.getString("role"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -183,15 +165,7 @@ public class EZShopDb {
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from users");
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("name = " + rs.getString("username") + ", id = "
-                        + rs.getInt("id") + ", role = " + rs.getString("role"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -244,15 +218,6 @@ public class EZShopDb {
             pstmt.executeUpdate();
             id = (int) pstmt.getGeneratedKeys().getLong(1);
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from  producttypes");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -276,15 +241,6 @@ public class EZShopDb {
             pstmt.setInt(5, id);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from producttypes");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -325,15 +281,7 @@ public class EZShopDb {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from producttypes");
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -354,11 +302,6 @@ public class EZShopDb {
                         rs.getString("productCode"), rs.getDouble("priceperunit"),
                         rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
                 products.add(p);
-            }
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
             }
 
         } catch (SQLException e) {
@@ -461,15 +404,6 @@ public class EZShopDb {
             pstmt.setInt(2, productId);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from producttypes");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -513,15 +447,7 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
             id = (int) pstmt.getGeneratedKeys().getLong(1);
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from orders");
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("product Code = " + rs.getString("productCode") + ", id = "
-                        + rs.getInt("ID"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -614,10 +540,7 @@ public class EZShopDb {
                         rs.getDouble("PricePerUnit"), rs.getInt("Quantity"), rs.getString("Status"),
                         rs.getInt("balanceID")));
             }
-            while (rs.next()) {
-                // read the result set
-                System.out.println("id = " + rs.getString("ID"));
-            }
+
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -641,14 +564,7 @@ public class EZShopDb {
             pstmt.executeUpdate();
             id = (int) pstmt.getGeneratedKeys().getLong(1);
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from balanceOperation");
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("balance ID = " + rs.getInt("ID"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -736,7 +652,7 @@ public class EZShopDb {
     }
 
     public CustomerImpl getCustomer(Integer id) {
-        CustomerImpl c = null; 
+        CustomerImpl c = null;
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("select * from customers where id=(?)");
@@ -816,10 +732,6 @@ public class EZShopDb {
                         rs.getString("customercard"), rs.getInt("points")));
             }
             l.forEach(x -> System.out.println(x.getId()));
-            while (rs.next()) {
-                // read the result set
-                System.out.println("name = " + rs.getString("name"));
-            }
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -919,15 +831,7 @@ public class EZShopDb {
                 }
             });
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from saletransactions");
 
-            while (rs.next()) {
-                // read the result set
-                System.out
-                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -969,15 +873,6 @@ public class EZShopDb {
             pstmt.setInt(3, transactionId);
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from saletransactions");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("description = " + rs.getString("description") + ", id = "
-                        + rs.getInt("ID") + ", price = " + rs.getDouble("priceperunit"));
-            }
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -1024,15 +919,7 @@ public class EZShopDb {
                 }
 
             });
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from saletransactions");
 
-            while (rs.next()) {
-                // read the result set
-                System.out
-                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -1063,16 +950,6 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from saletransactions");
-
-            while (rs.next()) {
-                // read the result set
-                System.out
-                        .println("id = " + rs.getInt("id") + ", price = " + rs.getDouble("price"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -1193,15 +1070,7 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from returntransactions");
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("id = " + rs.getInt("id") + ", transactionId = "
-                        + rs.getInt("transactionid"));
-            }
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -1252,17 +1121,12 @@ public class EZShopDb {
             pstmt.setDate(1, Date.valueOf(LocalDate.now().toString()));
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
-            pstmt.setString(3, type);  
-            pstmt.executeUpdate();
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from balanceoperation");
+            pstmt.setString(3, type);
+            int count = pstmt.executeUpdate();
+            /*
+             * if (count < 0) return false;
+             */
 
-            while (rs.next()) {
-                // read the result set
-                System.out.println("date = " + rs.getDate("date") + ", money = "
-                        + rs.getDouble("money") + ", type = " + rs.getString("type"));
-            }
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
