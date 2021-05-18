@@ -704,7 +704,7 @@ public class EZShopDb {
         int i = 0;
         try {
             PreparedStatement pstmt =
-                    connection.prepareStatement("select count(*) as number from customerCards ");
+                    connection.prepareStatement("select MAX(card) as number from customerCards ");
             ResultSet rs;
             rs = pstmt.executeQuery();
             i = rs.getInt("number");
@@ -1255,7 +1255,7 @@ public class EZShopDb {
             pstmt.setDate(1, Date.valueOf(LocalDate.now().toString()));
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
-            pstmt.setString(3, type);
+            pstmt.setString(3, type);  
             int count = pstmt.executeUpdate();
             /*
              * if (count < 0) return false;

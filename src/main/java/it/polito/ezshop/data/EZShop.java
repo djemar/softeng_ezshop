@@ -546,7 +546,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
         }
         return customers;
-    }
+    } 
 
     @Override
     public String createCard() throws UnauthorizedException {
@@ -559,14 +559,14 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             int n = ezshopDb.getCustomerCardNumber() + 1;
             String ns = Integer.toString(n);
-            customerCard = "";
+            customerCard = new String(""); 
             for (int i = 0; 10 - ns.length() > i; i++) {
                 customerCard += "0";
             }
             customerCard += ns;
             if (!ezshopDb.insertCustomerCard(customerCard)) {
                 ezshopDb.closeConnection();
-                return null;
+                return "";
             }
             ezshopDb.closeConnection();
         }
