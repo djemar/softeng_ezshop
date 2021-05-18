@@ -477,6 +477,29 @@ public class EZShopDb {
         return done;
     }
 
+    public boolean resetDB() {
+        boolean done = false;
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("delete from producttypes");
+            stmt.executeUpdate("delete from saletransactions");
+            stmt.executeUpdate("delete from returntransactions");
+            stmt.executeUpdate("delete from balanceoperation");
+            stmt.executeUpdate("delete from customercards");
+            stmt.executeUpdate("delete from customers");
+            stmt.executeUpdate("delete from orders");
+            stmt.executeUpdate("delete from returnentries");
+            stmt.executeUpdate("delete from users");
+            stmt.executeUpdate("delete from ticketentries");
+            done = true;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return done;
+    }
+
     public boolean updateOrder(int orderId, String status, int balanceid) {
         boolean b = false;
         try {
