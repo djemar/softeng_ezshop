@@ -11,11 +11,13 @@ import it.polito.ezshop.data.EZShopDb;
 import it.polito.ezshop.data.UserImpl;
 
 public class TestR10_UserDb {
-  EZShopDb ezshopDb;
-  int id;
-  UserImpl user1=new UserImpl("Joe","USA","Administrator",1);
+	
+  EZShopDb ezshopDb = new EZShopDb();
+  Integer id;
+  UserImpl user1;
   @Before
     public void setup() {
+        user1 = new UserImpl("Eli","USA","Administrator",1);
         ezshopDb.createConnection();
         ezshopDb.resetDB();
         id = ezshopDb.insertUser(user1);
@@ -29,13 +31,7 @@ public class TestR10_UserDb {
         ezshopDb.closeConnection();
     } 
 
-    @Test
-    public void testDeleteUser() {
-      ezshopDb.createConnection();
-      assertTrue(ezshopDb.deleteUser(id));
-      ezshopDb.closeConnection();
-      
-    }
+
 	@Test
 	public void testGetUserbyName() {
 		ezshopDb.createConnection();
@@ -47,7 +43,7 @@ public class TestR10_UserDb {
 	@Test
 	public void testInvalidGetUserbyName() {
 		assertFalse(ezshopDb.getUserbyName("Eli"));
-	}
+	}  
 	
 	@Test
 	public void testUpdateUserRights() {
@@ -55,9 +51,22 @@ public class TestR10_UserDb {
 		assertTrue(ezshopDb.updateUserRights(id, "Administrator"));
 		ezshopDb.closeConnection();
 	}
+	
 	@Test
 	public void testInvalidUpdateUserRights() {
-		assertTrue(ezshopDb.updateUserRights(id, "Administrator"));
+		assertFalse(ezshopDb.updateUserRights(id, "Administrator"));
 	}
+    @Test
+    public void testDeleteUser() {
+      ezshopDb.createConnection();
+      assertTrue(ezshopDb.deleteUser(id));
+      ezshopDb.closeConnection();
+      
+    }
+
+    @Test
+    public void testInvalidDeleteUser() {
+      assertFalse(ezshopDb.deleteUser(id));    
+    }
     
 }

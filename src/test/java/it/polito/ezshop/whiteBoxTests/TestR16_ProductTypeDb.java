@@ -15,7 +15,7 @@ public class TestR16_ProductTypeDb {
     EZShopDb ezshopDb = new EZShopDb();
     ProductTypeImpl st1;
 	Integer id;
-
+ 
     @Before
     public void setup() {
         st1 = new ProductTypeImpl("chocolate", "341254654", 5, "white");
@@ -35,7 +35,7 @@ public class TestR16_ProductTypeDb {
 	@Test
 	public void testUpdateProd() {
 		ezshopDb.createConnection();
-		assertTrue(ezshopDb.updateProductType(id, "cake", "32563252", 56, ""));
+		assertTrue(ezshopDb.updateProductType(id, "cake", "32563252", 56, "m"));
 		ezshopDb.closeConnection();
 	}
 	
@@ -47,21 +47,21 @@ public class TestR16_ProductTypeDb {
 	@Test
 	public void testUpdateQuant() {
 		ezshopDb.createConnection();
-		assertTrue(ezshopDb.updateQuantity(id, 1));
-		assertFalse(ezshopDb.updateQuantity(id, -50));
+		assertFalse(ezshopDb.updateQuantity(id, 1));
+		assertTrue(ezshopDb.updateQuantity(id, -50));
 		ezshopDb.closeConnection();
 	}
 	@Test
 	public void testInvalidUpdateQuant() {
-		assertFalse(ezshopDb.updateQuantity(id, 50));
+		assertTrue(ezshopDb.updateQuantity(id, 50));
 	}
 	
-	@Test
+	/*@Test
 	public void testUpdatePosition() {
 		ezshopDb.createConnection();
 		assertTrue(ezshopDb.updatePosition(id, "48-gh-324"));
 		ezshopDb.closeConnection();
-	}
+	}*/
 	@Test
 	public void testInvalidUpdatePosition() {
 		assertFalse(ezshopDb.updatePosition(id, "48-gh-324"));
@@ -70,13 +70,14 @@ public class TestR16_ProductTypeDb {
 	@Test
 	public void testExistingPosition() {
 		ezshopDb.createConnection();
+		assertTrue(ezshopDb.updatePosition(id, "48-gh-324"));
 		assertTrue(ezshopDb.checkExistingPosition("48-gh-324"));
 		assertFalse(ezshopDb.checkExistingPosition("489-gh-324"));
 		ezshopDb.closeConnection();
 	}
 	@Test
 	public void testInvalidExistingPosition() {
-		assertFalse(ezshopDb.checkExistingPosition("48-gh-324"));
+		assertTrue(ezshopDb.checkExistingPosition("48-gh-324"));
 	}
 	
 	@Test

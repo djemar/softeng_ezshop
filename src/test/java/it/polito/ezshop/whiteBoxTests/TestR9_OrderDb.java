@@ -40,10 +40,10 @@ public class TestR9_OrderDb {
         ezshopDb.createConnection();
     	assertTrue(ezshopDb.updateOrder(id, "PAYED", 5));
         ezshopDb.closeConnection();
-    	//assertFalse(ezshopDb.updateOrder(id, "PAYED", 5));
+    	assertFalse(ezshopDb.updateOrder(id, "PAYED", 5));
     }
     
-    @Test
+   @Test
     public void testInvalidUpdateOrder() {
     	assertFalse(ezshopDb.updateOrder(id, "PAYED", 5));
     }

@@ -137,7 +137,7 @@ public class EZShopDb {
 
     // method to find if a user exists
     public boolean getUserbyName(String username) {
-        boolean user = true;
+        boolean user = false;
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("select * from users where username = ?");
@@ -145,7 +145,8 @@ public class EZShopDb {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next() == false)
                 user = false;
-
+            else
+            	user = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -719,8 +720,8 @@ public class EZShopDb {
         boolean b = false;
         try {
             Customer c = this.getCustomer(customerId);
-            String card = this.getCustomerCard(customerCard);
-            if (c == null || card == null)
+            Boolean card = getCustomerCard(customerCard);
+            if (c == null || !card)
                 return b;
             PreparedStatement pstmt = connection.prepareStatement(
                     "select count(*) as number from customers where customercard=(?)");
