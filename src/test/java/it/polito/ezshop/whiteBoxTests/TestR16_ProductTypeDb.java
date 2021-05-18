@@ -56,12 +56,6 @@ public class TestR16_ProductTypeDb {
 		assertTrue(ezshopDb.updateQuantity(id, 50));
 	}
 	
-	/*@Test
-	public void testUpdatePosition() {
-		ezshopDb.createConnection();
-		assertTrue(ezshopDb.updatePosition(id, "48-gh-324"));
-		ezshopDb.closeConnection();
-	}*/
 	@Test
 	public void testInvalidUpdatePosition() {
 		assertFalse(ezshopDb.updatePosition(id, "48-gh-324"));
