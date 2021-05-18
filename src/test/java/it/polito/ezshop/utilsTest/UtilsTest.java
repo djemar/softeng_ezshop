@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 import org.junit.Before;
 
 public class UtilsTest {
+	Utils u = new Utils();
     List<TicketEntry> list;
     static String file;
     static {

@@ -33,7 +33,7 @@ public class TestR3_Customer {
         Integer i=1;
         assertEquals(customer.getId(), i);
        
-        customer.setId(2);
+        customer.setId(2); 
         i=2;
         assertEquals(customer.getId(), i);
     }
