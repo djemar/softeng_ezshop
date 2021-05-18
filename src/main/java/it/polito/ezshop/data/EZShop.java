@@ -487,7 +487,8 @@ public class EZShop implements EZShopInterface {
             else if (newCustomerCard != null) {
                 if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard))
                     throw new InvalidCustomerCardException("Invalid customer card");
-                isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
+                if(ezshopDb.getCustomerCard(newCustomerCard) && ezshopDb.getCustomerByCard(newCustomerCard)!=null)
+                    isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
                         c.getPoints());
             }
             ezshopDb.closeConnection();
@@ -587,7 +588,9 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
 
         if (ezshopDb.createConnection()) {
-            b = ezshopDb.attachCardToCustomer(customerCard, customerId);
+            if(ezshopDb.getCustomerCard(customerCard)){
+                b = ezshopDb.attachCardToCustomer(customerCard, customerId);
+            }
             ezshopDb.closeConnection();
         }
 
@@ -606,14 +609,17 @@ public class EZShop implements EZShopInterface {
                 || !Utils.isOnlyDigit(customerCard))
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
-            CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
-            if (c == null)
-                System.out.print("customer non trovato!!!!!!!!!");
-            if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
-                int points = c.getPoints() + pointsToBeAdded;
-                isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(),
-                        c.getCustomerCard(), points);
+            if(ezshopDb.getCustomerCard(customerCard)){
+                CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
+                if (c == null)
+                    System.out.print("customer non trovato!!!!!!!!!");
+                if (c != null && pointsToBeAdded + c.getPoints() >= 0) {
+                    int points = c.getPoints() + pointsToBeAdded;
+                    isSuccess = ezshopDb.updateCustomer(c.getId(), c.getCustomerName(),
+                            c.getCustomerCard(), points);
+                }
             }
+            
             ezshopDb.closeConnection();
         }
 

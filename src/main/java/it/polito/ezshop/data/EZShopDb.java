@@ -696,8 +696,8 @@ public class EZShopDb {
 
     }
 
-    String getCustomerCard(String customerCard) {
-        String c = null;
+    boolean getCustomerCard(String customerCard) {
+        boolean c = false;
         try {
             PreparedStatement pstmt = connection.prepareStatement(
                     "select count(*) as number from customerCards where card=(?)");
@@ -706,7 +706,7 @@ public class EZShopDb {
             ResultSet rs;
             rs = pstmt.executeQuery();
             if (rs.getInt("number") == 1)
-                c = customerCard;
+                c = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
