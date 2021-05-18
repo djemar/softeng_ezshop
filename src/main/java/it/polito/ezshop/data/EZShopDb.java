@@ -1194,8 +1194,6 @@ public class EZShopDb {
 
             pstmt.executeUpdate();
 
-            // TODO delete returned products in returns table
-
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from returntransactions");
@@ -1256,11 +1254,7 @@ public class EZShopDb {
             pstmt.setDouble(2, toBeAdded);
             String type = toBeAdded < 0 ? "debit" : "credit";
             pstmt.setString(3, type);  
-            int count = pstmt.executeUpdate();
-            /*
-             * if (count < 0) return false;
-             */
-
+            pstmt.executeUpdate();
             Statement stmt = connection.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select * from balanceoperation");
