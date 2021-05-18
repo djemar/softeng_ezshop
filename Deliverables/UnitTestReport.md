@@ -1239,7 +1239,7 @@ Combination of predicates for method _setPrice_:
 
 | Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
 | ---------- | --------------- | ---------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setPrice(5)  |testGetSetPrice() |
+| /          | Valid           | saleTransaction.setPrice(5)  | testGetSetPrice() |
 
 ### **Class _SaleTransaction_ - method _testSetGetEntries_**
 
@@ -1261,9 +1261,9 @@ Boundaries for method _testSetGetEntries_:
 
 Combination of predicates for method _testSetGetEntries_:
 
-| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
-| ---------- | --------------- | ---------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setEntries(tlist)  | testSetGetEntries()
+| Criteria 1 | Valid / Invalid | Description of the test case      | JUnit test case     |
+| ---------- | --------------- | --------------------------------- | ------------------- |
+| /          | Valid           | saleTransaction.setEntries(tlist) | testSetGetEntries() |
 
 ### **Class _SaleTransaction_ - method _testEstimatePrice_**
 
@@ -1285,9 +1285,10 @@ Boundaries for method _testEstimatePrice_:
 
 Combination of predicates for method _testEstimatePrice_:
 
-| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
-| ---------- | --------------- | ---------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.estimatePrice()  | testEstimatePrice()
+| Criteria 1 | Valid / Invalid | Description of the test case    | JUnit test case     |
+| ---------- | --------------- | ------------------------------- | ------------------- |
+| /          | Valid           | saleTransaction.estimatePrice() | testEstimatePrice() |
+
 # White Box Unit Tests
 
 ### Test cases definition
@@ -1343,16 +1344,18 @@ Combination of predicates for method _testEstimatePrice_:
 
 ### Code coverage report
 
-    <Add here the screenshot report of the statement and branch coverage obtained using
-    the Eclemma tool. >
+<img src="res/coverage.png" alt="Coverage Unit"/>
 
 ### Loop coverage analysis
 
     <Identify significant loops in the units and reports the test cases
     developed to cover zero, one or multiple iterations >
 
-| Unit name | Loop rows | Number of iterations | JUnit test case |
-| --------- | --------- | -------------------- | --------------- | 
-|           |           |                      |                 |
-|           |           |                      |                 |
-|           |           |                      |                 |  
+| Unit name  | Loop rows | Number of iterations | JUnit test case           |
+| ---------- | --------- | -------------------- | ------------------------- |
+| Utils.java | 21-29     | 0                    | testInvalidBarcode        |
+| Utils.java | 21-29     | code.length() - 2    | testValidBarcode          |
+| Utils.java | 21-29     | code.length() - 2    | testValidBarcode          |
+| Utils.java | 53-61     | 0                    | testInvalidLuhnCreditCard |
+| Utils.java | 53-61     | number.length()-1    | testInvalidLuhnCreditCard |
+| Utils.java | 53-61     | number.length()-1    | testValidLuhnCreditCard   |
