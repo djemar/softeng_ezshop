@@ -28,7 +28,7 @@ public class TestR6_ProductType {
     }
 	@Test
     public void testSetGetNote(){
-        ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
+        ProductType product= new ProductTypeImpl("comfortable sneakers","1789394849543",50.90,"very requested");
         assertEquals(product.getNote(), "very requested");
         product.setNote("nike top shoes");
         assertEquals(product.getNote(),"nike top shoes");

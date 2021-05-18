@@ -22,7 +22,7 @@ public class TestR1_User {
 
 	@Test
     public void testSetGetUsername(){
-        User user= new UserImpl("John", "EZLebron", "Administrator",1);
+        User user= new UserImpl("John", "EZLebron", "Administrator");
         assertEquals(user.getUsername(), "John");
         user.setUsername("Jimmy");
         assertEquals(user.getUsername(), "Jimmy");

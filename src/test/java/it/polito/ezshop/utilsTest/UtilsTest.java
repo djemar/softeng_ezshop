@@ -102,6 +102,8 @@ public class UtilsTest {
         assertFalse(Utils.validateCreditCard("52551896075"));
         assertFalse(Utils.validateCreditCard("4265645498582432"));
         assertFalse(Utils.validateCreditCard("3779505441550891"));
+        assertFalse(Utils.validateCreditCard("377950544"));
+        assertFalse(Utils.validateCreditCard("377950544155089195839583945938593"));
         assertFalse(Utils.validateCreditCard(""));
         assertThrows(NullPointerException.class, () -> {
         	Utils.validateCreditCard(null);

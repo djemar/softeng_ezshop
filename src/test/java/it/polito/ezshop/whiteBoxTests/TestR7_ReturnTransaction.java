@@ -20,6 +20,7 @@ public class TestR7_ReturnTransaction {
 
     @Test
     public void testGetSetReturnId() {
+        returnTransaction = new ReturnTransaction(1, 5);
         Integer id = 1;
         assertEquals(id, returnTransaction.getReturnId());
         id = 2;
