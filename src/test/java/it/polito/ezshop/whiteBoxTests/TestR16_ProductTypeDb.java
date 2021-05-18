@@ -68,7 +68,7 @@ public class TestR16_ProductTypeDb {
 	}
 	
 	@Test
-	public void testExistingPosition() {
+	public void testPosition() {
 		ezshopDb.createConnection();
 		assertTrue(ezshopDb.updatePosition(id, "48-gh-324"));
 		assertTrue(ezshopDb.checkExistingPosition("48-gh-324"));

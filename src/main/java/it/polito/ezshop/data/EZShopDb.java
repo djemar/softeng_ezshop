@@ -697,7 +697,7 @@ public class EZShopDb {
 
     }
 
-    boolean getCustomerCard(String customerCard) {
+    public boolean getCustomerCard(String customerCard) {
         boolean c = false;
         try {
             PreparedStatement pstmt = connection.prepareStatement(

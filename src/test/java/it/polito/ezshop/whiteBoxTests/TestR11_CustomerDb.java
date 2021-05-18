@@ -33,12 +33,12 @@ public class TestR11_CustomerDb {
         ezshopDb.closeConnection();
     }
 	
-	@Test
+	/*@Test
 	public void testInsertCard() {
 		ezshopDb.createConnection();
 		assertTrue(ezshopDb.insertCustomerCard("34563487960"));
 		ezshopDb.closeConnection();
-	}
+	}*/
 
 	@Test
 	public void testInvalidInsertCard() {
@@ -58,19 +58,18 @@ public class TestR11_CustomerDb {
 	}
 
 	
-/*	@Test
-	public void testGetCustomerCard() {
+	@Test
+	public void testCustomerCard() {
 		ezshopDb.createConnection();
+		assertTrue(ezshopDb.insertCustomerCard("34563487960"));
 		assertTrue(ezshopDb.getCustomerCard("34563487960"));
 		ezshopDb.closeConnection();
 	}
 	@Test
 	public void testInvalidGetCustomerCard() {
-		ezshopDb.createConnection();
 		assertFalse(ezshopDb.getCustomerCard("3563487960"));
-		ezshopDb.closeConnection();
 	}
-	*/
+	
 
 	
 	
