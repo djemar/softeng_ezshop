@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({TestR1_User.class, TestR2_Order.class, TestR3_Customer.class, 
-	TestR4_BalanceOperation.class, TestR5_TicketEntry.class, TestR6_ProductType.class, TestR7_ReturnTransaction.class, TestR8_SaleTransaction.class})
+	TestR4_BalanceOperation.class, TestR5_TicketEntry.class, TestR6_ProductType.class,
+	TestR7_ReturnTransaction.class, TestR8_SaleTransaction.class, TestR9_OrderDb.class})
 
 public class AllTests {
 }

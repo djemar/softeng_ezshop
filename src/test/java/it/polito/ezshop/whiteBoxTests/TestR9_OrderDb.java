@@ -16,8 +16,7 @@ public class TestR9_OrderDb {
 		  
 		  @Test
 		  public void testUpdateOrd() {
-		    ezshopDb.createConnection();
-			ezshopDb.resetTables();		    
+		    ezshopDb.createConnection();	    
 			Integer id = ezshopDb.insertOrder(new OrderImpl("56789342",10.5, 50));
 			assertTrue(ezshopDb.updateOrder(id, "PAYED", 5));
 			ezshopDb.closeConnection();

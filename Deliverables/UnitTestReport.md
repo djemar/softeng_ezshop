@@ -125,6 +125,9 @@ Combination of predicates for method isOnlyDigit
 | --------------------------------- | --------- |
 | Validity of string parameter      | Valid     |
 |                                   | NULL      |
+| length of string parameter        | (0,12)    |
+|                                   | [13,19]   |
+|                                   | (19, MAX) |
 | Number follows the Luhn algorithm | true      |
 |                                   | false     |
 
