@@ -37,6 +37,7 @@ public class Utils {
 	}
 
 	public static boolean isOnlyDigit(String string) {
+		if(string==null) return false;
 		if (string.matches("-?\\d+(\\.\\d+)?"))
 			return true;
 		else

@@ -74,20 +74,20 @@ Combination of predicates for method validateBarcode
 
 **Criteria for method _isOnlyDigit_:**
 
--
--
+## -Presence of only digit in the string
+
 -
 -
 - **Predicates for method _isOnlyDigit_:**
 
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
+| Criteria                     | Predicate |
+| ---------------------------- | --------- |
+| only digit in string         | true      |
+|                              | false     |
+| Validity of string parameter | Valid     |
+|                              | false     |
+|                              |           |
+|                              |           |
 
 **Boundaries**:
 
@@ -106,13 +106,11 @@ Boundaries for method isOnlyDigit:
 
 Combination of predicates for method isOnlyDigit
 
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-| ---------- | ---------- | --- | --------------- | ---------------------------- | --------------- |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
+| only digit in string | validity of string parameter | Valid / Invalid | Description of the test case | JUnit test case |
+| -------------------- | ---------------------------- | --------------- | ---------------------------- | --------------- |
+| true                 | valid                        | valid           | T1("12356344")->true         |                 |
+| false                | valid                        | Invalid         | T2("134r23")->false          |                 |
+|                      | invalid                      | Invalid         | T3()->false                  |                 |
 
 ### **Class _Utils_ - method _validateCreditCard_**
 
@@ -460,6 +458,214 @@ Combination of predicates for method setType
 | Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case  |
 | ---------- | --------------- | ---------------------------------- | ---------------- |
 | /          | Valid           | balanceOperation.setType("CREDIT") | testGetSetType() |
+
+### **Class _User_ - method _setId_**
+
+**Criteria for method _setId_:**
+
+**Predicates for method _setId_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setId:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setId
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
+| ---------- | --------------- | ---------------------------- | --------------- |
+| /          | Valid           | user.setId(5)                | testSetGetId()  |
+
+### **Class _User_ - method _setUsername_**
+
+**Criteria for method _setUsername_:**
+
+**Predicates for method _setUsername_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setUsername:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setUsername
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case      |
+| ---------- | --------------- | ---------------------------- | -------------------- |
+| /          | Valid           | user.setUsername("Mary")     | testSetGetUsername() |
+
+### **Class _User_ - method \_setPassword**
+
+**Criteria for method \_setPassword:**
+
+**Predicates for method \_setPassword:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setPassword:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setPassword
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case      |
+| ---------- | --------------- | ---------------------------- | -------------------- |
+| /          | Valid           | user.setPassword("Polito")   | testSetGetPassword() |
+
+### **Class _User_ - method \_setRole**
+
+**Criteria for method \_setRole:**
+
+**Predicates for method \_setRole:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setRole:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setRole
+
+| Criteria 1 | Valid / Invalid | Description of the test case  | JUnit test case  |
+| ---------- | --------------- | ----------------------------- | ---------------- |
+| /          | Valid           | user.setRole("Administrator") | testSetGetRole() |
+
+### **Class _Customer_ - method _setCustomerName_**
+
+**Criteria for method _setCustomerName_:**
+
+**Predicates for method _setCustomerName_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setCustomerName:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setCustomerName
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case          |
+| ---------- | --------------- | ---------------------------- | ------------------------ |
+| /          | Valid           | user.setCustomerName("Mary") | testSetGetCustomerName() |
+
+### **Class _Customer_ - method _setCustomerCard_**
+
+**Criteria for method _setCustomerCard_:**
+
+**Predicates for method _setCustomerCard_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setCustomerCard:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setCustomerCard
+
+| Criteria 1 | Valid / Invalid | Description of the test case       | JUnit test case          |
+| ---------- | --------------- | ---------------------------------- | ------------------------ |
+| /          | Valid           | user.setCustomerCard("0000000026") | testSetGetCustomerCard() |
+
+### **Class _Customer_ - method _setId_**
+
+**Criteria for method _setId_:**
+
+**Predicates for method _setId_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setId:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setId
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
+| ---------- | --------------- | ---------------------------- | --------------- |
+| /          | Valid           | user.setId(2)                | testSetGetId()  |
+
+### **Class _Customer_ - method _setPoints_**
+
+**Criteria for method _setPoints_:**
+
+**Predicates for method _setPoints_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method setPoints:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method setPoints
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case    |
+| ---------- | --------------- | ---------------------------- | ------------------ |
+| /          | Valid           | user.setPoints(10)           | testSetGetPoints() |
 
 ### **Class _Order_ - method _setBalanceId_**
 
@@ -1062,6 +1268,21 @@ Combination of predicates for method _setPrice_:
 |   SaleTransaction |             testGetSetStatus() |   TestR8_SaleTransaction |
 |   SaleTransaction |              testGetSetPrice() |   TestR8_SaleTransaction |
 |   SaleTransaction |       testGetSetDiscountRate() |   TestR8_SaleTransaction |
+|              User |                 testSetGetId() |              TestR1_User |
+|              User |           testSetGetUsername() |              TestR1_User |
+|              User |           testSetGetPassword() |              TestR1_User |
+|              User |               testSetGetRole() |              TestR1_User |
+|          Customer |       testGetSetCustomerName() |          TestR3_Customer |
+|          Customer |       testSetGetCustomerCard() |          TestR3_Customer |
+|          Customer |                 testSetGetID() |          TestR3_Customer |
+|          Customer |             testSetGetPoints() |          TestR3_Customer |
+|       ProductType |           testSetGetQuantity() |       TestR6_ProductType |
+|       ProductType |           testSetGetLocation() |       TestR6_ProductType |
+|       ProductType |               testSetGetNote() |       TestR6_ProductType |
+|       ProductType | testSetGetProductDescription() |       TestR6_ProductType |
+|       ProductType |            testSetGetBarCode() |       TestR6_ProductType |
+|       ProductType |       testSetGetPricePerUnit() |       TestR6_ProductType |
+|       ProductType |                 testSetGetId() |       TestR6_ProductType |
 
 ### Code coverage report
 
