@@ -735,9 +735,8 @@ public class EZShopDb {
         return boo;
     }
 
-    // datestare
     public CustomerImpl getCustomer(Integer id) {
-        CustomerImpl c = null;
+        CustomerImpl c = null; 
         try {
             PreparedStatement pstmt =
                     connection.prepareStatement("select * from customers where id=(?)");
