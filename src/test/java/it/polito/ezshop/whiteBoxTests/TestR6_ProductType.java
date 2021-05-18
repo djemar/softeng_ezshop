@@ -2,10 +2,13 @@ package it.polito.ezshop.whiteBoxTests;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+
 import it.polito.ezshop.data.ProductType;
 import it.polito.ezshop.data.ProductTypeImpl;
 
 public class TestR6_ProductType {
+	@Test
     public void testSetGetQuantity(){
         
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
@@ -13,9 +16,9 @@ public class TestR6_ProductType {
         assertEquals(product.getQuantity(), i);
         i=20;
         product.setQuantity(i);
-        assertEquals(product.getQuantity(), i);
+        assertEquals(product.getQuantity(), i); 
     }
-
+	@Test
     public void testSetGetLocation(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         assertEquals(product.getLocation(), "30-90-20");
@@ -23,7 +26,7 @@ public class TestR6_ProductType {
         assertEquals(product.getLocation(), "20-30-20");
 
     }
-
+	@Test
     public void testSetGetNote(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         assertEquals(product.getNote(), "very requested");
@@ -31,7 +34,7 @@ public class TestR6_ProductType {
         assertEquals(product.getNote(),"nike top shoes");
     }
 
-
+	@Test
     public void testSetGetProductDescription(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         assertEquals(product.getProductDescription(), "comfortable sneakers");
@@ -39,7 +42,7 @@ public class TestR6_ProductType {
         assertEquals(product.getProductDescription(),"running sneakers");
     }
 
-    
+	@Test
     public void testSetGetBarCode(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         assertEquals(product.getBarCode(), "1789394849543");
@@ -49,7 +52,7 @@ public class TestR6_ProductType {
     }
 
     
-
+	@Test
     public void testSetGetPricePerUnit(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         Double d=50.90;
@@ -60,7 +63,7 @@ public class TestR6_ProductType {
     }
 
     
-
+	@Test
     public void testSetGetId(){
         ProductType product= new ProductTypeImpl(1,"comfortable sneakers","1789394849543",50.90,"very requested","30-90-20",10);
         Integer i=1;
