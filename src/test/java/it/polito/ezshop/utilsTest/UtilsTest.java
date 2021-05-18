@@ -68,6 +68,10 @@ public class UtilsTest {
         assertFalse(Utils.validateBarcode("29059158"));
         assertFalse(Utils.validateBarcode("2905911158927"));
         assertFalse(Utils.validateBarcode("978020s379655"));
+        assertFalse(Utils.validateBarcode(""));
+        assertThrows(NullPointerException.class, () -> {
+        	Utils.validateBarcode(null);
+        });
     }
 
     @Test
@@ -80,6 +84,9 @@ public class UtilsTest {
     public void testNotOnlyDigit() {
         assertFalse(Utils.isOnlyDigit("97802013796s4"));
         assertFalse(Utils.isOnlyDigit("sf"));
+        assertThrows(NullPointerException.class, () -> {
+        	Utils.isOnlyDigit(null);
+        });
     }
 
     @Test
@@ -94,6 +101,10 @@ public class UtilsTest {
         assertFalse(Utils.validateCreditCard("52551896075"));
         assertFalse(Utils.validateCreditCard("4265645498582432"));
         assertFalse(Utils.validateCreditCard("3779505441550891"));
+        assertFalse(Utils.validateCreditCard(""));
+        assertThrows(NullPointerException.class, () -> {
+        	Utils.validateCreditCard(null);
+        });
     }
 
     @Test
@@ -136,6 +147,10 @@ public class UtilsTest {
     @Test
     public void testDoesntContainProduct() {
         assertFalse(Utils.containsProduct(list, "2905911058926"));
+        assertThrows(NullPointerException.class, () -> {
+            Utils.containsProduct(null, "2905911058926");
+        });
+        assertFalse(Utils.containsProduct(list, null));
     }
 
     @Test
@@ -144,6 +159,12 @@ public class UtilsTest {
         assertThrows(NoSuchElementException.class, () -> {
             Utils.getProductFromEntries(list, "productCode");
         });
+        assertThrows(NullPointerException.class, () -> {
+        	 Utils.getProductFromEntries(null, "productCode");
+        });
+        assertThrows(NoSuchElementException.class, () -> {
+       	 Utils.getProductFromEntries(list, null);
+       });
     }
 
 }

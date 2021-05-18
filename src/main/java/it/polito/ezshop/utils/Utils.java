@@ -37,7 +37,6 @@ public class Utils {
 	}
 
 	public static boolean isOnlyDigit(String string) {
-		if(string==null) return false;
 		if (string.matches("-?\\d+(\\.\\d+)?"))
 			return true;
 		else
@@ -49,6 +48,8 @@ public class Utils {
 		int nDigits = number.length();
 		int nSum = 0;
 		boolean isSecond = false;
+		if(nDigits < 13 || nDigits > 19)
+			return false;
 		for (int i = nDigits - 1; i >= 0; i--) {
 			int d = number.charAt(i) - '0';
 			if (isSecond == true)
@@ -68,15 +69,6 @@ public class Utils {
 	public static TicketEntry getProductFromEntries(final List<TicketEntry> list,
 			final String productCode) {
 		return list.stream().filter(o -> o.getBarCode().equals(productCode)).findFirst().get();
-	}
-
-	private static List<String> readData(String file) {
-		try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-			return in.lines().collect(toList());
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return null;
-		}
 	}
 
 	public static boolean fromFile(String creditcard, double total, String file) {
