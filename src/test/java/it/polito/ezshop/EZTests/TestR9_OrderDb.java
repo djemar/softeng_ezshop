@@ -1,4 +1,4 @@
-package it.polito.ezshop.whiteBoxTests;
+package it.polito.ezshop.EZTests;
 import org.junit.Test;
 
 import it.polito.ezshop.data.EZShopDb;

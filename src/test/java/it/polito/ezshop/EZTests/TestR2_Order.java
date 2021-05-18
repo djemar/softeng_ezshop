@@ -1,4 +1,4 @@
-package it.polito.ezshop.whiteBoxTests;
+package it.polito.ezshop.EZTests;
 import java.io.IOException;
 import java.io.StringReader;
 

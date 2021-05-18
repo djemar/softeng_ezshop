@@ -487,7 +487,7 @@ public class EZShop implements EZShopInterface {
             else if (newCustomerCard != null) {
                 if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard))
                     throw new InvalidCustomerCardException("Invalid customer card");
-                if(ezshopDb.getCustomerCard(newCustomerCard) && ezshopDb.getCustomerByCard(newCustomerCard)!=null)
+                if(ezshopDb.getCustomerCard(newCustomerCard) && ezshopDb.getCustomerByCard(newCustomerCard)==null)
                     isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
                         c.getPoints());
             }
@@ -660,8 +660,6 @@ public class EZShop implements EZShopInterface {
             if (p != null && activeSaleTransaction != null
                     && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
                     && p.getQuantity() >= amount) {
-                // check if same product is present in the entries list otherwise new object in the
-                // list
                 if (!activeSaleTransaction.getEntries().stream()
                         .anyMatch(x -> x.getBarCode().equals(productCode)))
                     activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
@@ -994,22 +992,16 @@ public class EZShop implements EZShopInterface {
             return false;
 
         SaleTransaction s = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
-        double diffPrice = activeReturnTransaction.getTotal() * (1 - s.getDiscountRate()); // considerare
-                                                                                           // se
-                                                                                           // c'è
-                                                                                           // sconto
-                                                                                           // totale?
-        activeReturnTransaction.setTotal(diffPrice); // settare prezzo finale della return ?
+        double diffPrice = activeReturnTransaction.getTotal() * (1 - s.getDiscountRate());                                                                                           
+        activeReturnTransaction.setTotal(diffPrice); 
         activeReturnTransaction.setStatus("CLOSED");
         boolean isSuccess = ezshopDb.insertReturnTransaction(activeReturnTransaction);
         if (isSuccess) {
-            // add items back to inventory
             activeReturnTransaction.getReturnedProductsMap().entrySet().forEach(x -> {
                 ezshopDb.updateQuantity(ezshopDb.getProductTypeByBarCode(x.getKey()).getId(),
                         x.getValue());
             });
 
-            // decrease saleTransaction items && decrease sale transaction total price
             isSuccess = ezshopDb.updateSaleTransaction(activeReturnTransaction.getTransactionId(),
                     activeReturnTransaction.getReturnedProductsMap(), diffPrice, false);
         }
@@ -1084,7 +1076,7 @@ public class EZShop implements EZShopInterface {
             return -1;
         }
         ezshopDb.insertBalanceOperation(
-                new BalanceOperationImpl(LocalDate.now(), totalPrice, "CREDIT"));
+                new BalanceOperationImpl(LocalDate.now(), totalPrice, "SALE"));
         if (!ezshopDb.payForSaleTransaction(transactionID)) {
             ezshopDb.closeConnection();
             return -1;
@@ -1122,7 +1114,7 @@ public class EZShop implements EZShopInterface {
             }
             Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
             ezshopDb.insertBalanceOperation(
-                    new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "CREDIT"));
+                    new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "SALE"));
 
             if (!ezshopDb.payForSaleTransaction(transactionID)) {
                 ezshopDb.closeConnection();
@@ -1157,7 +1149,7 @@ public class EZShop implements EZShopInterface {
         }
 
         ezshopDb.insertBalanceOperation(
-                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "DEBIT"));
+                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
 
         return r.getTotal();
     }
@@ -1195,7 +1187,7 @@ public class EZShop implements EZShopInterface {
         Utils.updateFile("creditcards.txt", creditCard, -r.getTotal());
 
         ezshopDb.insertBalanceOperation(
-                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "DEBIT"));
+                new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
 
         return r.getTotal();
     }

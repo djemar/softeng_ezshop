@@ -1144,12 +1144,10 @@ public class EZShopDb {
 
             pstmt.setDate(1, Date.valueOf(LocalDate.now().toString()));
             pstmt.setDouble(2, toBeAdded);
-            String type = toBeAdded < 0 ? "debit" : "credit";
+            String type = toBeAdded < 0 ? "DEBIT" : "CREDIT";
             pstmt.setString(3, type);
-            int count = pstmt.executeUpdate();
-            /*
-             * if (count < 0) return false;
-             */
+            pstmt.executeUpdate();
+
 
 
         } catch (SQLException e) {
@@ -1163,10 +1161,8 @@ public class EZShopDb {
     }
 
     public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
-        // to be called by receiveCreditCardPayment
         List<BalanceOperation> list = new ArrayList<BalanceOperation>();
         try {
-            // TODO date column name may cause issues?
             PreparedStatement pstmt;
             if (from == null && to == null) {
                 pstmt = connection.prepareStatement("select * from balanceoperation");
@@ -1180,17 +1176,15 @@ public class EZShopDb {
                 pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
             } else {
                 pstmt = connection.prepareStatement(
-                        "select * from balanceoperation where data>=(?) and date<=(?)");
+                        "select * from balanceoperation where date >=(?) and date<=(?)");
                 pstmt.setDate(1, java.sql.Date.valueOf(from.toString()));
                 pstmt.setDate(2, java.sql.Date.valueOf(to.toString()));
             }
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            // date format?
 
             ResultSet rs;
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                // read the result set
                 list.add(new BalanceOperationImpl(rs.getInt("id"), rs.getDate("date").toLocalDate(),
                         rs.getDouble("money"), rs.getString("type")));
             }
