@@ -57,18 +57,18 @@ Boundaries for method validateBarcode:
 
 Combination of predicates for method validateBarcode
 
-|Validity of string parameter| length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
-|--------------|  | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
-|Valid| (null,11)      | \*             | \*                               | Invalid         | T1(542424) -> false            |                 |
-|''|                |                |                                  |                 |                                |                 |
-|''| [14,maxstring) | \*             | \*                               | Invalid         | T2(4521864284293182) -> false  |                 |
-|''|                |                |                                  |                 |                                |                 |
-|''| \*             | not digit      | \*                               | Invalid         | T3(dfjn87154) -> false         |                 |
-|''|                |                |                                  |                 | Tb3(skvidnsfffdnjsfd) -> false |                 |
-|''| \*             | \*             | false                            | Invalid         |                                |                 |
-|''| [12,14]        | digits         | false                            | Invalid         | T4(12345678954164) -> false    |                 |
-|''| [12,14]        | digits         | true                             | Valid           | T4(8032817681723) -> true      |                 |
-|Null| \*      | \*             | \*                               | \*         | T1(null) -> false            |                 |
+| Validity of string parameter | length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
+| ---------------------------- | -------------- | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
+| Valid                        | (null,11)      | \*             | \*                               | Invalid         | T1(542424) -> false            |
+| ''                           |                |                |                                  |                 |                                |
+| ''                           | [14,maxstring) | \*             | \*                               | Invalid         | T2(4521864284293182) -> false  |                 |
+| ''                           |                |                |                                  |                 |                                |                 |
+| ''                           | \*             | not digit      | \*                               | Invalid         | T3(dfjn87154) -> false         |                 |
+| ''                           |                |                |                                  |                 | Tb3(skvidnsfffdnjsfd) -> false |                 |
+| ''                           | \*             | \*             | false                            | Invalid         |                                |                 |
+| ''                           | [12,14]        | digits         | false                            | Invalid         | T4(12345678954164) -> false    |                 |
+| ''                           | [12,14]        | digits         | true                             | Valid           | T4(8032817681723) -> true      |                 |
+| Null                         | \*             | \*             | \*                               | \*              | T1(null) -> false              |                 |
 
 ### **Class _Utils _ - method _isOnlyDigit_**
 
@@ -118,33 +118,38 @@ Combination of predicates for method isOnlyDigit
 
 - Validity of string parameter
 - Number follows the Luhn algorithm
+  -String length
 
 - **Predicates for method _validateCreditCard_:**
 
-| Criteria                          | Predicate |
-| --------------------------------- | --------- |
-| Validity of string parameter      | Valid     |
-|                                   | NULL      |
-| Number follows the Luhn algorithm | true      |
-|                                   | false     |
+| Criteria                          | Predicate          |
+| --------------------------------- | ------------------ |
+| Validity of string parameter      | Valid              |
+|                                   | NULL               |
+| Number follows the Luhn algorithm | true               |
+|                                   | false              |
+| string length                     | (0,12) or (20,MAX) |
+|                                   | [13,19]            |
 
 **Boundaries**:
 
 Boundaries for method validateCreditCard:
 
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
+| Criteria      | Boundary values |
+| ------------- | --------------- |
+| string lentgh | [13,19]         |
 
 **Combination of predicates**:
 
 Combination of predicates for method validateCreditCard
 
-|Validity of string parameter| Number follows the Luhn algorithm | Valid / Invalid | Description of the test case  | JUnit test case |
-|---------------------------------| --------------------------------- | --------------- | ----------------------------- | --------------- |
-|Valid| false                             | Invalid         | T1(4218632014875236) -> false |                 |
-|''| true                              | Valid           | T2(4716258050958645) -> true  |                 |
-|Invalid| \*                              | \*           | T2(null) -> false  |                 |
+| Validity of string parameter | Number follows the Luhn algorithm | String Length | Valid / Invalid | Description of the test case                     | JUnit test case             |
+| ---------------------------- | --------------------------------- | ------------- | --------------- | ------------------------------------------------ | --------------------------- |
+| NULL                         | \*                                | \*            | Invalid         | T1() -> false                                    | testInvalidLuhnCreditCard() |
+| Valid                        | true                              | [13,19]       | Valid           | T2("5255189604838575") -> true                   | testValidLuhnCreditCard()   |
+| "                            | false                             | (0,12)        | Invalid         | T3("52551896075") -> false                       | testInvalidLuhnCreditCard() |
+| "                            | true                              | "             | "               | T4("377950544") -> false                         | testInvalidLuhnCreditCard() |
+| "                            | true                              | (20,MAX)      | "               | T5("377950544155089195839583945938593") -> false | testInvalidLuhnCreditCard() |
 
 ### **Class _Utils _ - method _containsProduct_**
 
@@ -174,11 +179,11 @@ Boundaries for method containsProduct:
 
 Combination of predicates for method containsProduct
 
-|Validity of string parameter| existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case |
-|---------------------------------| ------------------------------------ | --------------- | ----------------------------------- | --------------- |
-|Valid| yes                                  | valid           | t1("item19,item20,item21","item20") |                 |
-|''| no                                   | invalid         | t2("item35,item33,item34","item29") |                 |
-|Null| \*                                   | \*         | t2("item35,item33,item34"," null") |                 |
+| Validity of string parameter | existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case       |
+| ---------------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------- |
+| Valid                        | yes                                  | valid           | t1("item19,item20,item21","item20") | testContainsProduct() |
+| ''                           | no                                   | invalid         | t2("item35,item33,item34","item29") | testContainsProduct() |
+| Null                         | \*                                   | \*              | t2("item35,item33,item34"," null")  | testContainsProduct() |
 
 ### **Class _Utils _ - method _getProductFromEntries_**
 
@@ -216,14 +221,13 @@ Boundaries for method getProductFromEntries:
 
 Combination of predicates for method getProductFromEntries
 
-|Validity of string parameter| length of product code | existence of the product in the list | Ticketentry is not null | Valid / Invalid | Description of the test case        | JUnit test case |
-| ---------------------- | ------------------------------------ | ----------------------- | --------------- | ----------------------------------- | --------------- |---|
-| Valid|>0                     | yes                                  | yes                     | valid           | t1("item19,item20,item21","item20") |                 |
-|''| >0                     | yes                                  | no                      | invalid         | t1("item19,item20,item21","item20") |                 |
-|'' |''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") |                 |
-|'' |=0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       |                 |
-|Invalid |\*                     | \*                                   | \*                      | \*         | t3("item27,item28,item29","")       |                 |
-
+| Validity of string parameter | length of product code | existence of the product in the list | Ticketentry is not null | Valid / Invalid | Description of the test case        | JUnit test case             |
+| ---------------------------- | ---------------------- | ------------------------------------ | ----------------------- | --------------- | ----------------------------------- | --------------------------- |
+| Valid                        | >0                     | yes                                  | yes                     | valid           | t1("item19,item20,item21","item20") | testGetProductFromEntries() |
+| ''                           | >0                     | yes                                  | no                      | invalid         | t1("item19,item20,item21","item20") | testGetProductFromEntries() |
+| ''                           | ''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") | testGetProductFromEntries() |
+| ''                           | =0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       | testGetProductFromEntries() |
+| Invalid                      | \*                     | \*                                   | \*                      | \*              | t3("item27,item28,item29","")       | testGetProductFromEntries() |
 
 ### **Class _Utils _ - method _readData_**
 
@@ -1235,8 +1239,55 @@ Combination of predicates for method _setPrice_:
 
 | Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
 | ---------- | --------------- | ---------------------------- | ----------------- |
-| /          | Valid           | saleTransaction.setPrice(5)  | testGetSetPrice() |
+| /          | Valid           | saleTransaction.setPrice(5)  |testGetSetPrice() |
 
+### **Class _SaleTransaction_ - method _testSetGetEntries_**
+
+**Criteria for method _testSetGetEntries_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method _testSetGetEntries_:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method _testSetGetEntries_:
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
+| ---------- | --------------- | ---------------------------- | ----------------- |
+| /          | Valid           | saleTransaction.setEntries(tlist)  | testSetGetEntries()
+
+### **Class _SaleTransaction_ - method _testEstimatePrice_**
+
+**Criteria for method _testEstimatePrice_:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|          |           |
+
+**Boundaries**:
+
+Boundaries for method _testEstimatePrice_:
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|          |                 |
+
+**Combination of predicates**:
+
+Combination of predicates for method _testEstimatePrice_:
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case   |
+| ---------- | --------------- | ---------------------------- | ----------------- |
+| /          | Valid           | saleTransaction.estimatePrice()  | testEstimatePrice()
 # White Box Unit Tests
 
 ### Test cases definition
@@ -1271,6 +1322,8 @@ Combination of predicates for method _setPrice_:
 |   SaleTransaction |       testGetSetTicketNumber() |   TestR8_SaleTransaction |
 |   SaleTransaction |             testGetSetStatus() |   TestR8_SaleTransaction |
 |   SaleTransaction |              testGetSetPrice() |   TestR8_SaleTransaction |
+|   SaleTransaction |            testEstimatePrice() |   TestR8_SaleTransaction |
+|   SaleTransaction |            testSetGetEntries() |   TestR8_SaleTransaction |
 |   SaleTransaction |       testGetSetDiscountRate() |   TestR8_SaleTransaction |
 |              User |                 testSetGetId() |              TestR1_User |
 |              User |           testSetGetUsername() |              TestR1_User |
@@ -1299,7 +1352,7 @@ Combination of predicates for method _setPrice_:
     developed to cover zero, one or multiple iterations >
 
 | Unit name | Loop rows | Number of iterations | JUnit test case |
-| --------- | --------- | -------------------- | --------------- | --- |
+| --------- | --------- | -------------------- | --------------- | 
 |           |           |                      |                 |
 |           |           |                      |                 |
-|           |           |                      |                 |     |
+|           |           |                      |                 |  
