@@ -57,18 +57,18 @@ Boundaries for method validateBarcode:
 
 Combination of predicates for method validateBarcode
 
-| length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
-| -------------- | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
-| (null,11)      | \*             | \*                               | Invalid         | T1(542424) -> false            |                 |
-|                |                |                                  |                 | Tb1(null) -> false             |                 |
-|                |                |                                  |                 |                                |                 |
-| [14,maxstring) | \*             | \*                               | Invalid         | T2(4521864284293182) -> false  |                 |
-|                |                |                                  |                 |                                |                 |
-| \*             | not digit      | \*                               | Invalid         | T3(dfjn87154) -> false         |                 |
-|                |                |                                  |                 | Tb3(skvidnsfffdnjsfd) -> false |                 |
-| \*             | \*             | false                            | Invalid         |                                |                 |
-| [12,14]        | digits         | false                            | Invalid         | T4(12345678954164) -> false    |                 |
-| [12,14]        | digits         | true                             | Valid           | T4(8032817681723) -> true      |                 |
+|Validity of string parameter| length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
+|--------------|  | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
+|Valid| (null,11)      | \*             | \*                               | Invalid         | T1(542424) -> false            |                 |
+|''|                |                |                                  |                 |                                |                 |
+|''| [14,maxstring) | \*             | \*                               | Invalid         | T2(4521864284293182) -> false  |                 |
+|''|                |                |                                  |                 |                                |                 |
+|''| \*             | not digit      | \*                               | Invalid         | T3(dfjn87154) -> false         |                 |
+|''|                |                |                                  |                 | Tb3(skvidnsfffdnjsfd) -> false |                 |
+|''| \*             | \*             | false                            | Invalid         |                                |                 |
+|''| [12,14]        | digits         | false                            | Invalid         | T4(12345678954164) -> false    |                 |
+|''| [12,14]        | digits         | true                             | Valid           | T4(8032817681723) -> true      |                 |
+|Null| \*      | \*             | \*                               | \*         | T1(null) -> false            |                 |
 
 ### **Class _Utils _ - method _isOnlyDigit_**
 
@@ -125,9 +125,6 @@ Combination of predicates for method isOnlyDigit
 | --------------------------------- | --------- |
 | Validity of string parameter      | Valid     |
 |                                   | NULL      |
-| length of string parameter        | (0,12)    |
-|                                   | [13,19]   |
-|                                   | (19, MAX) |
 | Number follows the Luhn algorithm | true      |
 |                                   | false     |
 
@@ -143,10 +140,11 @@ Boundaries for method validateCreditCard:
 
 Combination of predicates for method validateCreditCard
 
-| Number follows the Luhn algorithm | Valid / Invalid | Description of the test case  | JUnit test case |
-| --------------------------------- | --------------- | ----------------------------- | --------------- |
-| false                             | Invalid         | T1(4218632014875236) -> false |                 |
-| true                              | Valid           | T2(4716258050958645) -> true  |                 |
+|Validity of string parameter| Number follows the Luhn algorithm | Valid / Invalid | Description of the test case  | JUnit test case |
+|---------------------------------| --------------------------------- | --------------- | ----------------------------- | --------------- |
+|Valid| false                             | Invalid         | T1(4218632014875236) -> false |                 |
+|''| true                              | Valid           | T2(4716258050958645) -> true  |                 |
+|Invalid| \*                              | \*           | T2(null) -> false  |                 |
 
 ### **Class _Utils _ - method _containsProduct_**
 
@@ -176,10 +174,11 @@ Boundaries for method containsProduct:
 
 Combination of predicates for method containsProduct
 
-| existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case |
-| ------------------------------------ | --------------- | ----------------------------------- | --------------- |
-| yes                                  | valid           | t1("item19,item20,item21","item20") |                 |
-| no                                   | invalid         | t2("item35,item33,item34","item29") |                 |
+|Validity of string parameter| existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case |
+|---------------------------------| ------------------------------------ | --------------- | ----------------------------------- | --------------- |
+|Valid| yes                                  | valid           | t1("item19,item20,item21","item20") |                 |
+|''| no                                   | invalid         | t2("item35,item33,item34","item29") |                 |
+|Null| \*                                   | \*         | t2("item35,item33,item34"," null") |                 |
 
 ### **Class _Utils _ - method _getProductFromEntries_**
 
@@ -217,12 +216,14 @@ Boundaries for method getProductFromEntries:
 
 Combination of predicates for method getProductFromEntries
 
-| length of product code | existence of the product in the list | Ticketentry is not null | Valid / Invalid | Description of the test case        | JUnit test case |
-| ---------------------- | ------------------------------------ | ----------------------- | --------------- | ----------------------------------- | --------------- |
-| >0                     | yes                                  | yes                     | valid           | t1("item19,item20,item21","item20") |                 |
-| >0                     | yes                                  | no                      | invalid         | t1("item19,item20,item21","item20") |                 |
-| ''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") |                 |
-| =0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       |                 |
+|Validity of string parameter| length of product code | existence of the product in the list | Ticketentry is not null | Valid / Invalid | Description of the test case        | JUnit test case |
+| ---------------------- | ------------------------------------ | ----------------------- | --------------- | ----------------------------------- | --------------- |---|
+| Valid|>0                     | yes                                  | yes                     | valid           | t1("item19,item20,item21","item20") |                 |
+|''| >0                     | yes                                  | no                      | invalid         | t1("item19,item20,item21","item20") |                 |
+|'' |''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") |                 |
+|'' |=0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       |                 |
+|Invalid |\*                     | \*                                   | \*                      | \*         | t3("item27,item28,item29","")       |                 |
+
 
 ### **Class _Utils _ - method _readData_**
 
