@@ -167,7 +167,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException();
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getProductTypeByBarCode(productCode) == null) {
-                if (note == null)
+                if (note == null) 
                     note = new String("");
                 id = ezshopDb.insertProductType(
                         new ProductTypeImpl(description, productCode, pricePerUnit, note));

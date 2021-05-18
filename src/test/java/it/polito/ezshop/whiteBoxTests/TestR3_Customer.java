@@ -26,7 +26,7 @@ public class TestR3_Customer {
         assertEquals(customer.getCustomerCard(), "0000000011");
     }
 
-
+ 
 	@Test
     public void testSetGetID(){
         Customer customer=new CustomerImpl(1,"John","0000000001",0);

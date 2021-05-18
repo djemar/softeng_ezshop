@@ -42,7 +42,7 @@ public class EZShopDb {
 
     public boolean closeConnection() {
         try {
-            if (connection != null)
+            if (connection != null) 
                 connection.close();
         } catch (SQLException e) {
             // connection close failed.
