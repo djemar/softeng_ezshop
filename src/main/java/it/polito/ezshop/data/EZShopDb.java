@@ -21,7 +21,7 @@ public class EZShopDb {
     public boolean createConnection() {
         try {
             // create a database connection
-            this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl);
+            this.connection = (SQLiteConnection) DriverManager.getConnection(dbUrl); 
             connection.addUpdateListener(new SQLiteUpdateListener() {
                 @Override
                 public void onUpdate(Type type, String db, String table, long rowId) {
@@ -603,24 +603,6 @@ public class EZShopDb {
         return balance;
     }
 
-    public int getOrderNumber() {
-        int i = 0;
-        try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select max(id) as number from orders ");
-            ResultSet rs;
-            rs = pstmt.executeQuery();
-            i = rs.getInt("number");
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-
-        }
-        return i;
-
-    }
-
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<Order>();
         try {
@@ -643,23 +625,6 @@ public class EZShopDb {
             System.err.println(e.getMessage());
         }
         return orders;
-    }
-
-    public int getBalanceOperationsNumber() {
-        int i = 0;
-        try {
-            PreparedStatement pstmt = connection
-                    .prepareStatement("select count(*) as number from balanceOperations ");
-            ResultSet rs;
-            rs = pstmt.executeQuery();
-            i = rs.getInt("number");
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-            return i;
-        }
-        return -1;
     }
 
     public int insertBalanceOperation(BalanceOperationImpl b) {
@@ -691,22 +656,6 @@ public class EZShopDb {
             return -1;
         }
         return id;
-    }
-
-    public int getCustomerNumber() {
-        int i = -1;
-        try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select count(*) as number from balanceOperation ");
-            ResultSet rs;
-            rs = pstmt.executeQuery();
-            i = rs.getInt("number");
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-        return i;
     }
 
     public Integer insertCustomer(Customer c) {
@@ -1295,58 +1244,6 @@ public class EZShopDb {
             return null;
         }
         return r;
-    }
-
-
-    public void insertCreditCard(String creditCard) {
-        // to be called by receiveCreditCardPayment
-        try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("insert into creditcards values(?)");
-            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
-            pstmt.executeUpdate();
-
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("select * from creditcards");
-
-            while (rs.next()) {
-                // read the result set
-                System.out.println("cc id = " + rs.getString("creditcard"));
-            }
-
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-
-    }
-
-
-    public String getCreditCard(String creditCard) {
-        // to be called by receiveCreditCardPayment
-        String cc = null;
-        try {
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select * from creditcards where creditcard=(?)");
-            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-            pstmt.setString(1, creditCard); // the index refers to the ? in the statement
-
-
-            ResultSet rs;
-            rs = pstmt.executeQuery();
-            cc = rs.getString("creditcard");
-
-        } catch (SQLException e) {
-            // if the error message is "out of memory",
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        }
-
-        return cc;
-
     }
 
     public boolean recordBalanceUpdate(double toBeAdded) {
