@@ -81,7 +81,7 @@ Combination of predicates for method validateBarcode
 | only digit in string         | true      |
 |                              | false     |
 | Validity of string parameter | Valid     |
-|                              | false     |
+|                              | NULL      |
 |                              |           |
 |                              |           |
 
@@ -91,12 +91,8 @@ Boundaries for method isOnlyDigit:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
+|   -      |       -         |
+
 
 **Combination of predicates**:
 
@@ -104,9 +100,9 @@ Combination of predicates for method isOnlyDigit
 
 | only digit in string | validity of string parameter | Valid / Invalid | Description of the test case | JUnit test case |
 | -------------------- | ---------------------------- | --------------- | ---------------------------- | --------------- |
-| true                 | valid                        | valid           | T1("12356344")->true         |                 |
-| false                | valid                        | Invalid         | T2("134r23")->false          |                 |
-|                      | invalid                      | Invalid         | T3()->false                  |                 |
+| true                 | Valid                        | Valid           | T1("12356344")->true         |testOnlyDigit                 |
+| false                | Valid                        | Valid         | T2("134r23")->false          |testNotOnlyDigit                 |
+|    -                  | NULL                      | Invalid         | T3(NULL)->throw NullPointerException                 |testNotOnlyDigit                 |
 
 ### **Class _Utils_ - method _validateCreditCard_**
 
