@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 import org.junit.Before;
 
 public class UtilsTest {
-	Utils u = new Utils();
+    Utils u = new Utils();
     List<TicketEntry> list;
     static String file;
     static {
@@ -64,14 +64,18 @@ public class UtilsTest {
     }
 
     @Test
-    public void testInvalidBarcode() {
+    public void testInvalidBCode() {
         assertFalse(Utils.validateBarcode("9780205451379654"));
         assertFalse(Utils.validateBarcode("29059158"));
-        assertFalse(Utils.validateBarcode("2905911158927"));
         assertFalse(Utils.validateBarcode("978020s379655"));
         assertFalse(Utils.validateBarcode(""));
+    }
+
+    @Test
+    public void testInvalidBarcode() {
+        assertFalse(Utils.validateBarcode("2905911158927"));
         assertThrows(NullPointerException.class, () -> {
-        	Utils.validateBarcode(null);
+            Utils.validateBarcode(null);
         });
     }
 
@@ -86,7 +90,7 @@ public class UtilsTest {
         assertFalse(Utils.isOnlyDigit("97802013796s4"));
         assertFalse(Utils.isOnlyDigit("sf"));
         assertThrows(NullPointerException.class, () -> {
-        	Utils.isOnlyDigit(null);
+            Utils.isOnlyDigit(null);
         });
     }
 
@@ -98,15 +102,19 @@ public class UtilsTest {
     }
 
     @Test
-    public void testInvalidLuhnCreditCard() {
-        assertFalse(Utils.validateCreditCard("52551896075"));
-        assertFalse(Utils.validateCreditCard("4265645498582432"));
-        assertFalse(Utils.validateCreditCard("3779505441550891"));
+    public void testInvalidLuhnCCard() {
         assertFalse(Utils.validateCreditCard("377950544"));
         assertFalse(Utils.validateCreditCard("377950544155089195839583945938593"));
+        assertFalse(Utils.validateCreditCard("52551896075"));
+    }
+
+    @Test
+    public void testInvalidLuhnCreditCard() {
+        assertFalse(Utils.validateCreditCard("4265645498582432"));
+        assertFalse(Utils.validateCreditCard("3779505441550891"));
         assertFalse(Utils.validateCreditCard(""));
         assertThrows(NullPointerException.class, () -> {
-        	Utils.validateCreditCard(null);
+            Utils.validateCreditCard(null);
         });
     }
 
@@ -115,11 +123,14 @@ public class UtilsTest {
         assertTrue(Utils.fromFile("4485370086510891", 20, file));
         assertTrue(Utils.fromFile("5100293991053009", 5, file));
     }
+        @Test
+    public void testUCreditCard() {
+        assertFalse(Utils.fromFile("5255189604838575", 20, file));
+        assertFalse(Utils.fromFile("5100293991053009", 50, file));
+    }
 
     @Test
     public void testUnregisteredCreditCard() {
-        assertFalse(Utils.fromFile("5255189604838575", 20, file));
-        assertFalse(Utils.fromFile("5100293991053009", 50, file));
         assertThrows(NullPointerException.class, () -> {
             Utils.fromFile("5100293991053009", 50, null);
         });
@@ -131,6 +142,12 @@ public class UtilsTest {
         assertTrue(Utils.updateFile(file, "4485370086510891", 20));
     }
 
+    @Test
+    public void testInvalidUFile() {
+        assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
+        assertFalse(Utils.updateFile(file, "5255189604838570", 20));
+        assertFalse(Utils.updateFile(file, "5100293991053009", 42));       
+    }
     @Test
     public void testInvalidUpdateFile() {
         assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
@@ -163,11 +180,11 @@ public class UtilsTest {
             Utils.getProductFromEntries(list, "productCode");
         });
         assertThrows(NullPointerException.class, () -> {
-        	 Utils.getProductFromEntries(null, "productCode");
+            Utils.getProductFromEntries(null, "productCode");
         });
         assertThrows(NoSuchElementException.class, () -> {
-       	 Utils.getProductFromEntries(list, null);
-       });
+            Utils.getProductFromEntries(list, null);
+        });
     }
 
 }

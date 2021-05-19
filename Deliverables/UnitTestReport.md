@@ -27,44 +27,34 @@ Version:
 **Criteria for method _validateBarcode_:**
 
 - Validity of string parameter
-- Length of code
-- Format of code
 - Check digit algorithm successful
 
 **Predicates for method _validateBarcode_:**
 
-| Criteria                         | Predicate               |
-| -------------------------------- | ----------------------- |
-| Validity of string parameter     | Valid                   |
-|                                  | NULL                    |
-| length of code                   | (0,11)                  |
-|                                  | [12,14]                 |
-|                                  | [15,maxstring)          |
-| format of code                   | true(in case of digits) |
-|                                  | false(others)           |
-| check digit algorithm successful | true                    |
-|                                  | false                   |
+| Criteria                         | Predicate |
+| -------------------------------- | --------- |
+| Validity of string parameter     | Valid     |
+|                                  | NULL      |
+| check digit algorithm successful | true      |
+|                                  | false     |
 
 **Boundaries**:
 
 Boundaries for method validateBarcode:
 
-| Criteria       | Boundary values |
-| -------------- | --------------- |
-| length of code |   12,13,14      |
+| Criteria | Boundary values |
+| -------- | --------------- |
+| -        | -               |
 
 **Combination of predicates**:
 
 Combination of predicates for method validateBarcode
 
-| Validity of string parameter | length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
-| ---------------------------- | -------------- | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
-| Valid                        | (null,11)      | -             | -                               | Valid         | T1(542424) -> false            |testInvalidBarcode
-| ''                           | [15,maxstring) | -             | -                               | Valid         | T2(4521864284293182) -> false  |testInvalidBarcode                 |
-| ''                           | -             | not digit      | -                               | Valid         | T3(dfjn87154) -> false         |testInvalidBarcode                 |
-| ''                           | [12,14]        | digits         | false                            | Valid         | T4(12345678954164) -> false    |testInvalidBarcode                 |
-| ''                           | [12,14]        | digits         | true                             | Valid           | T5(8032817681723) -> true      |testValidBarcode                 |
-| Null                         | -             | -             | -                               | Invalid              | T6(null)->throw NullPointerException              |testInvalidBarcode                 |
+| Validity of string parameter | check digit algorithm successful | Valid / Invalid | Description of the test case         | JUnit test case    |
+| ---------------------------- | -------------------------------- | --------------- | ------------------------------------ | ------------------ |
+| Valid                        | true                             | Valid           | T1(8032817681723) -> true            | testValidBarcode   |
+| ''                           | false                            | Valid           | T2(45218642842) -> false             | testInvalidBarcode |
+| Null                         | -                                | Invalid         | T3(null)->throw NullPointerException | testInvalidBarcode |
 
 ### **Class _Utils _ - method _isOnlyDigit_**
 
@@ -91,18 +81,17 @@ Boundaries for method isOnlyDigit:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|   -      |       -         |
-
+| -        | -               |
 
 **Combination of predicates**:
 
 Combination of predicates for method isOnlyDigit
 
-| only digit in string | validity of string parameter | Valid / Invalid | Description of the test case | JUnit test case |
-| -------------------- | ---------------------------- | --------------- | ---------------------------- | --------------- |
-| true                 | Valid                        | Valid           | T1("12356344")->true         |testOnlyDigit                 |
-| false                | Valid                        | Valid         | T2("134r23")->false          |testNotOnlyDigit                 |
-|    -                  | NULL                      | Invalid         | T3(NULL)->throw NullPointerException                 |testNotOnlyDigit                 |
+| only digit in string | validity of string parameter | Valid / Invalid | Description of the test case         | JUnit test case  |
+| -------------------- | ---------------------------- | --------------- | ------------------------------------ | ---------------- |
+| true                 | Valid                        | Valid           | T1("12356344")->true                 | testOnlyDigit    |
+| false                | Valid                        | Valid           | T2("134r23")->false                  | testNotOnlyDigit |
+| -                    | NULL                         | Invalid         | T3(NULL)->throw NullPointerException | testNotOnlyDigit |
 
 ### **Class _Utils_ - method _validateCreditCard_**
 
@@ -110,52 +99,45 @@ Combination of predicates for method isOnlyDigit
 
 - Validity of string parameter
 - Number follows the Luhn algorithm
-- String length
 
 - **Predicates for method _validateCreditCard_:**
 
-| Criteria                          | Predicate          |
-| --------------------------------- | ------------------ |
-| Validity of string parameter      | Valid              |
-|                                   | NULL               |
-| Number follows the Luhn algorithm | true               |
-|                                   | false              |
-| string length                     | (0,12) or (20,MAX) |
-|                                   | [13,19]            |
+| Criteria                          | Predicate |
+| --------------------------------- | --------- |
+| Validity of string parameter      | Valid     |
+|                                   | NULL      |
+| Number follows the Luhn algorithm | true      |
+|                                   | false     |
 
 **Boundaries**:
 
 Boundaries for method validateCreditCard:
 
-| Criteria      | Boundary values |
-| ------------- | --------------- |
-| string lentgh | [13,19]         |
+| Criteria | Boundary values |
+| -------- | --------------- |
 
 **Combination of predicates**:
 
 Combination of predicates for method validateCreditCard
 
-| Validity of string parameter | Number follows the Luhn algorithm | String Length | Valid / Invalid | Description of the test case                     | JUnit test case             |
-| ---------------------------- | --------------------------------- | ------------- | --------------- | ------------------------------------------------ | --------------------------- |
-| NULL                         | \*                                | \*            | Invalid         | T1(NULL)->throw NullPointerException                                    | testInvalidLuhnCreditCard() |
-| Valid                        | true                              | [13,19]       | Valid           | T2("5255189604838575") -> true                   | testValidLuhnCreditCard()   |
-| "                            | -                             | (0,12)        | "         | T3("52551896075") -> false                       | testInvalidLuhnCreditCard() |
-| "                            | -                             | [20, MAX]        | "         | T3("52553454661896075") -> false                       | testInvalidLuhnCreditCard() |
-| "                            | true                              | [13,19]             | "               | T4("377950544") -> false                         | testInvalidLuhnCreditCard() |
-
+| Validity of string parameter | Number follows the Luhn algorithm | Valid / Invalid | Description of the test case         | JUnit test case             |
+| ---------------------------- | --------------------------------- | --------------- | ------------------------------------ | --------------------------- |
+| NULL                         | \*                                | Invalid         | T1(NULL)->throw NullPointerException | testInvalidLuhnCreditCard() |
+| Valid                        | true                              | Valid           | T2("5255189604838575") -> true       | testValidLuhnCreditCard()   |
+| "                            | false                             | "               | T3("52551896075") -> false           | testInvalidLuhnCreditCard() |
 
 ### **Class _Utils _ - method _containsProduct_**
 
 **Criteria for method _containsProduct_:**
 
-- Validity of List\<TicketEntry> 
+- Validity of List\<TicketEntry>
 - existence of the product in the list
 
 **Predicates for method _containsProduct_:**
 
 | Criteria                             | Predicate |
 | ------------------------------------ | --------- |
-| Validity of List\<TicketEntry>        | Valid     |
+| Validity of List\<TicketEntry>       | Valid     |
 |                                      | NULL      |
 | existence of the product in the list | yes       |
 |                                      | no        |
@@ -166,17 +148,17 @@ Boundaries for method containsProduct:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|  -       |  -              |
+| -        | -               |
 
 **Combination of predicates**:
 
 Combination of predicates for method containsProduct
 
-| Validity of List\<TicketEntry>  | existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case       |
-| ---------------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------- |
-| Valid                        | yes                                  | Valid           | T1("item19,item20,item21","item20")->True | testContainsProduct|
-| ''                           | no                                   | Valid         | T2("item35,item33,item34","item29")->False | testDoesntContainProduct |
-| NULL                         | -                                   | Invalid              | T3(NULL,"item35")->throw NullPointerException  | testDoesntContainProduct|
+| Validity of List\<TicketEntry> | existence of the product in the list | Valid / Invalid | Description of the test case                          | JUnit test case          |
+| ------------------------------ | ------------------------------------ | --------------- | ----------------------------------------------------- | ------------------------ |
+| Valid                          | yes                                  | Valid           | T1("item19,item20,item21","65164684113337")->True     | testContainsProduct      |
+| ''                             | no                                   | Valid           | T2("item35,item33,item34","65164684113337")->False    | testDoesntContainProduct |
+| NULL                           | -                                    | Invalid         | T3(NULL,"65164684113337")->throw NullPointerException | testDoesntContainProduct |
 
 ### **Class _Utils _ - method _getProductFromEntries_**
 
@@ -203,43 +185,37 @@ Boundaries for method getProductFromEntries:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|  -       | -               |
-
+| -        | -               |
 
 **Combination of predicates**:
 
 Combination of predicates for method getProductFromEntries
 
-| Validity of List\<TicketEntry> |  Validity of product code String| Existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case             |
-| ---------------------------- | ---------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------------- |
-| Valid                        | Valid                     | yes                                  |  Valid           | T0("item19,item20,item21","65164684113337")-> TicketEntry | testGetProductFromEntries() |
-| ''                           | NULL                     |-                      | Invalid         | T1("item19,item20,item21",NULL)->throw NoSuchElementException | testGetProductFromEntries() |
-| ''                           | Valid                     | no                                   | Invalid         | T2("item35,item33,item34","65164684113337")->throw NoSuchElementException | testGetProductFromEntries() |
-| Invalid                      | \*                     | \*                                   | Invalid              | T3(NULL,"65164684113337")->throw NullPointerException       | testGetProductFromEntries() |
+| Validity of List\<TicketEntry> | Validity of product code String | Existence of the product in the list | Valid / Invalid | Description of the test case                                              | JUnit test case             |
+| ------------------------------ | ------------------------------- | ------------------------------------ | --------------- | ------------------------------------------------------------------------- | --------------------------- |
+| Valid                          | Valid                           | yes                                  | Valid           | T0("item19,item20,item21","65164684113337")-> TicketEntry                 | testGetProductFromEntries() |
+| ''                             | NULL                            | -                                    | Invalid         | T1("item19,item20,item21",NULL)->throw NoSuchElementException             | testGetProductFromEntries() |
+| ''                             | Valid                           | no                                   | Invalid         | T2("item35,item33,item34","65164684113337")->throw NoSuchElementException | testGetProductFromEntries() |
+| Invalid                        | \*                              | \*                                   | Invalid         | T3(NULL,"65164684113337")->throw NullPointerException                     | testGetProductFromEntries() |
 
 ### **Class _Utils _ - method _fromFile_**
 
 **Criteria for method _fromFile_:**
 
 - Validity of the String parameter
-- Total < Credit card balance
+
 - Length of the String
 - Existence of the Credit Card
-- File opened correctly
 
   **Predicates for method _fromFile_:**
   | Criterion | Predicate |
-  | ------------------------------------ | --------- |
+  | -------- | --------- |
   | Validity of the String parameter | Valid |
   | | NULL |
   | Length of the String | > 0 |
   | | = 0 ("") |
   | Existence of the Credit Card | Yes |
   | | No |
-  | File opened correctly | Yes |
-  | | No |
-  |Total < Credit card balance| True|
-  || False|
 
 **Boundaries**:
 
@@ -252,14 +228,12 @@ Boundaries for method fromFile:
 
 Combination of predicates for method fromFile
 
-| Validity of the String parameter | Length of the String | Existence of the Credit Card | Total < Credit card balance | File opened correctly | Valid/Invalid | Description of the test case: example of input and output | JUnit test case              |
-| -------------------------------- | -------------------- | ---------------------------- | --------------------------- | --------------------- | ------------- | --------------------------------------------------------- | ---------------------------- |
-| Valid                            | >0                   | Yes                          | True                        | Yes                   | Valid         | T0 -> False                                               | testUnregisteredCreditCard() |
-| ''                               | ''                   | ''                           | False                       | \*                    | Valid         | T1 -> True                                                | testRegisteredCreditCard()   |
-| ''                               | ''                   | ''                           | ''                          | No                    | Invalid       | T2 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
-| ''                               | ''                   | No                           | ''                          | -                     | Valid         | T3 -> False                                               | testUnregisteredCreditCard() |
-| \*                               | 0                    | -                            | -                           | -                     | Valid         | T4 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
-| NULL                             | -                    | -                            | -                           | -                     | Invalid       | T5(NULL; throw NullPointerException)                      | testUnregisteredCreditCard() |
+| Validity of the String parameter | Length of the String | Existence of the Credit Card | Valid/Invalid | Description of the test case: example of input and output | JUnit test case              |
+| -------------------------------- | -------------------- | ---------------------------- | ------------- | --------------------------------------------------------- | ---------------------------- |
+| ''                               | ''                   | Yes                          | Valid         | T1 -> True                                                | testRegisteredCreditCard()   |
+| ''                               | ''                   | No                           | Valid         | T2 -> False                                               | testUnregisteredCreditCard() |
+| "                                | 0                    | -                            | Valid         | T3 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
+| NULL                             | -                    | -                            | Invalid       | T4(NULL; throw NullPointerException)                      | testUnregisteredCreditCard() |
 
 ### **Class _Utils _ - method _updateFile_**
 
@@ -267,45 +241,37 @@ Combination of predicates for method fromFile
 
 - Validity of the String parameter
 - Length of the String
-- Sign of the updated amount parameter
 - Existence of the Credit Card
-- File opened correctly
 
   **Predicates for method _updateFile_:**
 
-| Criterion                            | Predicate |
-| ------------------------------------ | --------- |
-| Validity of the String parameter     | Valid     |
-|                                      | NULL      |
-| Length of the String                 | > 0       |
-|                                      | = 0 ("")  |
-| Existence of the Credit Card         | Yes       |
-|                                      | No        |
-| Sign of the updated amount parameter | >=0       |
-|                                      | <0        |
-| File opened correctly                | Yes       |
-|                                      | No        |
+| Criterion                        | Predicate |
+| -------------------------------- | --------- |
+| Validity of the String parameter | Valid     |
+|                                  | NULL      |
+| Length of the String             | > 0       |
+|                                  | = 0 ("")  |
+| Existence of the Credit Card     | Yes       |
+|                                  | No        |
 
 **Boundaries**:
 
 Boundaries for method updateFile:
 
-| Criteria                             | Boundary values |
-| ------------------------------------ | --------------- |
-| Sign of the updated amount parameter | -1,0            |
+| Criteria | Boundary values |
+| -------- | --------------- |
+| -        | -               |
 
 **Combination of predicates**:
 
 Combination of predicates for method updateFile
 
-| Validity of the String parameter | Length of the String | Existence of the Credit Card | Sign of the updated amount parameter | File opened correctly | Valid/Invalid | Description of the test case: example of input and output | JUnit test case         |
-| -------------------------------- | -------------------- | ---------------------------- | ------------------------------------ | --------------------- | ------------- | --------------------------------------------------------- | ----------------------- |
-| Valid                            | >0                   | Yes                          | <0                                   | Yes                   | Valid         | T0 -> False                                               | testInvalidUpdateFile() |
-| ''                               | ''                   | ''                           | >=0                                  | \*                    | Valid         | T1 -> True                                                | testValidUpdateFile()   |
-| ''                               | ''                   | ''                           | ''                                   | No                    | Invalid       | T2 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
-| ''                               | ''                   | No                           | ''                                   | -                     | Valid         | T3 -> False                                               | testInvalidUpdateFile() |
-| \*                               | 0                    | -                            | -                                    | -                     | Valid         | T4 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
-| NULL                             | -                    | -                            | -                                    | -                     | Invalid       | T5(NULL; throw NullPointerException)                      | testInvalidUpdateFile() |
+| Validity of the String parameter | Length of the String | Existence of the Credit Card | Valid/Invalid | Description of the test case: example of input and output | JUnit test case         |
+| -------------------------------- | -------------------- | ---------------------------- | ------------- | --------------------------------------------------------- | ----------------------- |
+| Valid                            | ''                   | Yes                          | Valid         | T1 -> True                                                | testValidUpdateFile()   |
+| ''                               | ''                   | No                           | Valid         | T3 -> False                                               | testInvalidUpdateFile() |
+| "                                | 0                    | -                            | Invalid       | T4 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
+| NULL                             | -                    | -                            | Invalid       | T5(NULL; throw NullPointerException)                      | testInvalidUpdateFile() |
 
 ### **Class _BalanceOperation_ - method _setBalanceId_**
 
@@ -1241,50 +1207,50 @@ Combination of predicates for method _testEstimatePrice_:
     <Report here all the created JUnit test cases, and the units/classes under test >
     <For traceability write the class and method name that contains the test case>
 
-|         Unit name |                JUnit test case |               Java Class |
-| ----------------: | -----------------------------: | -----------------------: |
-|             Order |        testGetSetProductCode() |             TestR2_Order |
-|             Order |              testGetSetPrice() |             TestR2_Order |
-|             Order |           testGetSetQuantity() |             TestR2_Order |
-|             Order |             testGetSetStatus() |             TestR2_Order |
-|             Order |          testGetSetBalanceID() |             TestR2_Order |
-|             Order |            testGetSetOrderID() |             TestR2_Order |
-|  BalanceOperation |          testGetSetBalanceID() |  TestR4_BalanceOperation |
-|  BalanceOperation |               testGetSetDate() |  TestR4_BalanceOperation |
-|  BalanceOperation |              testGetSetMoney() |  TestR4_BalanceOperation |
-|  BalanceOperation |               testGetSetType() |  TestR4_BalanceOperation |
-|       TicketEntry |            testGetSetBarCode() |       TestR5_TicketEntry |
-|       TicketEntry |              testGetSetPrice() |       TestR5_TicketEntry |
-|       TicketEntry |           testGetSetQuantity() |       TestR5_TicketEntry |
-|       TicketEntry | testGetSetProductDescription() |       TestR5_TicketEntry |
-|       TicketEntry |       testGetSetDiscountRate() |       TestR5_TicketEntry |
-| ReturnTransaction |           testGetSetReturnId() | TestR7_ReturnTransaction |
-| ReturnTransaction |      testGetSetTransactionId() | TestR7_ReturnTransaction |
-| ReturnTransaction |             testGetSetStatus() | TestR7_ReturnTransaction |
-| ReturnTransaction |              testGetSetTotal() | TestR7_ReturnTransaction |
-| ReturnTransaction |              testUpdateTotal() | TestR7_ReturnTransaction |
-| ReturnTransaction | testGetSetReturnedProductMap() | TestR7_ReturnTransaction |
-|   SaleTransaction |       testGetSetTicketNumber() |   TestR8_SaleTransaction |
-|   SaleTransaction |             testGetSetStatus() |   TestR8_SaleTransaction |
-|   SaleTransaction |              testGetSetPrice() |   TestR8_SaleTransaction |
-|   SaleTransaction |            testEstimatePrice() |   TestR8_SaleTransaction |
-|   SaleTransaction |            testSetGetEntries() |   TestR8_SaleTransaction |
-|   SaleTransaction |       testGetSetDiscountRate() |   TestR8_SaleTransaction |
-|              User |                 testSetGetId() |              TestR1_User |
-|              User |           testSetGetUsername() |              TestR1_User |
-|              User |           testSetGetPassword() |              TestR1_User |
-|              User |               testSetGetRole() |              TestR1_User |
-|          Customer |       testGetSetCustomerName() |          TestR3_Customer |
-|          Customer |       testSetGetCustomerCard() |          TestR3_Customer |
-|          Customer |                 testSetGetID() |          TestR3_Customer |
-|          Customer |             testSetGetPoints() |          TestR3_Customer |
-|       ProductType |           testSetGetQuantity() |       TestR6_ProductType |
-|       ProductType |           testSetGetLocation() |       TestR6_ProductType |
-|       ProductType |               testSetGetNote() |       TestR6_ProductType |
-|       ProductType | testSetGetProductDescription() |       TestR6_ProductType |
-|       ProductType |            testSetGetBarCode() |       TestR6_ProductType |
-|       ProductType |       testSetGetPricePerUnit() |       TestR6_ProductType |
-|       ProductType |                 testSetGetId() |       TestR6_ProductType |
+| Unit name |                      JUnit test case |                  Java Class |
+| --------: | -----------------------------------: | --------------------------: |
+|     Utils |                   testInvalidBCode() |                   UtilsTest |
+|     Utils |               testInvalidLuhnCCard() |                   UtilsTest |
+|     Utils |                    testUCreditCard() |                   UtilsTest |
+|     Utils |                   testInvalidUFile() |                   UtilsTest |
+|  EZShopDB |                    testUpdateOrder() |              TestR9_OrderDb |
+|  EZShopDB |             testInvalidUpdateOrder() |              TestR9_OrderDb |
+|  EZShopDB |                  testGetUserbyName() |              TestR10_UserDb |
+|  EZShopDB |           testInvalidGetUserbyName() |              TestR10_UserDb |
+|  EZShopDB |               testUpdateUserRights() |              TestR10_UserDb |
+|  EZShopDB |        testInvalidUpdateUserRights() |              TestR10_UserDb |
+|  EZShopDB |                     testDeleteUser() |              TestR10_UserDb |
+|  EZShopDB |              testInvalidDeleteUser() |              TestR10_UserDb |
+|  EZShopDB |              testInvalidInsertCard() |          TestR11_CustomerDb |
+|  EZShopDB |                 testUpdateCustomer() |          TestR11_CustomerDb |
+|  EZShopDB |          testInvalidUpdateCustomer() |          TestR11_CustomerDb |
+|  EZShopDB |                   testCustomerCard() |          TestR11_CustomerDb |
+|  EZShopDB |         testInvalidGetCustomerCard() |          TestR11_CustomerDb |
+|  EZShopDB |       testValidRecordBalanceUpdate() |  TestR12_BalanceOperationDb |
+|  EZShopDB |     testInvalidRecordBalanceUpdate() |  TestR12_BalanceOperationDb |
+|  EZShopDB |   testValidDeleteReturnTransaction() | TestR14_ReturnTransactionDb |
+|  EZShopDB | testInvalidDeleteReturnTransaction() | TestR14_ReturnTransactionDb |
+|  EZShopDB |    testValidNewReturnTransactionId() | TestR14_ReturnTransactionDb |
+|  EZShopDB |  testInvalidNewReturnTransactionId() | TestR14_ReturnTransactionDb |
+|  EZShopDB |     testValidUpdateSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |   testInvalidUpdateSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |     testValidDeleteSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |   testInvalidDeleteSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |     testValidPayForSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |   testInvalidPayForSaleTransaction() |   TestR15_SaleTransactionDb |
+|  EZShopDB |           testValidSetSaleDiscount() |   TestR15_SaleTransactionDb |
+|  EZShopDB |         testInvalidSetSaleDiscount() |   TestR15_SaleTransactionDb |
+|  EZShopDB |      testValidNewSaleTransactionId() |   TestR15_SaleTransactionDb |
+|  EZShopDB |    testInvalidNewSaleTransactionId() |   TestR15_SaleTransactionDb |
+|  EZShopDB |                     testUpdateProd() |       TestR16_ProductTypeDb |
+|  EZShopDB |              testInvalidUpdateProd() |       TestR16_ProductTypeDb |
+|  EZShopDB |                    testUpdateQuant() |       TestR16_ProductTypeDb |
+|  EZShopDB |             testInvalidUpdateQuant() |       TestR16_ProductTypeDb |
+|  EZShopDB |          testInvalidUpdatePosition() |       TestR16_ProductTypeDb |
+|  EZShopDB |                       testPosition() |       TestR16_ProductTypeDb |
+|  EZShopDB |        testInvalidExistingPosition() |       TestR16_ProductTypeDb |
+|  EZShopDB |                     testDeleteProd() |       TestR16_ProductTypeDb |
+|  EZShopDB |              testInvalidDeleteProd() |       TestR16_ProductTypeDb |
 
 ### Code coverage report
 
