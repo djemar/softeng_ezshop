@@ -64,7 +64,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testInvalidBCode() {
+    public void WBtestInvalidBCode() {
         assertFalse(Utils.validateBarcode("9780205451379654"));
         assertFalse(Utils.validateBarcode("29059158"));
         assertFalse(Utils.validateBarcode("978020s379655"));
@@ -102,7 +102,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testInvalidLuhnCCard() {
+    public void WBtestInvalidLuhnCCard() {
         assertFalse(Utils.validateCreditCard("377950544"));
         assertFalse(Utils.validateCreditCard("377950544155089195839583945938593"));
         assertFalse(Utils.validateCreditCard("52551896075"));
@@ -123,8 +123,8 @@ public class UtilsTest {
         assertTrue(Utils.fromFile("4485370086510891", 20, file));
         assertTrue(Utils.fromFile("5100293991053009", 5, file));
     }
-        @Test
-    public void testUCreditCard() {
+    @Test
+    public void WBtestUCreditCard() {
         assertFalse(Utils.fromFile("5255189604838575", 20, file));
         assertFalse(Utils.fromFile("5100293991053009", 50, file));
     }
@@ -134,6 +134,7 @@ public class UtilsTest {
         assertThrows(NullPointerException.class, () -> {
             Utils.fromFile("5100293991053009", 50, null);
         });
+        assertFalse(Utils.fromFile("", 50, file));
         assertFalse(Utils.fromFile("5100293991053009", 50, ""));
     }
 
@@ -143,7 +144,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testInvalidUFile() {
+    public void WBtestInvalidUFile() {
         assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
         assertFalse(Utils.updateFile(file, "5255189604838570", 20));
         assertFalse(Utils.updateFile(file, "5100293991053009", 42));       
@@ -151,8 +152,6 @@ public class UtilsTest {
     @Test
     public void testInvalidUpdateFile() {
         assertFalse(Utils.updateFile("creditards.txt", "5255189604838575", 20));
-        assertFalse(Utils.updateFile(file, "5255189604838570", 20));
-        assertFalse(Utils.updateFile(file, "5100293991053009", 42));
         assertThrows(NullPointerException.class, () -> {
             Utils.updateFile(null, "5100293991053009", 42);
         });

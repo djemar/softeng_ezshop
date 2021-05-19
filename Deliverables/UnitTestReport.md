@@ -230,9 +230,9 @@ Combination of predicates for method fromFile
 
 | Validity of the String parameter | Length of the String | Existence of the Credit Card | Valid/Invalid | Description of the test case: example of input and output | JUnit test case              |
 | -------------------------------- | -------------------- | ---------------------------- | ------------- | --------------------------------------------------------- | ---------------------------- |
-| ''                               | ''                   | Yes                          | Valid         | T1 -> True                                                | testRegisteredCreditCard()   |
+| Valid                               | ''                   | Yes                          | Valid         | T1 -> True                                                | testRegisteredCreditCard()   |
 | ''                               | ''                   | No                           | Valid         | T2 -> False                                               | testUnregisteredCreditCard() |
-| "                                | 0                    | -                            | Valid         | T3 -> False, FileNotFoundException                        | testUnregisteredCreditCard() |
+| "                                | 0                    | -                            | Valid         | T3 -> False                        | testUnregisteredCreditCard() |
 | NULL                             | -                    | -                            | Invalid       | T4(NULL; throw NullPointerException)                      | testUnregisteredCreditCard() |
 
 ### **Class _Utils _ - method _updateFile_**
@@ -270,7 +270,7 @@ Combination of predicates for method updateFile
 | -------------------------------- | -------------------- | ---------------------------- | ------------- | --------------------------------------------------------- | ----------------------- |
 | Valid                            | ''                   | Yes                          | Valid         | T1 -> True                                                | testValidUpdateFile()   |
 | ''                               | ''                   | No                           | Valid         | T3 -> False                                               | testInvalidUpdateFile() |
-| "                                | 0                    | -                            | Invalid       | T4 -> False, FileNotFoundException                        | testInvalidUpdateFile() |
+| "                                | 0                    | -                            | Invalid       | T4 -> False                       | testInvalidUpdateFile() |
 | NULL                             | -                    | -                            | Invalid       | T5(NULL; throw NullPointerException)                      | testInvalidUpdateFile() |
 
 ### **Class _BalanceOperation_ - method _setBalanceId_**
@@ -1209,10 +1209,10 @@ Combination of predicates for method _testEstimatePrice_:
 
 | Unit name |                      JUnit test case |                  Java Class |
 | --------: | -----------------------------------: | --------------------------: |
-|     Utils |                   testInvalidBCode() |                   UtilsTest |
-|     Utils |               testInvalidLuhnCCard() |                   UtilsTest |
-|     Utils |                    testUCreditCard() |                   UtilsTest |
-|     Utils |                   testInvalidUFile() |                   UtilsTest |
+|     Utils |                   WBtestInvalidBCode() |                   UtilsTest |
+|     Utils |               WBtestInvalidLuhnCCard() |                   UtilsTest |
+|     Utils |                    WBtestUCreditCard() |                   UtilsTest |
+|     Utils |                   WBtestInvalidUFile() |                   UtilsTest |
 |  EZShopDB |                    testUpdateOrder() |              TestR9_OrderDb |
 |  EZShopDB |             testInvalidUpdateOrder() |              TestR9_OrderDb |
 |  EZShopDB |                  testGetUserbyName() |              TestR10_UserDb |
