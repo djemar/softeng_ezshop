@@ -51,7 +51,7 @@ Boundaries for method validateBarcode:
 
 | Criteria       | Boundary values |
 | -------------- | --------------- |
-| length of code | 11,12,14,15     |
+| length of code |   12,13,14      |
 
 **Combination of predicates**:
 
@@ -59,16 +59,12 @@ Combination of predicates for method validateBarcode
 
 | Validity of string parameter | length of code | format of code | check digit algorithm successful | Valid / Invalid | Description of the test case   | JUnit test case |
 | ---------------------------- | -------------- | -------------- | -------------------------------- | --------------- | ------------------------------ | --------------- |
-| Valid                        | (null,11)      | \*             | \*                               | Invalid         | T1(542424) -> false            |
-| ''                           |                |                |                                  |                 |                                |
-| ''                           | [14,maxstring) | \*             | \*                               | Invalid         | T2(4521864284293182) -> false  |                 |
-| ''                           |                |                |                                  |                 |                                |                 |
-| ''                           | \*             | not digit      | \*                               | Invalid         | T3(dfjn87154) -> false         |                 |
-| ''                           |                |                |                                  |                 | Tb3(skvidnsfffdnjsfd) -> false |                 |
-| ''                           | \*             | \*             | false                            | Invalid         |                                |                 |
-| ''                           | [12,14]        | digits         | false                            | Invalid         | T4(12345678954164) -> false    |                 |
-| ''                           | [12,14]        | digits         | true                             | Valid           | T4(8032817681723) -> true      |                 |
-| Null                         | \*             | \*             | \*                               | \*              | T1(null) -> false              |                 |
+| Valid                        | (null,11)      | -             | -                               | Valid         | T1(542424) -> false            |testInvalidBarcode
+| ''                           | [15,maxstring) | -             | -                               | Valid         | T2(4521864284293182) -> false  |testInvalidBarcode                 |
+| ''                           | -             | not digit      | -                               | Valid         | T3(dfjn87154) -> false         |testInvalidBarcode                 |
+| ''                           | [12,14]        | digits         | false                            | Valid         | T4(12345678954164) -> false    |testInvalidBarcode                 |
+| ''                           | [12,14]        | digits         | true                             | Valid           | T5(8032817681723) -> true      |testValidBarcode                 |
+| Null                         | -             | -             | -                               | Invalid              | T6(null)->throw NullPointerException              |testInvalidBarcode                 |
 
 ### **Class _Utils _ - method _isOnlyDigit_**
 
