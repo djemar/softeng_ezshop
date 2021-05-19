@@ -148,14 +148,14 @@ Combination of predicates for method validateCreditCard
 
 **Criteria for method _containsProduct_:**
 
-- Validity of string parameter "List\<TicketEntry> list"
+- Validity of List\<TicketEntry> 
 - existence of the product in the list
 
 **Predicates for method _containsProduct_:**
 
 | Criteria                             | Predicate |
 | ------------------------------------ | --------- |
-| Validity of string parameter "List\<TicketEntry> list"        | Valid     |
+| Validity of List\<TicketEntry>        | Valid     |
 |                                      | NULL      |
 | existence of the product in the list | yes       |
 |                                      | no        |
@@ -172,7 +172,7 @@ Boundaries for method containsProduct:
 
 Combination of predicates for method containsProduct
 
-| Validity of string parameter | existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case       |
+| Validity of List\<TicketEntry>  | existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case       |
 | ---------------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------- |
 | Valid                        | yes                                  | Valid           | T1("item19,item20,item21","item20")->True | testContainsProduct|
 | ''                           | no                                   | Valid         | T2("item35,item33,item34","item29")->False | testDoesntContainProduct |
@@ -182,19 +182,19 @@ Combination of predicates for method containsProduct
 
 **Criteria for method _getProductFromEntries_:**
 
-- Validity of string parameter
-- Validity of object parameter
+- Validity of List\<TicketEntry>
+
 - Existence of the product in the list
 
 **Predicates for method _getProductFromEntries_:**
 
 | Criteria                             | Predicate |
 | ------------------------------------ | --------- |
-| Validity of string parameter         | Valid     |
+| Validity of List\<TicketEntry>       | Valid     |
 |                                      | NULL      |
-| Validity of object parameter         | Valid     |
+| Validity of product code String      | Valid     |
 |                                      | NULL      |
-| existence of the product in the list | yes       |
+| Existence of the product in the list | yes       |
 |                                      | no        |
 
 **Boundaries**:
@@ -210,13 +210,12 @@ Boundaries for method getProductFromEntries:
 
 Combination of predicates for method getProductFromEntries
 
-| Validity of string parameter | length of product code | existence of the product in the list | Ticketentry is not null | Valid / Invalid | Description of the test case        | JUnit test case             |
-| ---------------------------- | ---------------------- | ------------------------------------ | ----------------------- | --------------- | ----------------------------------- | --------------------------- |
-| Valid                        | >0                     | yes                                  | yes                     | valid           | t1("item19,item20,item21","item20") | testGetProductFromEntries() |
-| ''                           | >0                     | yes                                  | no                      | invalid         | t1("item19,item20,item21","item20") | testGetProductFromEntries() |
-| ''                           | ''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") | testGetProductFromEntries() |
-| ''                           | =0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       | testGetProductFromEntries() |
-| Invalid                      | \*                     | \*                                   | \*                      | \*              | t3("item27,item28,item29","")       | testGetProductFromEntries() |
+| Validity of List\<TicketEntry> |  Validity of product code String| Existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case             |
+| ---------------------------- | ---------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------------- |
+| Valid                        | Valid                     | yes                                  |  Valid           | T0("item19,item20,item21","65164684113337")-> TicketEntry | testGetProductFromEntries() |
+| ''                           | NULL                     |-                      | Invalid         | T1("item19,item20,item21",NULL)->throw NoSuchElementException | testGetProductFromEntries() |
+| ''                           | Valid                     | no                                   | Invalid         | T2("item35,item33,item34","65164684113337")->throw NoSuchElementException | testGetProductFromEntries() |
+| Invalid                      | \*                     | \*                                   | Invalid              | T3(NULL,"65164684113337")->throw NullPointerException       | testGetProductFromEntries() |
 
 ### **Class _Utils _ - method _fromFile_**
 
