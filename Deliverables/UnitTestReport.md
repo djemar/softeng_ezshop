@@ -110,7 +110,7 @@ Combination of predicates for method isOnlyDigit
 
 - Validity of string parameter
 - Number follows the Luhn algorithm
-  -String length
+- String length
 
 - **Predicates for method _validateCreditCard_:**
 
@@ -137,24 +137,25 @@ Combination of predicates for method validateCreditCard
 
 | Validity of string parameter | Number follows the Luhn algorithm | String Length | Valid / Invalid | Description of the test case                     | JUnit test case             |
 | ---------------------------- | --------------------------------- | ------------- | --------------- | ------------------------------------------------ | --------------------------- |
-| NULL                         | \*                                | \*            | Invalid         | T1() -> false                                    | testInvalidLuhnCreditCard() |
+| NULL                         | \*                                | \*            | Invalid         | T1(NULL)->throw NullPointerException                                    | testInvalidLuhnCreditCard() |
 | Valid                        | true                              | [13,19]       | Valid           | T2("5255189604838575") -> true                   | testValidLuhnCreditCard()   |
-| "                            | false                             | (0,12)        | Invalid         | T3("52551896075") -> false                       | testInvalidLuhnCreditCard() |
-| "                            | true                              | "             | "               | T4("377950544") -> false                         | testInvalidLuhnCreditCard() |
-| "                            | true                              | (20,MAX)      | "               | T5("377950544155089195839583945938593") -> false | testInvalidLuhnCreditCard() |
+| "                            | -                             | (0,12)        | "         | T3("52551896075") -> false                       | testInvalidLuhnCreditCard() |
+| "                            | -                             | [20, MAX]        | "         | T3("52553454661896075") -> false                       | testInvalidLuhnCreditCard() |
+| "                            | true                              | [13,19]             | "               | T4("377950544") -> false                         | testInvalidLuhnCreditCard() |
+
 
 ### **Class _Utils _ - method _containsProduct_**
 
 **Criteria for method _containsProduct_:**
 
-- Validity of string parameter
+- Validity of string parameter "List\<TicketEntry> list"
 - existence of the product in the list
 
 **Predicates for method _containsProduct_:**
 
 | Criteria                             | Predicate |
 | ------------------------------------ | --------- |
-| Validity of string parameter         | Valid     |
+| Validity of string parameter "List\<TicketEntry> list"        | Valid     |
 |                                      | NULL      |
 | existence of the product in the list | yes       |
 |                                      | no        |
@@ -165,7 +166,7 @@ Boundaries for method containsProduct:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|          |                 |
+|  -       |  -              |
 
 **Combination of predicates**:
 
@@ -173,9 +174,9 @@ Combination of predicates for method containsProduct
 
 | Validity of string parameter | existence of the product in the list | Valid / Invalid | Description of the test case        | JUnit test case       |
 | ---------------------------- | ------------------------------------ | --------------- | ----------------------------------- | --------------------- |
-| Valid                        | yes                                  | valid           | t1("item19,item20,item21","item20") | testContainsProduct() |
-| ''                           | no                                   | invalid         | t2("item35,item33,item34","item29") | testContainsProduct() |
-| Null                         | \*                                   | \*              | t2("item35,item33,item34"," null")  | testContainsProduct() |
+| Valid                        | yes                                  | Valid           | T1("item19,item20,item21","item20")->True | testContainsProduct|
+| ''                           | no                                   | Valid         | T2("item35,item33,item34","item29")->False | testDoesntContainProduct |
+| NULL                         | -                                   | Invalid              | T3(NULL,"item35")->throw NullPointerException  | testDoesntContainProduct|
 
 ### **Class _Utils _ - method _getProductFromEntries_**
 
