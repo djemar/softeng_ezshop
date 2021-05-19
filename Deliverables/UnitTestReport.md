@@ -203,12 +203,8 @@ Boundaries for method getProductFromEntries:
 
 | Criteria | Boundary values |
 | -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
+|  -       | -               |
+
 
 **Combination of predicates**:
 
@@ -221,50 +217,6 @@ Combination of predicates for method getProductFromEntries
 | ''                           | ''                     | no                                   | no                      | invalid         | t2("item35,item33,item34","item29") | testGetProductFromEntries() |
 | ''                           | =0                     | \*                                   | \*                      | invalid         | t3("item14,item15,item16","")       | testGetProductFromEntries() |
 | Invalid                      | \*                     | \*                                   | \*                      | \*              | t3("item27,item28,item29","")       | testGetProductFromEntries() |
-
-### **Class _Utils _ - method _readData_**
-
-**Criteria for method _readData_:**
-
--
--
--
--
-- **Predicates for method _readData_:**
-
-| Criteria | Predicate |
-| -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-
-**Boundaries**:
-
-Boundaries for method readData:
-
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-|          |                 |
-
-**Combination of predicates**:
-
-Combination of predicates for method readData
-
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | JUnit test case |
-| ---------- | ---------- | --- | --------------- | ---------------------------- | --------------- |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
-|            |            |     |                 |                              |                 |
 
 ### **Class _Utils _ - method _fromFile_**
 
