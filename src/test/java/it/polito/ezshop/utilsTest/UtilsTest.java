@@ -62,21 +62,25 @@ public class UtilsTest {
         assertTrue(Utils.validateBarcode("65164684113337"));
         assertTrue(Utils.validateBarcode("9780201379655"));
     }
-
-    @Test
-    public void WBtestInvalidBCode() {
-        assertFalse(Utils.validateBarcode("9780205451379654"));
-        assertFalse(Utils.validateBarcode("29059158"));
-        assertFalse(Utils.validateBarcode("978020s379655"));
-        assertFalse(Utils.validateBarcode(""));
-    }
-
+    
     @Test
     public void testInvalidBarcode() {
         assertFalse(Utils.validateBarcode("2905911158927"));
         assertThrows(NullPointerException.class, () -> {
             Utils.validateBarcode(null);
         });
+    }
+
+    @Test
+    public void WBtestInvalidLengthBarCode() {
+        assertFalse(Utils.validateBarcode("9780205451379654"));
+        assertFalse(Utils.validateBarcode("29059158")); 
+        assertFalse(Utils.validateBarcode(""));
+    }
+    
+    @Test
+    public void WBtestInvalidDigitBarCode() {
+    assertFalse(Utils.validateBarcode("978020sddd379655"));
     }
 
     @Test
@@ -102,7 +106,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void WBtestInvalidLuhnCCard() {
+    public void WBtestInvalidLengthCreditCard() {
         assertFalse(Utils.validateCreditCard("377950544"));
         assertFalse(Utils.validateCreditCard("377950544155089195839583945938593"));
         assertFalse(Utils.validateCreditCard("52551896075"));
@@ -124,8 +128,8 @@ public class UtilsTest {
         assertTrue(Utils.fromFile("5100293991053009", 5, file));
     }
     @Test
-    public void WBtestUCreditCard() {
-        assertFalse(Utils.fromFile("5255189604838575", 20, file));
+    public void WBtestInvalidAmountCreditCard() {
+        assertFalse(Utils.fromFile("4716258050958645", 200, file));
         assertFalse(Utils.fromFile("5100293991053009", 50, file));
     }
 

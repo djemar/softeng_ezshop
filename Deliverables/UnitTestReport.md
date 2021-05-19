@@ -1209,9 +1209,10 @@ Combination of predicates for method _testEstimatePrice_:
 
 | Unit name |                      JUnit test case |                  Java Class |
 | --------: | -----------------------------------: | --------------------------: |
-|     Utils |                   WBtestInvalidBCode() |                   UtilsTest |
-|     Utils |               WBtestInvalidLuhnCCard() |                   UtilsTest |
-|     Utils |                    WBtestUCreditCard() |                   UtilsTest |
+|     Utils |                   WBtestInvalidLengthBarCode() |                   UtilsTest |
+|     Utils |                   WBtestInvalidDigitBarCode() |                   UtilsTest |
+|     Utils |               WBtestInvalidLengthCreditCard() |                   UtilsTest |
+|     Utils |                    WBtestInvalidAmountCreditCard() |                   UtilsTest |
 |     Utils |                   WBtestInvalidUFile() |                   UtilsTest |
 |  EZShopDB |                    testUpdateOrder() |              TestR9_OrderDb |
 |  EZShopDB |             testInvalidUpdateOrder() |              TestR9_OrderDb |

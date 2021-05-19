@@ -79,7 +79,6 @@ public class Utils {
 			in.close();
 			return lines.stream().anyMatch(row -> {
 				if (!row.startsWith("#")) {
-					System.out.print(row);
 					String[] cells = row.split(";");
 					return cells[0].equalsIgnoreCase(creditcard)
 							&& Double.parseDouble(cells[1]) >= total;
@@ -106,10 +105,8 @@ public class Utils {
 				String l[] = line.split(";");
 				if (l[0].equalsIgnoreCase(creditcard)) {
 					found = true;
-					System.out.println(creditcard + " " + Double.parseDouble(l[1]));
 					total = Double.parseDouble(l[1]) - total;
 					if (total < 0) {
-						System.out.println(total);
 						br.close();
 						return false;
 					}
