@@ -167,7 +167,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException();
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getProductTypeByBarCode(productCode) == null) {
-                if (note == null) 
+                if (note == null)
                     note = new String("");
                 id = ezshopDb.insertProductType(
                         new ProductTypeImpl(description, productCode, pricePerUnit, note));
@@ -305,6 +305,7 @@ public class EZShop implements EZShopInterface {
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
             throw new UnauthorizedException();
+        // TODO if newpos == null this crashes
         String n[] = newPos.split("-");
         if ((newPos != null && !newPos.isEmpty())
                 && (!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?")))
@@ -349,7 +350,7 @@ public class EZShop implements EZShopInterface {
             throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
         int id = -1;
-        if (productCode == null || productCode == "")
+        if (productCode == null || productCode == "" || !Utils.validateBarcode(productCode))
             throw new InvalidProductCodeException("Invalid product Code ");
         if (quantity <= 0)
             throw new InvalidQuantityException("Invalid Quantity");
@@ -377,7 +378,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
         boolean isSuccess = false;
-        if (orderId <= 0 || orderId == null)
+        if (orderId == null || orderId <= 0)
             throw new InvalidOrderIdException("Invalid order id");
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
@@ -406,15 +407,17 @@ public class EZShop implements EZShopInterface {
     public boolean recordOrderArrival(Integer orderId)
             throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
         boolean isSuccess = false;
-        if (orderId <= 0 || orderId == null)
+        if (orderId == null || orderId <= 0)
             throw new InvalidOrderIdException("Invalid order id");
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
             OrderImpl o = ezshopDb.getOrder(orderId);
-            if (o != null && o.getStatus().equals("COMPLETED"))
+            if (o != null && o.getStatus().equals("COMPLETED")) {
+                ezshopDb.closeConnection();
                 return true;
+            }
             if (o != null && o.getStatus().equals("PAYED")) {
                 ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
                 if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
@@ -487,9 +490,10 @@ public class EZShop implements EZShopInterface {
             else if (newCustomerCard != null) {
                 if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard))
                     throw new InvalidCustomerCardException("Invalid customer card");
-                if(ezshopDb.getCustomerCard(newCustomerCard) && ezshopDb.getCustomerByCard(newCustomerCard)==null)
+                if (ezshopDb.getCustomerCard(newCustomerCard)
+                        && ezshopDb.getCustomerByCard(newCustomerCard) == null)
                     isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
-                        c.getPoints());
+                            c.getPoints());
             }
             ezshopDb.closeConnection();
         }
@@ -547,7 +551,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
         }
         return customers;
-    } 
+    }
 
     @Override
     public String createCard() throws UnauthorizedException {
@@ -560,7 +564,7 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             int n = ezshopDb.getCustomerCardNumber() + 1;
             String ns = Integer.toString(n);
-            customerCard = new String(""); 
+            customerCard = new String("");
             for (int i = 0; 10 - ns.length() > i; i++) {
                 customerCard += "0";
             }
@@ -588,7 +592,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("Invalid customer card");
 
         if (ezshopDb.createConnection()) {
-            if(ezshopDb.getCustomerCard(customerCard)){
+            if (ezshopDb.getCustomerCard(customerCard)) {
                 b = ezshopDb.attachCardToCustomer(customerCard, customerId);
             }
             ezshopDb.closeConnection();
@@ -609,7 +613,7 @@ public class EZShop implements EZShopInterface {
                 || !Utils.isOnlyDigit(customerCard))
             throw new InvalidCustomerCardException("Invalid customer card");
         if (ezshopDb.createConnection()) {
-            if(ezshopDb.getCustomerCard(customerCard)){
+            if (ezshopDb.getCustomerCard(customerCard)) {
                 CustomerImpl c = ezshopDb.getCustomerByCard(customerCard);
                 if (c == null)
                     System.out.print("customer non trovato!!!!!!!!!");
@@ -619,7 +623,7 @@ public class EZShop implements EZShopInterface {
                             c.getCustomerCard(), points);
                 }
             }
-            
+
             ezshopDb.closeConnection();
         }
 
@@ -992,8 +996,8 @@ public class EZShop implements EZShopInterface {
             return false;
 
         SaleTransaction s = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
-        double diffPrice = activeReturnTransaction.getTotal() * (1 - s.getDiscountRate());                                                                                           
-        activeReturnTransaction.setTotal(diffPrice); 
+        double diffPrice = activeReturnTransaction.getTotal() * (1 - s.getDiscountRate());
+        activeReturnTransaction.setTotal(diffPrice);
         activeReturnTransaction.setStatus("CLOSED");
         boolean isSuccess = ezshopDb.insertReturnTransaction(activeReturnTransaction);
         if (isSuccess) {
