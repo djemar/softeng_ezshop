@@ -1,5 +1,6 @@
 package it.polito.ezshop.EZTests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
@@ -46,7 +47,7 @@ public class TestWBDB {
     @Test
     public void testInvalidInsertProductType() {
     	ProductTypeImpl st2 = new ProductTypeImpl("milk", "341254645", 5, "white");
-    	assertFalse(ezshopDb.insertProductType(st2)==-1);    
+    	assertEquals(ezshopDb.insertProductType(st2), -1, 0);    
     }
     @Test
     public void testInvalidGetProductTypesByDescription() {

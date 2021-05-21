@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestR7_ReturnTransaction.class, TestR8_SaleTransaction.class, TestR9_OrderDb.class,
 	TestR10_UserDb.class, TestR11_CustomerDb.class, TestR12_BalanceOperationDb.class,
     TestR14_ReturnTransactionDb.class,TestR15_SaleTransactionDb.class,
-	TestR16_ProductTypeDb.class})
+	TestR16_ProductTypeDb.class, TestWBDB.class})
 
 public class AllTests {
 }
