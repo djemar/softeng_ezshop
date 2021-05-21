@@ -701,7 +701,7 @@ public class EZShop implements EZShopInterface {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
             if (p != null && activeSaleTransaction != null
                     && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
-                    && p.getQuantity() >= amount) {
+                    /*&& p.getQuantity() >= amount*/) {
                 TicketEntry t = activeSaleTransaction.getEntries().stream()
                         .filter(x -> x.getBarCode().equals(productCode)).findFirst().get();
                 int a = t.getAmount();
