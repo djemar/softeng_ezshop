@@ -8,6 +8,7 @@ import it.polito.ezshop.data.SaleTransactionImpl;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
 import it.polito.ezshop.data.User;
+import it.polito.ezshop.exceptions.InvalidCreditCardException;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
@@ -363,10 +364,56 @@ public class TestR17_SaleTransactionEZ {
 		    	assertNotEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
 		    	assertEquals(ezshop.receiveCashPayment(1, 1), -1, 0);
 	        }
-	    
-	    
-	    
-	    
-	    
-	
+	        
+	        @Test
+	        public void testInvalidReceiveCreditCardPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
+		    	ezshop.login("elisa", "elisa98");
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(-500, "4485370086510891");
+		        });
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(null, "4485370086510891");
+		        });
+
+		        assertThrows(InvalidCreditCardException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(1, null);
+		        });
+		        assertThrows(InvalidCreditCardException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(1, "");
+		        });
+		        assertThrows(InvalidCreditCardException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(1, "0891");
+		        });
+		        //sale trans nulla
+		     	assertFalse(ezshop.receiveCreditCardPayment(1, "4485370086510891"));
+		     	//not enough money
+	        	ezshop.startSaleTransaction();
+	          	ezshop.addProductToSale(1, "12345678912237", 4); 
+	        	ezshop.endSaleTransaction(1);
+		     	assertFalse(ezshop.receiveCreditCardPayment(1, "4716258050958645"));
+		        ezshop.logout();
+		        assertThrows(UnauthorizedException.class, () -> {
+		        	ezshop.receiveCreditCardPayment(1, "4485370086510891");
+		        });
+	        }
+	        
+	        @Test
+	        public void testValidReceiveCreditCardPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
+	        	ezshop.login("elisa", "elisa98");
+	        	ezshop.startSaleTransaction();
+	          	ezshop.addProductToSale(1, "12345678912237", 4); 
+	        	ezshop.endSaleTransaction(1);
+		    	assertTrue(ezshop.receiveCreditCardPayment(1, "4485370086510891"));
+	        }
+	        @Test
+	        public void testValidReceiveCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
+	        	ezshop.login("elisa", "elisa98");
+	        	ezshop.startSaleTransaction();
+	          	ezshop.addProductToSale(1, "12345678912237", 4); 
+	        	ezshop.endSaleTransaction(1);
+		    	assertNotEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
+		    	assertEquals(ezshop.receiveCashPayment(1, 1), -1, 0);
+	        }
+	        
+	     
 }
