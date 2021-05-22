@@ -936,7 +936,7 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
 
-        if (activeReturnTransaction.getReturnId() != returnId)
+        if (activeReturnTransaction == null || activeReturnTransaction.getReturnId() != returnId)
             return false;
 
         boolean conn = ezshopDb.createConnection();

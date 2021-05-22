@@ -83,4 +83,57 @@ public class TestR18_ReturnTransactionEZ {
 	    	assertNotEquals(ezshop.startReturnTransaction(1), -1, 0);
 	    	
 	    }
+	    @Test
+	    public void testInvalidReturnProduct() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException{
+	    	ezshop.login("elisa", "elisa98");
+	    	assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.returnProduct(null, "12345678912237", 1);
+	        });
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.returnProduct(-500, "12345678912237", 1);
+	        });
+	        assertThrows(InvalidProductCodeException.class, () -> {
+	            ezshop.returnProduct(1, "1238912237", 1);
+	        });
+	        assertThrows(InvalidProductCodeException.class, () -> {
+	            ezshop.returnProduct(1, "", 1);
+	        });
+	        assertThrows(InvalidProductCodeException.class, () -> {
+	            ezshop.returnProduct(1, null, 1);
+	        });
+	        assertThrows(InvalidQuantityException.class, () -> {
+	            ezshop.returnProduct(1, "12345678912237", -200);
+	        });
+	        //return trans nulla
+	        assertFalse(ezshop.returnProduct(1, "12345678912237", 2));
+	        //prod non è nella lista ticketentry
+	        
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	    	//prod code non è in lista ticketentries
+	        assertFalse(ezshop.returnProduct(1, "2905911158926", 2));
+	        //quantità reso maggiore di quello acquistato
+	    	assertFalse(ezshop.returnProduct(1, "12345678912237", 100));
+	    	
+	    	ezshop.logout();
+	        assertThrows(UnauthorizedException.class, () -> {
+	            ezshop.startReturnTransaction(1);
+	        });
+	    
+	 }
+	    
+	    @Test
+	    public void testValidReturnProduct() throws InvalidUsernameException, InvalidPasswordException, UnauthorizedException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException {
+        	ezshop.login("elisa", "elisa98");
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	    	assertTrue(ezshop.returnProduct(1, "12345678912237", 2));
+	    	
+	    }
 }
