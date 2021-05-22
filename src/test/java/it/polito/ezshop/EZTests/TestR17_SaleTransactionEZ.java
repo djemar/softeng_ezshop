@@ -11,6 +11,7 @@ import it.polito.ezshop.data.User;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
+import it.polito.ezshop.exceptions.InvalidPaymentException;
 import it.polito.ezshop.exceptions.InvalidPricePerUnitException;
 import it.polito.ezshop.exceptions.InvalidProductCodeException;
 import it.polito.ezshop.exceptions.InvalidProductDescriptionException;
@@ -279,6 +280,37 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.startSaleTransaction();
 		    	assertTrue(ezshop.endSaleTransaction(1));
 	        }
+	        @Test
+	        public void testInvalidDeleteSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
+		    	ezshop.login("elisa", "elisa98");
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.deleteSaleTransaction(-500);
+		        });
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.deleteSaleTransaction(null);
+		        });
+		        //sale trans nulla
+		     	assertFalse(ezshop.deleteSaleTransaction(1));
+		     	//testo sale trans già pagata
+		    	ezshop.startSaleTransaction();
+		    	ezshop.endSaleTransaction(1);
+		    	ezshop.receiveCashPayment(1, 100);
+		    	assertFalse(ezshop.deleteSaleTransaction(1));
+		        ezshop.logout();
+		        assertThrows(UnauthorizedException.class, () -> {
+		        	ezshop.deleteSaleTransaction(1);
+		        });
+	        }
+	        
+	        @Test
+	        public void testValidDeleteSaleTransaction()  throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+	        	ezshop.login("elisa", "elisa98");
+	        	ezshop.startSaleTransaction();
+	        	ezshop.addProductToSale(1, "12345678912237", 4);
+	        	ezshop.endSaleTransaction(1);
+		    	assertTrue(ezshop.deleteSaleTransaction(1));
+	        }
+	        
 	    
 	    
 	    
