@@ -120,7 +120,7 @@ public class TestR18_ReturnTransactionEZ {
 	    	
 	    	ezshop.logout();
 	        assertThrows(UnauthorizedException.class, () -> {
-	            ezshop.startReturnTransaction(1);
+	        	assertFalse(ezshop.returnProduct(1, "12345678912237", 2));
 	        });
 	    
 	 }
@@ -135,5 +135,75 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	assertTrue(ezshop.returnProduct(1, "12345678912237", 2));
 	    	
+	    }
+	    @Test
+	    public void testInvalidEndReturnTransaction() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException{
+	    	ezshop.login("elisa", "elisa98");
+	    	assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.endReturnTransaction(null, true);
+	        });
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.endReturnTransaction(-500, true);
+	        });
+
+	        //return trans nulla
+	        assertFalse(ezshop.endReturnTransaction(1, true));
+
+	    	ezshop.logout();
+	        assertThrows(UnauthorizedException.class, () -> {
+	            ezshop.endReturnTransaction(1, true);
+	        });
+	    
+	 }
+	    
+	    @Test
+	    public void testValidEndReturnTransaction() throws InvalidUsernameException, InvalidPasswordException, UnauthorizedException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException {
+        	ezshop.login("elisa", "elisa98");
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	    	ezshop.returnProduct(1, "12345678912237", 2);
+	    	assertTrue(ezshop.endReturnTransaction(1, true));
+	    	assertTrue(ezshop.endReturnTransaction(1, false));
+	    }
+	    @Test
+	    public void testInvalidDeleteReturnTransaction() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException{
+	    	ezshop.login("elisa", "elisa98");
+	    	assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.deleteReturnTransaction(null);
+	        });
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	            ezshop.deleteReturnTransaction(-500);
+	        });
+
+	        //return trans nulla
+	        assertFalse(ezshop.deleteReturnTransaction(1));
+	        
+	        //return già in stato pagato
+	    	ezshop.startReturnTransaction(1);
+	    	ezshop.endReturnTransaction(1, true);
+	    	ezshop.returnCashPayment(1);
+	    	assertFalse(ezshop.deleteReturnTransaction(1));
+	    	
+	    	ezshop.logout();
+	        assertThrows(UnauthorizedException.class, () -> {
+	            ezshop.deleteReturnTransaction(1);
+	        });
+	    
+	 }
+	    
+	    @Test
+	    public void testValidDeleteReturnTransaction() throws InvalidUsernameException, InvalidPasswordException, UnauthorizedException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException {
+        	ezshop.login("elisa", "elisa98");
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	    	ezshop.returnProduct(1, "12345678912237", 2);
+	    	ezshop.endReturnTransaction(1, true);
+	    	assertTrue(ezshop.deleteReturnTransaction(1));
 	    }
 }
