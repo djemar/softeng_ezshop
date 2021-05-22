@@ -483,13 +483,17 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerNameException();
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
-            if (c == null)
+            if (c == null) { // TODO not in the interface
+                ezshopDb.closeConnection();
                 throw new InvalidCustomerIdException();
+            }
             if (newCustomerCard != null && newCustomerCard.isEmpty())
                 isSuccess = ezshopDb.updateCustomer(id, newCustomerName, "", 0);
             else if (newCustomerCard != null) {
-                if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard))
+                if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard)) {
+                    ezshopDb.closeConnection();
                     throw new InvalidCustomerCardException("Invalid customer card");
+                }
                 if (ezshopDb.getCustomerCard(newCustomerCard)
                         && ezshopDb.getCustomerByCard(newCustomerCard) == null)
                     isSuccess = ezshopDb.updateCustomer(id, newCustomerName, newCustomerCard,
