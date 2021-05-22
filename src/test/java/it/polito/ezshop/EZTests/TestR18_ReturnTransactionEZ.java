@@ -3,6 +3,8 @@ import org.junit.Test;
 
 import it.polito.ezshop.data.EZShop;
 import it.polito.ezshop.data.EZShopDb;
+import it.polito.ezshop.exceptions.InvalidCreditCardException;
+import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidPaymentException;
@@ -206,4 +208,42 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.endReturnTransaction(1, true);
 	    	assertTrue(ezshop.deleteReturnTransaction(1));
 	    }
+        @Test
+        public void testInvalidReturnCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
+	    	ezshop.login("elisa", "elisa98");
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	        	ezshop.returnCashPayment(-500);
+	        });
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	        	ezshop.returnCashPayment(null);
+	        });
+
+	        //return trans nulla
+	     	assertEquals(ezshop.returnCashPayment(1), -1, 0);
+	     	//return trans no chiusa
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	     	assertEquals(ezshop.returnCashPayment(1), -1, 0);
+	     	
+	        ezshop.logout();
+	        assertThrows(UnauthorizedException.class, () -> {
+	        	ezshop.returnCashPayment(1);
+	        });
+        }
+        
+        @Test
+        public void testValidReturnCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
+        	ezshop.login("elisa", "elisa98");
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
+	    	ezshop.startReturnTransaction(1);
+	    	ezshop.returnProduct(1, "12345678912237", 2);
+	    	ezshop.endReturnTransaction(1, true);
+	     	assertNotEquals(ezshop.returnCashPayment(1), -1, 0);
+        }
 }

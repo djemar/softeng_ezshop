@@ -405,15 +405,7 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.endSaleTransaction(1);
 		    	assertTrue(ezshop.receiveCreditCardPayment(1, "4485370086510891"));
 	        }
-	        @Test
-	        public void testValidReceiveCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
-	        	ezshop.login("elisa", "elisa98");
-	        	ezshop.startSaleTransaction();
-	          	ezshop.addProductToSale(1, "12345678912237", 4); 
-	        	ezshop.endSaleTransaction(1);
-		    	assertNotEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
-		    	assertEquals(ezshop.receiveCashPayment(1, 1), -1, 0);
-	        }
+
 	        
 	     
 }
