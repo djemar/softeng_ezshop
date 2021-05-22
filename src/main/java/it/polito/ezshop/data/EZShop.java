@@ -1012,7 +1012,6 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    /* TODO testare */
     public boolean deleteReturnTransaction(Integer returnId)
             throws InvalidTransactionIdException, UnauthorizedException {
         if (returnId == null || returnId <= 0)
