@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class EZShop implements EZShopInterface {
     EZShopDb ezshopDb = new EZShopDb();
     User currentUser = null;
-    SaleTransactionImpl activeSaleTransaction = null;
+    public SaleTransactionImpl activeSaleTransaction = null;
     ReturnTransaction activeReturnTransaction = null;
 
 

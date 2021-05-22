@@ -8,6 +8,7 @@ import it.polito.ezshop.data.SaleTransactionImpl;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
 import it.polito.ezshop.data.User;
+import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidPricePerUnitException;
@@ -37,10 +38,8 @@ public class TestR17_SaleTransactionEZ {
 	
 	 EZShop ezshop = new EZShop();
 	 EZShopDb ezshopdb = new EZShopDb();
-	 SaleTransactionImpl activeSaleTransaction = null;
-	 User u = null;
-	 Integer id;
-	 Integer saleID;
+	 Integer prodID;
+
 	    @Before
 	    public void setup() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException, InvalidProductIdException, InvalidLocationException {
 	    	ezshopdb.createConnection();
@@ -48,10 +47,10 @@ public class TestR17_SaleTransactionEZ {
 	    	ezshopdb.closeConnection();
 	    	ezshop.logout();
 	    	ezshop.createUser("elisa", "elisa98", "Administrator");
-	    	u = ezshop.login("elisa", "elisa98");
-	    	id = ezshop.createProductType("chocolate", "12345678912237", 2, "");
-	    	ezshop.updatePosition(id, "347-sdfg-3673");
-	    	ezshop.updateQuantity(id, 50);
+	    	ezshop.login("elisa", "elisa98");
+	    	prodID = ezshop.createProductType("chocolate", "12345678912237", 2, "");
+	    	ezshop.updatePosition(prodID, "347-sdfg-3673");
+	    	ezshop.updateQuantity(prodID, 50);
 	    	ezshop.logout();
 	    }
 	    @After
@@ -69,14 +68,14 @@ public class TestR17_SaleTransactionEZ {
 	    }
 	    @Test
 	    public void validStartSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException {
-	    	u = ezshop.login("elisa", "elisa98");
-	    	saleID = ezshop.startSaleTransaction();
+	    	ezshop.login("elisa", "elisa98");
+	   	    Integer saleID = ezshop.startSaleTransaction();
 	    	assertEquals(saleID, 1, 1);
 	    	
 	    }
 	    @Test
 	    public void testInvalidAddProductToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
-	    	u = ezshop.login("elisa", "elisa98");
+	    	ezshop.login("elisa", "elisa98");
 	        assertThrows(InvalidTransactionIdException.class, () -> {
 	        	ezshop.addProductToSale(-1, "12345678912237", 4);
 	        });
@@ -110,16 +109,16 @@ public class TestR17_SaleTransactionEZ {
 	    }
 	    @Test
 	    public void testValidAddProductToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidProductIdException {
-	    	u = ezshop.login("elisa", "elisa98");
-	    	ezshop.updateQuantity(id, 10);
-	    	saleID = ezshop.startSaleTransaction();
-	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));
+	    	ezshop.login("elisa", "elisa98");
+	    	ezshop.startSaleTransaction();
+	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));        
+	    	assertFalse(ezshop.activeSaleTransaction.getEntries().isEmpty());
 	    	assertTrue(ezshop.deleteProductFromSale(1, "12345678912237", 1));
-	    	assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 15));
+	    	//assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
 	    }
 	    @Test
 	    public void testInvalidDeleteProductFromSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
-	    	u = ezshop.login("elisa", "elisa98");
+	    	ezshop.login("elisa", "elisa98");
 	        assertThrows(InvalidTransactionIdException.class, () -> {
 	        	ezshop.deleteProductFromSale(-1, "12345678912237", 4);
 	        });
@@ -141,6 +140,7 @@ public class TestR17_SaleTransactionEZ {
 	        assertThrows(InvalidProductCodeException.class, () -> {
 	        	ezshop.deleteProductFromSale(1, "123458912237", 4);
 	        });
+	        
 
 	        assertFalse(ezshop.deleteProductFromSale(1, "2905911158926", 4));
 	        assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 4));
@@ -149,9 +149,80 @@ public class TestR17_SaleTransactionEZ {
 	        assertThrows(UnauthorizedException.class, () -> {
 	        	ezshop.deleteProductFromSale(1, "12345678912237", 4);
 	        });
-
-	        
 	    }
+	        @Test
+	        public void testInvalidApplyDiscountRateToProduct() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+		    	ezshop.login("elisa", "elisa98");
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(-1, "12345678912237", 0.5);
+		        });
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(null, "12345678912237", 0.5);
+		        });
+		        assertThrows(InvalidProductCodeException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(1, "123456712237", 0.5);
+		        });
+		        assertThrows(InvalidProductCodeException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(1, "", 0.5);
+		        });
+		        assertThrows(InvalidProductCodeException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(1, null, 0.5);
+		        });
+		        assertThrows(InvalidDiscountRateException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(1, "12345678912237", 500);
+		        });
+
+		        assertThrows(InvalidDiscountRateException.class, () -> {
+		        	ezshop.applyDiscountRateToProduct(1, "12345678912237", -500);
+		        });
+		        //sale trans è null
+		        assertFalse(ezshop.applyDiscountRateToProduct(1, "12345678912237", 0.1));
+		        //prod id non c'è
+		        assertFalse(ezshop.applyDiscountRateToProduct(1, "2905911158926", 0.1));
+	        }
+	        @Test
+	        public void testValidApplyDiscountRateToProduct() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+		    	ezshop.login("elisa", "elisa98");
+		    	ezshop.startSaleTransaction();
+		    	ezshop.addProductToSale(1, "12345678912237", 4);  
+		        assertTrue(ezshop.applyDiscountRateToProduct(1, "12345678912237", 0.1));
+
+	        }
+	        @Test
+	        public void testInvalidApplyDiscountRateToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+		    	ezshop.login("elisa", "elisa98");
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.applyDiscountRateToSale(-1, 0.5);
+		        });
+		        assertThrows(InvalidTransactionIdException.class, () -> {
+		        	ezshop.applyDiscountRateToSale(null, 0.5);
+		        });
+
+		        assertThrows(InvalidDiscountRateException.class, () -> {
+		        	ezshop.applyDiscountRateToSale(1, 500);
+		        });
+
+		        assertThrows(InvalidDiscountRateException.class, () -> {
+		        	ezshop.applyDiscountRateToSale(1, -500);
+		        });
+		        //sale trans è null
+		        assertFalse(ezshop.applyDiscountRateToSale(1, 0.1));
+		        //prod id non c'è
+		        assertFalse(ezshop.applyDiscountRateToSale(1, 0.1));
+	        }
+	        @Test
+	        public void testValidApplyDiscountRateToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+		    	ezshop.login("elisa", "elisa98");
+		    	ezshop.startSaleTransaction();
+		    	ezshop.addProductToSale(1, "12345678912237", 4);  
+		        assertTrue(ezshop.applyDiscountRateToSale(1, 0.1));
+		        ezshop.endSaleTransaction(1);
+		        assertTrue(ezshop.applyDiscountRateToSale(1, 0.5));
+
+	        }
+	        
+	    
+	    
 	    
 	    
 	    
