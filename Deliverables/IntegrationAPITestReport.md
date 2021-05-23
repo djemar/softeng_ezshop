@@ -23,7 +23,7 @@ Version:
 
      <report the here the dependency graph of the classes in EzShop, using plantuml>
 
-  <img src="res/dep_graph.png" alt="Dependency Graph"/>
+  <img src="res/graph.png" alt="Dependency Graph"/>
 
 # Integration approach
 
@@ -288,12 +288,44 @@ Report also for each of the scenarios the (one or more) API JUnit tests that cov
 
 | Scenario ID | Functional Requirements covered | JUnit Test(s) |
 | ----------- | ------------------------------- | ------------- |
-| ..          | FRx                             |               |
-| ..          | FRy                             |               |
+| 1-1         | FR3.1                             |   //TODO ProductType             |
+| 1-2         | FR3.1                             |              |
+| 1-3         | FR3.1                             |               |
+| 2-1         | FR1.1                            |  testValidCreateUser(), testInvalidCreateUser()             |
+| 2-2         | FR1.2                            | testValidGetUser(), testInvalidGetUser(),   testValidDeleteUser(), testInValidDeleteUser()            |
+| 2-3         | FR1.5                            |    testValidCreateUser(), testInvalidCreateUser()           |
+| 3-1         | FR4.3                            |testValidIssueOrder(), testInvalidIssueOrder(),              |
+| 3-2         | FR4.5                            | testValidGetAllOrders(), testInvalidGetAllOrders(), testValidPayOrder(),testInvalidPayOrder()               |
+| 3-3         | FR4.6                            |testValidGetAllOrders(), testInvalidGetAllOrders(), testValidRecordOrderArrival(), testInvalidRecordOrderArrival(),  //TODO ProductType  updatequantity                  |
+| 4-1         | FR5.1                            |testValidDefineCustomer(), testInvalidDefineCustomer()               |
+| 4-2         | FR5.6                            |testValidGetAllCustomer(), testInvalidGetAllCustomer(), testValidGetCustomer(), testInvalidGetCustomer(), testValidCreateCard(), testInvalidCreateCard(), testValidAttachCardToCustomer(), testInvalidAttachCardToCustomer()              |
+| 4-3         | FR5                            |  testValidGetAllCustomer(), testInvalidGetAllCustomer(), testValidGetCustomer(), testInvalidGetCustomer(), testValidModifyCustomer(), testInvalidModifyCustomer()             |
+| 4-4         | FR5.1                            | testValidGetAllCustomer(), testInvalidGetAllCustomer(), testValidGetCustomer(), testInvalidGetCustomer(), testValidModifyCustomer(), testInvalidModifyCustomer()              |
 | ...         |                                 |               |
 | ...         |                                 |               |
-| ...         |                                 |               |
-| ...         |                                 |               |
+| 5-1        | FR1                                | testValidLogin(), testInvalidLogin()  |                 | 
+| 5-2        | FR1                                | testValidlogout(), testInValidlogout() |                 |
+| 6-1        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment(),testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment()|                 |
+| 6-2        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment(),testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment(), testInvalidApplyDiscountRateToProduct(),
+testValidApplyDiscountRateToProduct()|                 |
+| 6-3        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment(),testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment(), testInvalidApplyDiscountRateToSale(),
+testValidApplyDiscountRateToSale()|                 |
+| 6-4        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment(),testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment(), testInvalidComputePointsForSale(),
+testValidComputePointsForSale()|                 |
+| 6-5        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment(),testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment(),
+testInvalidDeleteSaleTransaction(), testValidDeleteSaleTransaction() |                 |
+| 6-6        | FR6                                | testInvalidStartSaleTransaction(), testvalidStartSaleTransaction(),testInvalidAddProductToSale(),testValidAddProductToSale(),testInvalidEndSaleTransaction(),testValidEndSaleTransaction(),testInvalidReceiveCashPayment(), testValidReceiveCashPayment()|                 |
+| 7-1        | FR7.2                                | testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment()|                 |
+| 7-2        | FR7.2                                | testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment()|                 |
+| 7-3        | FR7.2                                | testInvalidReceiveCreditCardPayment(),testValidReceiveCreditCardPayment()|                 |
+| 7-4        | FR7.1                                | testInvalidReceiveCashPayment(), testValidReceiveCashPayment()|                 |
+| 8-1        | FR6.12,FR6.13,FR6.14                                | testInvalidStartReturnTransaction(),testValidStartReturnTransaction(),testInvalidReturnProduct(),testValidReturnProduct(),testInvalidEndReturnTransaction(),testValidEndReturnTransaction(),testInvalidDeleteReturnTransaction(),testValidDeleteReturnTransaction(),testInvalidReturnCreditCardPayment(),testValidReturnCreditCardPayment()|                 |
+| 8-2        | FR6.12,FR6.13,FR6.14                                 | testInvalidStartReturnTransaction(),testValidStartReturnTransaction(),testInvalidReturnProduct(),testValidReturnProduct(),testInvalidEndReturnTransaction(),testValidEndReturnTransaction(),testInvalidDeleteReturnTransaction(),testValidDeleteReturnTransaction(),testInvalidReturnCashPayment(),testValidReturnCashPayment()|                 |
+| 9-1        | FR8.3                              | testGetCreditsAndDebits(), testValidReceiveCashPayment()|                 |
+| 10-1        | FR7.4                              | testValidReturnCreditCardPayment(), testInvalidReturnCreditCardPayment()|                 |
+| 10-2        | FR7.3                          | testValidReturnCashPayment(), testInvalidReturnCashPayment()|                 |
+
+
 
 # Coverage of Non Functional Requirements
 
