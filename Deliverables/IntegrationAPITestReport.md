@@ -31,7 +31,11 @@ Version:
     (ex: step1: class A, step 2: class A+B, step 3: class A+B+C, etc)> 
     <Some steps may  correspond to unit testing (ex step1 in ex above), presented in other document UnitTestReport.md>
     <One step will  correspond to API testing>
-    
+| Step  | Classes |
+|--|--|
+  step1| SaleTransaction
+  step2| SaleTransaction +  EZShopDB
+  step3| SaleTransaction +  EZShopDB + EZShop
 
 
 #  Tests
@@ -42,14 +46,18 @@ Version:
 ## Step 1
 | Classes  | JUnit test cases |
 |--|--|
-|||
+|SaleTransaction| testGetSetTransactionId() |
 
 
 ## Step 2
 | Classes  | JUnit test cases |
 |--|--|
-|||
+|EZShopDB|testValidGetSaleTransaction()|
 
+## Step 3
+| Classes  | JUnit test cases |
+|--|--|
+|EZShop| testValidComputePointsForSale()|
 
 ## Step n 
 
