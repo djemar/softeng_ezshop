@@ -306,16 +306,21 @@ public class EZShop implements EZShopInterface {
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
             throw new UnauthorizedException();
         // TODO if newpos == null this crashes
+        String pos = null;
+        if (newPos == null || newPos.isEmpty())
+            pos = new String("");
+        else {
         String n[] = newPos.split("-");
         if ((newPos != null && !newPos.isEmpty())
                 && (!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?")))
             throw new InvalidLocationException();
-        if (newPos == null || newPos.isEmpty())
-            newPos = new String("");
+        }
+        if(pos == null)
+        	pos = newPos;
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getProductTypeById(productId) != null
-                    && (!ezshopDb.checkExistingPosition(newPos) || newPos.isEmpty())) {
-                if (ezshopDb.updatePosition(productId, newPos))
+                    && (!ezshopDb.checkExistingPosition(pos) || pos.isEmpty())) {
+                if (ezshopDb.updatePosition(productId, pos))
                     done = true;
             }
             ezshopDb.closeConnection();
@@ -1181,6 +1186,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
+        /*TODO se è nel db non può non essere chiusa??*/
         if (!r.getStatus().equalsIgnoreCase("closed")) {
             ezshopDb.closeConnection();
             return -1;
