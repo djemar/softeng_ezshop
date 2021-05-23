@@ -290,7 +290,6 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
-	    	//TODO crasha
-	     	//assertNotEquals(ezshop.returnCreditCardPayment(1, "5100293991053009"), -1, 0);
+	     	assertNotEquals(ezshop.returnCreditCardPayment(1, "5100293991053009"), -1, 0);
         }
 }

@@ -490,9 +490,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerNameException();
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
-            if (c == null) { // TODO not in the interface
+            if (c == null) {
                 ezshopDb.closeConnection();
-                throw new InvalidCustomerIdException();
             }
             if (newCustomerCard != null && newCustomerCard.isEmpty())
                 isSuccess = ezshopDb.updateCustomer(id, newCustomerName, "", 0);
@@ -1161,7 +1160,7 @@ public class EZShop implements EZShopInterface {
 
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
-
+        ezshopDb.closeConnection();
         return r.getTotal();
     }
 
@@ -1186,7 +1185,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-        /*TODO se è nel db non può non essere chiusa??*/
+        /*TODO potrebbe essere pagata*/
         if (!r.getStatus().equalsIgnoreCase("closed")) {
             ezshopDb.closeConnection();
             return -1;
@@ -1200,7 +1199,7 @@ public class EZShop implements EZShopInterface {
 
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
-
+        ezshopDb.closeConnection();
         return r.getTotal();
     }
 
