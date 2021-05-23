@@ -464,13 +464,10 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (customerName == null || customerName.isEmpty())
             throw new InvalidCustomerNameException();
-
-
         if (ezshopDb.createConnection()
                 && !Utils.containsCustomer(ezshopDb.getAllCustomers(), customerName)) {
             CustomerImpl c = new CustomerImpl(customerName);
             i = ezshopDb.insertCustomer(c);
-
             ezshopDb.closeConnection();
         }
 
