@@ -69,7 +69,7 @@ public class TestR17_SaleTransactionEZ {
 	        });
 	    }
 	    @Test
-	    public void validStartSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException {
+	    public void testvalidStartSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException {
 	    	ezshop.login("elisa", "elisa98");
 	   	    Integer saleID = ezshop.startSaleTransaction();
 	    	assertEquals(saleID, 1, 1);
