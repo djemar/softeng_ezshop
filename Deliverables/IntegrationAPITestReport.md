@@ -335,4 +335,7 @@ testInvalidDeleteSaleTransaction(), testValidDeleteSaleTransaction() |          
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-|                            |           |
+| NFR2                           |         |
+| NFR4                           |testValidBarcode(), testInvalidBarcode(), WBtestInvalidLengthBarCode(), WBtestInvalidDigitBarCode()           |
+| NFR5                           |testValidLuhnCreditCard(), WBtestInvalidLengthCreditCard(), testInvalidLuhnCreditCard()          |
+| NFR6                           | testOnlyDigit(), testNotOnlyDigit()         |
