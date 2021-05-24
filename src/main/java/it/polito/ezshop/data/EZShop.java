@@ -384,7 +384,7 @@ public class EZShop implements EZShopInterface {
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
         boolean isSuccess = false;
         if (orderId == null || orderId <= 0)
-            throw new InvalidOrderIdException("Invalid order id");
+            throw new InvalidOrderIdException();
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
@@ -495,7 +495,7 @@ public class EZShop implements EZShopInterface {
             else if (newCustomerCard != null) {
                 if (newCustomerCard.length() != 10 || !Utils.isOnlyDigit(newCustomerCard)) {
                     ezshopDb.closeConnection();
-                    throw new InvalidCustomerCardException("Invalid customer card");
+                    throw new InvalidCustomerCardException();
                 }
                 if (ezshopDb.getCustomerCard(newCustomerCard)
                         && ezshopDb.getCustomerByCard(newCustomerCard) == null)
