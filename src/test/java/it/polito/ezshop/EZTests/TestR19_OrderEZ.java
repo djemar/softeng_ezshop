@@ -4,6 +4,7 @@ import org.junit.Test;
 import it.polito.ezshop.data.EZShop;
 import it.polito.ezshop.data.EZShopDb;
 import it.polito.ezshop.data.OrderImpl;
+import it.polito.ezshop.data.Order;
 import it.polito.ezshop.exceptions.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 
@@ -52,8 +53,12 @@ public class TestR19_OrderEZ {
     @Test
     public void testValidIssueOrder() throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
-        Integer test = -1;
-        assertNotEquals(test, ezshop.issueOrder("12345678912237", 1, 1.0));
+        Integer test = -1, result;
+        long start = System.currentTimeMillis();
+        result = ezshop.issueOrder("12345678912237", 1, 1.0);
+        long fine = System.currentTimeMillis();
+        assertNotEquals(test, result);
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -90,8 +95,12 @@ public class TestR19_OrderEZ {
     @Test
     public void testValidPayOrderFor() throws InvalidProductCodeException, InvalidQuantityException,
             InvalidPricePerUnitException, UnauthorizedException {
-        Integer test = -1;
-        assertNotEquals(test, ezshop.payOrderFor("12345678912237", 1, 1.0));
+        Integer test = -1, result;
+        long start = System.currentTimeMillis();
+        result = ezshop.payOrderFor("12345678912237", 1, 1.0);
+        long fine = System.currentTimeMillis();
+        assertNotEquals(test, result);
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -128,7 +137,12 @@ public class TestR19_OrderEZ {
 
     @Test
     public void testValidPayOrder() throws InvalidOrderIdException, UnauthorizedException {
-        assertTrue(ezshop.payOrder(orderId));
+        boolean result;
+        long start = System.currentTimeMillis();
+        result = ezshop.payOrder(orderId);
+        long fine = System.currentTimeMillis();
+        assertTrue(result);
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -162,7 +176,12 @@ public class TestR19_OrderEZ {
     public void testValidRecordOrderArrival()
             throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
         ezshop.payOrder(orderId);
-        assertTrue(ezshop.recordOrderArrival(orderId));
+        boolean result;
+        long start = System.currentTimeMillis();
+        result = ezshop.recordOrderArrival(orderId);
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
+        assertTrue(result);
     }
 
     @Test
@@ -208,7 +227,12 @@ public class TestR19_OrderEZ {
 
     @Test
     public void testValidGetAllOrders() throws UnauthorizedException {
-        assertNotNull(ezshop.getAllOrders());
+        List<Order> result;
+        long start = System.currentTimeMillis();
+        result = ezshop.getAllOrders();
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
+        assertNotNull(result);
     }
 
     @Test
