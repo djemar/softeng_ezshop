@@ -99,7 +99,9 @@ public class Utils {
 		boolean found = false;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line, newline, content = null;
+			String line = null;
+			String newline, content = "";
+
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("#")) {
 					content = content + line + "\n";
