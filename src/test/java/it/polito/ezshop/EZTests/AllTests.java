@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
         TestR14_ReturnTransactionDb.class, TestR15_SaleTransactionDb.class,
         TestR17_SaleTransactionEZ.class, TestR16_ProductTypeDb.class, TestWBDB.class,
         TestR18_ReturnTransactionEZ.class, TestR19_OrderEZ.class, TestR20_CustomerEZ.class, 
-        TestR21_BalanceOperationEZ.class})
+        TestR21_BalanceOperationEZ.class, TestR23_ProductType.class, TestR22_UserEZ.class})
 
 public class AllTests {
 }
