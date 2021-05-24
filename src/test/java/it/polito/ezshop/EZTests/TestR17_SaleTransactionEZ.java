@@ -347,6 +347,9 @@ public class TestR17_SaleTransactionEZ {
 		        assertThrows(InvalidPaymentException.class, () -> {
 		        	ezshop.receiveCashPayment(1, -50);
 		        });
+		        assertThrows(InvalidPaymentException.class, () -> {
+		        	ezshop.receiveCashPayment(1, 0);
+		        });
 		        //sale trans nulla
 		     	assertEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
 		        ezshop.logout();

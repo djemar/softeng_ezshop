@@ -484,7 +484,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (newCustomerName == null || newCustomerName == "")
-            throw new InvalidCustomerNameException();
+            throw new InvalidCustomerNameException("invalid customer name");
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
             if (c == null) {
@@ -516,7 +516,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (id == null || id <= 0)
-            throw new InvalidCustomerIdException("Invalid customer id ");
+            throw new InvalidCustomerIdException("");
         boolean boo = false;
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
@@ -775,7 +775,7 @@ public class EZShop implements EZShopInterface {
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
         if (discountRate < 0 || discountRate >= 1.00)
-            throw new InvalidDiscountRateException();
+            throw new InvalidDiscountRateException("invalid discount rate");
 
         if (activeSaleTransaction != null
                 && activeSaleTransaction.getTicketNumber() == transactionId) {
@@ -902,7 +902,7 @@ public class EZShop implements EZShopInterface {
             UnauthorizedException {
         Integer transactionId = saleNumber;
         if (transactionId == null || transactionId <= 0)
-            throw new InvalidTransactionIdException();
+            throw new InvalidTransactionIdException("invalid id");
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
@@ -933,7 +933,7 @@ public class EZShop implements EZShopInterface {
             InvalidQuantityException, UnauthorizedException {
         SaleTransactionImpl saleTransaction;
         if (returnId == null || returnId <= 0)
-            throw new InvalidTransactionIdException();
+            throw new InvalidTransactionIdException("invalid id");
         if (productCode == null || productCode.isEmpty() || !Utils.validateBarcode(productCode))
             throw new InvalidProductCodeException();
         if (amount <= 0)
@@ -1022,7 +1022,7 @@ public class EZShop implements EZShopInterface {
     public boolean deleteReturnTransaction(Integer returnId)
             throws InvalidTransactionIdException, UnauthorizedException {
         if (returnId == null || returnId <= 0)
-            throw new InvalidTransactionIdException();
+            throw new InvalidTransactionIdException("invalid id");
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
@@ -1065,9 +1065,10 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
-        if (cash <= 0)
+        if (cash < 0)
+            throw new InvalidPaymentException("invalid payment");
+        if (cash == 0)
             throw new InvalidPaymentException();
-
         boolean conn = ezshopDb.createConnection();
         if (!conn)
             return -1;
@@ -1104,7 +1105,7 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
         if (creditCard == null || creditCard.isEmpty() || !Utils.validateCreditCard(creditCard))
-            throw new InvalidCreditCardException();
+            throw new InvalidCreditCardException("invalid credit card");
 
         boolean conn = ezshopDb.createConnection();
         if (!conn)
