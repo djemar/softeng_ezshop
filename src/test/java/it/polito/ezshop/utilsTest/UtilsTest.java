@@ -4,8 +4,12 @@ import org.junit.Test;
 
 import it.polito.ezshop.data.Customer;
 import it.polito.ezshop.data.CustomerImpl;
+import it.polito.ezshop.data.EZShop;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
+import it.polito.ezshop.exceptions.InvalidPasswordException;
+import it.polito.ezshop.exceptions.InvalidRoleException;
+import it.polito.ezshop.exceptions.InvalidUsernameException;
 import it.polito.ezshop.utils.Utils;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -210,6 +214,14 @@ public class UtilsTest {
             Utils.containsCustomer(null, "Elisa");
         });
         assertFalse(Utils.containsCustomer(listC, null));
+    	
+    }
+    public void testPerformance() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
+    	EZShop ezshop = new EZShop();
+    	long start = System.currentTimeMillis();
+    	ezshop.createUser("eli", "eli98", "Administrator");
+    	long fine = System.currentTimeMillis();
+    	assertTrue(fine-start< 500);
     	
     }
 }
