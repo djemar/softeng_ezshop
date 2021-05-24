@@ -48,7 +48,10 @@ public class TestR20_CustomerEZ {
     public void testValidDefineCustomer()
             throws InvalidCustomerNameException, UnauthorizedException {
         Integer test = -1;
+        long start = System.currentTimeMillis();
         assertNotEquals(test, ezshop.defineCustomer("customerName"));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -80,7 +83,10 @@ public class TestR20_CustomerEZ {
     @Test
     public void testValidModifyCustomer() throws InvalidCustomerNameException,
             UnauthorizedException, InvalidCustomerCardException, InvalidCustomerIdException {
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.modifyCustomer(customerId, "Sinbad", ""));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertTrue(ezshop.modifyCustomer(customerId, "Wilmore", ezshop.createCard()));
     }
 
@@ -91,7 +97,7 @@ public class TestR20_CustomerEZ {
 
         assertFalse(ezshop.modifyCustomer(-1, "Sinbad", ""));
 
-       assertThrows(InvalidCustomerCardException.class, () -> {
+        assertThrows(InvalidCustomerCardException.class, () -> {
             ezshop.modifyCustomer(customerId, "Sinbad", "468");
         });
         assertThrows(InvalidCustomerNameException.class, () -> {
@@ -115,7 +121,10 @@ public class TestR20_CustomerEZ {
 
     @Test
     public void testValidDeleteCustomer() throws UnauthorizedException, InvalidCustomerIdException {
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.deleteCustomer(customerId));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -140,7 +149,10 @@ public class TestR20_CustomerEZ {
 
     @Test
     public void testValidGetCustomer() throws UnauthorizedException, InvalidCustomerIdException {
+        long start = System.currentTimeMillis();
         assertNotNull(ezshop.getCustomer(customerId));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -166,7 +178,10 @@ public class TestR20_CustomerEZ {
 
     @Test
     public void testValidGetAllCustomer() throws UnauthorizedException {
+        long start = System.currentTimeMillis();
         assertFalse(ezshop.getAllCustomers().isEmpty());
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertNotNull(ezshop.getAllCustomers());
     }
 
@@ -187,7 +202,10 @@ public class TestR20_CustomerEZ {
 
     @Test
     public void testValidCreateCard() throws UnauthorizedException {
+        long start = System.currentTimeMillis();
         assertNotNull(ezshop.createCard());
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -208,7 +226,10 @@ public class TestR20_CustomerEZ {
     @Test
     public void testValidAttachCardToCustomer()
             throws UnauthorizedException, InvalidCustomerIdException, InvalidCustomerCardException {
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.attachCardToCustomer(ezshop.createCard(), customerId));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -238,7 +259,10 @@ public class TestR20_CustomerEZ {
             throws UnauthorizedException, InvalidCustomerIdException, InvalidCustomerCardException {
         String card = ezshop.createCard();
         ezshop.attachCardToCustomer(card, customerId);
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.modifyPointsOnCard(card, 10));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
