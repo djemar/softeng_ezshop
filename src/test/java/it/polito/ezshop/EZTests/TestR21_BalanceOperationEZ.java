@@ -30,7 +30,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 
-public class TestR21_BalanceOperationEZ {
+public class TestR21_BalanceOperationEZ { 
 	EZShop ezshop = new EZShop();
 	EZShopDb ezshopdb = new EZShopDb();
 	Integer prodID;

@@ -216,12 +216,5 @@ public class UtilsTest {
         assertFalse(Utils.containsCustomer(listC, null));
     	
     }
-    public void testPerformance() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-    	EZShop ezshop = new EZShop();
-    	long start = System.currentTimeMillis();
-    	ezshop.createUser("eli", "eli98", "Administrator");
-    	long fine = System.currentTimeMillis();
-    	assertTrue(fine-start< 500);
-    	
-    }
+
 }
