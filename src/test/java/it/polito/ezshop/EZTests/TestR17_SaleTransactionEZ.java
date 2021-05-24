@@ -295,11 +295,11 @@ public class TestR17_SaleTransactionEZ {
 	        public void testValidEndSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
 	        	ezshop.login("elisa", "elisa98");
 	        	ezshop.startSaleTransaction();
-		    	//long start = System.currentTimeMillis();
-		        //assertNotEquals(ezshop.computePointsForSale(1), -1);
-		    	//long fine = System.currentTimeMillis();
-		    	//assertTrue(fine-start< 500);
+		    	long start = System.currentTimeMillis();
 		    	assertTrue(ezshop.endSaleTransaction(1));
+		    	long fine = System.currentTimeMillis();
+		    	assertTrue(fine-start< 500);
+
 	        }
 	        @Test
 	        public void testInvalidDeleteSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
@@ -329,7 +329,10 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.startSaleTransaction();
 	        	ezshop.addProductToSale(1, "12345678912237", 4);
 	        	ezshop.endSaleTransaction(1);
+		    	long start = System.currentTimeMillis();
 		    	assertTrue(ezshop.deleteSaleTransaction(1));
+		    	long fine = System.currentTimeMillis();
+		    	assertTrue(fine-start< 500);
 	        }
 	        @Test
 	        public void testInvalidGetSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
@@ -353,7 +356,11 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.login("elisa", "elisa98");
 	        	ezshop.startSaleTransaction();
 	        	ezshop.endSaleTransaction(1);
+		    	long start = System.currentTimeMillis();
 		    	assertNotNull(ezshop.getSaleTransaction(1));
+		    	long fine = System.currentTimeMillis();
+		    	assertTrue(fine-start< 500);
+
 	        }
 	        @Test
 	        public void testInvalidReceiveCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
@@ -385,7 +392,11 @@ public class TestR17_SaleTransactionEZ {
 	          	ezshop.addProductToSale(1, "12345678912237", 4); 
 	        	ezshop.endSaleTransaction(1);
 		    	assertNotEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
+		    	long start = System.currentTimeMillis();
 		    	assertEquals(ezshop.receiveCashPayment(1, 1), -1, 0);
+		    	long fine = System.currentTimeMillis();
+		    	assertTrue(fine-start< 500);
+
 	        }
 	        
 	        @Test
@@ -426,7 +437,11 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.startSaleTransaction();
 	          	ezshop.addProductToSale(1, "12345678912237", 4); 
 	        	ezshop.endSaleTransaction(1);
+		    	long start = System.currentTimeMillis();
 		    	assertTrue(ezshop.receiveCreditCardPayment(1, "4485370086510891"));
+		    	long fine = System.currentTimeMillis();
+		    	assertTrue(fine-start< 500);
+
 	        }
 
 	        

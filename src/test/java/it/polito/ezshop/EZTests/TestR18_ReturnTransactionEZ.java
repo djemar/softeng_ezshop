@@ -34,7 +34,7 @@ import org.junit.Before;
 public class TestR18_ReturnTransactionEZ {
 	
 	 EZShop ezshop = new EZShop();
-	 EZShopDb ezshopdb = new EZShopDb();
+	 EZShopDb ezshopdb = new EZShopDb(); 
 	 Integer prodID;
 
 	    @Before
@@ -80,7 +80,10 @@ public class TestR18_ReturnTransactionEZ {
         	ezshop.startSaleTransaction();
         	ezshop.addProductToSale(1, "12345678912237", 4);
         	ezshop.endSaleTransaction(1);
+	    	long start = System.currentTimeMillis();
         	assertEquals(ezshop.startReturnTransaction(1), -1, 0);
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
 	    	ezshop.receiveCashPayment(1, 100);
 	    	assertNotEquals(ezshop.startReturnTransaction(1), -1, 0);
 	    	
@@ -135,7 +138,11 @@ public class TestR18_ReturnTransactionEZ {
         	ezshop.endSaleTransaction(1);
 	    	ezshop.receiveCashPayment(1, 100);
 	    	ezshop.startReturnTransaction(1);
+	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.returnProduct(1, "12345678912237", 2));
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+
 	    	
 	    }
 	    @Test
@@ -168,7 +175,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	assertTrue(ezshop.endReturnTransaction(1, true));
+	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.endReturnTransaction(1, false));
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+
 	    }
 	    @Test
 	    public void testInvalidDeleteReturnTransaction() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException{
@@ -206,7 +217,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
+	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.deleteReturnTransaction(1));
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+
 	    }
         @Test
         public void testInvalidReturnCashPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
@@ -244,7 +259,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
+	    	long start = System.currentTimeMillis();
 	     	assertNotEquals(ezshop.returnCashPayment(1), -1, 0);
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+
         }
         @Test
         public void testInvalidReturnCreditCardPayment() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException, InvalidCreditCardException{
@@ -290,6 +309,10 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
+	    	long start = System.currentTimeMillis();
 	     	assertNotEquals(ezshop.returnCreditCardPayment(1, "5100293991053009"), -1, 0);
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+
         }
 }
