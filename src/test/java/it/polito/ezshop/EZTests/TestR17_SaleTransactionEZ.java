@@ -256,10 +256,10 @@ public class TestR17_SaleTransactionEZ {
 	        public void testInvalidComputePointsForSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
 		    	ezshop.login("elisa", "elisa98");
 		        assertThrows(InvalidTransactionIdException.class, () -> {
-		        	ezshop.applyDiscountRateToSale(-1, 0.5);
+		        	ezshop.computePointsForSale(-1);
 		        });
 		        assertThrows(InvalidTransactionIdException.class, () -> {
-		        	ezshop.applyDiscountRateToSale(null, 0.5);
+		        	ezshop.computePointsForSale(null);
 		        });
 		        ezshop.logout();
 		        assertThrows(UnauthorizedException.class, () -> {

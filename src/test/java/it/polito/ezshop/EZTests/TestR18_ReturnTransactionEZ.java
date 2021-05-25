@@ -118,6 +118,7 @@ public class TestR18_ReturnTransactionEZ {
         	ezshop.endSaleTransaction(1);
 	    	ezshop.receiveCashPayment(1, 100);
 	    	ezshop.startReturnTransaction(1);
+	    	assertFalse(ezshop.returnProduct(100, "12345678912237", 2));
 	    	//prod code non è in lista ticketentries
 	        assertFalse(ezshop.returnProduct(1, "2905911158926", 2));
 	        //quantità reso maggiore di quello acquistato
