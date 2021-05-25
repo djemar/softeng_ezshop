@@ -119,7 +119,7 @@ public class TestR22_UserEZ {
     @Test
     public void testValidGetAllUsers() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidRoleException{
         List<User> list=ezshop.getAllUsers();
-        assertEquals(list.size(), 2);
+        assertEquals(list.size(), 1);
         
         
     }

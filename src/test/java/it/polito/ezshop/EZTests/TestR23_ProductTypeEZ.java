@@ -260,6 +260,7 @@ public class TestR23_ProductTypeEZ {
     @Test
     public void testValidgetProductTypesByDescription() throws UnauthorizedException {
         assertEquals(ezshop.getProductTypesByDescription("honey").size(), 1);
+        assertEquals(ezshop.getProductTypesByDescription(null).size(), 1);
     }
 
     @Test
@@ -318,7 +319,7 @@ public class TestR23_ProductTypeEZ {
     public void testValidUpdateQuantity() throws InvalidProductIdException, UnauthorizedException {
         assertTrue(ezshop.updateQuantity(prodId, 10));
     }
-
+    @Test
     public void testInalidUpdateQuantity()
             throws InvalidProductIdException, UnauthorizedException, InvalidUsernameException,
             InvalidPasswordException, InvalidRoleException, InvalidProductDescriptionException,
