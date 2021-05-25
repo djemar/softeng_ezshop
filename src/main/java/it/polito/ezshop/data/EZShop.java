@@ -18,14 +18,6 @@ public class EZShop implements EZShopInterface {
     public SaleTransactionImpl activeSaleTransaction = null;
     ReturnTransaction activeReturnTransaction = null;
 
-
-    // //Michele
-    // UserImpl currentUser = new UserImpl("michele", "Soldi", "Administrator", 3);
-    // public void setCurrentUser(UserImpl user) {
-    // this.currentUser = user;
-    // }
-
-
     @Override
     public void reset() {
         if (ezshopDb.createConnection()) {
@@ -46,7 +38,7 @@ public class EZShop implements EZShopInterface {
                 || (role.compareToIgnoreCase("Administrator") != 0
                         && role.compareToIgnoreCase("Cashier") != 0
                         && role.compareToIgnoreCase("ShopManager") != 0))
-            throw new InvalidRoleException();
+            throw new InvalidRoleException("invalid role");
         if (ezshopDb.createConnection()) {
             if (!ezshopDb.getUserbyName(username))
                 id = ezshopDb.insertUser(new UserImpl(username, password, role));
@@ -108,7 +100,7 @@ public class EZShop implements EZShopInterface {
             throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
         boolean done = false;
         if (id == null || id <= 0)
-            throw new InvalidUserIdException();
+            throw new InvalidUserIdException("invalid id");
         if (role == null || role.isEmpty()
                 || (role.compareToIgnoreCase("Administrator") != 0
                         && role.compareToIgnoreCase("Cashier") != 0
@@ -186,7 +178,7 @@ public class EZShop implements EZShopInterface {
         if (id == null || id <= 0)
             throw new InvalidProductIdException();
         if (newDescription == null || newDescription.isEmpty())
-            throw new InvalidProductDescriptionException("InvalidProductDescriptionException");
+            throw new InvalidProductDescriptionException();
         if (newPrice <= 0)
             throw new InvalidPricePerUnitException("InvalidPricePerUnitException");
         if (this.currentUser == null
@@ -313,7 +305,7 @@ public class EZShop implements EZShopInterface {
         else {
         String n[] = newPos.split("-");
         if (n.length!=3||(n.length==3 &&(!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?"))))
-            throw new InvalidLocationException(" InvalidLocationException");
+            throw new InvalidLocationException();
         }
         if(pos == null)
         	pos = newPos;
@@ -516,7 +508,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (id == null || id <= 0)
-            throw new InvalidCustomerIdException("");
+            throw new InvalidCustomerIdException();
         boolean boo = false;
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
@@ -536,7 +528,7 @@ public class EZShop implements EZShopInterface {
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
             throw new UnauthorizedException("Unauthorized user");
         if (id == null || id <= 0)
-            throw new InvalidCustomerIdException("Invalid customer id");
+            throw new InvalidCustomerIdException("");
         if (ezshopDb.createConnection()) {
             c = ezshopDb.getCustomer(id);
             ezshopDb.closeConnection();
@@ -640,7 +632,6 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
         int i = -1;
-        //TODO nell'interfaccia non dice di ritornare -1 in caso di errore
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
