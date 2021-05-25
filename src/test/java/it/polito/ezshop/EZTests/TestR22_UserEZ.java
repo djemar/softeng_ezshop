@@ -47,10 +47,19 @@ public class TestR22_UserEZ {
     @Test
     public void testValidCreateUser()
             throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-        Integer test = -1;
-        assertNotEquals(test, ezshop.createUser("Michele","Prova","Administrator"));
-    }
 
+        long start = System.currentTimeMillis();
+        Integer test = ezshop.createUser("Michele","Prova","Administrator");
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
+        assertNotEquals(-1, test,0);
+        
+        
+    }
+    @Test 
+    public void testValidReset() {
+    	ezshop.reset();
+    }
     @Test
     public void testInvalidCreateUser() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
         
@@ -86,8 +95,12 @@ public class TestR22_UserEZ {
     public void testValidDeleteUser() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, InvalidUserIdException, UnauthorizedException{
         Integer test = -1;
         test=ezshop.createUser("Michele","Prova","Administrator");
-        
-        assertTrue(ezshop.deleteUser(test));         
+   
+        long start = System.currentTimeMillis();
+
+        assertTrue(ezshop.deleteUser(test));      
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);   
     }
 
     @Test
@@ -118,7 +131,11 @@ public class TestR22_UserEZ {
     }
     @Test
     public void testValidGetAllUsers() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidRoleException{
+        long start = System.currentTimeMillis();
+
         List<User> list=ezshop.getAllUsers();
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertEquals(list.size(), 1);
         
         
@@ -141,7 +158,11 @@ public class TestR22_UserEZ {
     }
     @Test
     public void testValidGetUser() throws InvalidUserIdException, UnauthorizedException{
+        long start = System.currentTimeMillis();
+
         User u = ezshop.getUser(userId);
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertNotNull(u);
 
 
@@ -168,14 +189,19 @@ public class TestR22_UserEZ {
     }
     @Test
     public void  testValidupdateUserRights() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, InvalidUserIdException, UnauthorizedException{
+        long start = System.currentTimeMillis();
+
         Integer id = ezshop.createUser("Michele","Prova","Cashier");
         assertTrue(ezshop.updateUserRights(id, "ShopManager"));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
+        
 
     }
     @Test
     public void  testInvalidupdateUserRights() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, InvalidUserIdException, UnauthorizedException{
         Integer id = ezshop.createUser("Michele","Prova","Cashier");
-
+        assertFalse(ezshop.updateUserRights(id+20, "ShopManager"));
         assertThrows(InvalidUserIdException.class, () -> {
             ezshop.updateUserRights(-1,"role" );
         });
@@ -204,9 +230,14 @@ public class TestR22_UserEZ {
     }
     @Test
     public void testValidLogin() throws InvalidUsernameException, InvalidPasswordException{
+        long start = System.currentTimeMillis();
+
         ezshop.logout();
         User u=ezshop.login("elisa", "elisa98");
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertNotNull(u);
+        
     }
     @Test
     public void testInvalidLogin() throws InvalidUsernameException, InvalidPasswordException{
@@ -227,7 +258,11 @@ public class TestR22_UserEZ {
     }
     @Test
     public void testValidlogout(){
+        long start = System.currentTimeMillis();
+
         assertTrue(ezshop.logout());
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
     @Test
     public void testInValidlogout(){

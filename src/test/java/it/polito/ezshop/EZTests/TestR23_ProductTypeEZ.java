@@ -60,8 +60,13 @@ public class TestR23_ProductTypeEZ {
     public void testValidCreateProductType() throws InvalidProductCodeException,
             InvalidQuantityException, InvalidPricePerUnitException, UnauthorizedException,
             InvalidProductDescriptionException {
+        
+        long start = System.currentTimeMillis();
         Integer prod_Id = ezshop.createProductType("chocolate", "12345678912237", 4, null);
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertNotEquals(prod_Id, -1, 0);
+        
     }
 
     @Test
@@ -111,11 +116,13 @@ public class TestR23_ProductTypeEZ {
     public void testValidUpdateProduct()
             throws InvalidProductIdException, InvalidProductDescriptionException,
             InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        List<ProductType> list = ezshop.getAllProductTypes();
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.updateProduct(prodId, "newDescription", "12345678912237", 10, ""));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertTrue(ezshop.updateProduct(prodId, "newDescription", "442723352927", 10, ""));
 
-
+        
     }
 
     @Test
@@ -154,7 +161,7 @@ public class TestR23_ProductTypeEZ {
         ezshop.createProductType("stuff", "12345678912237", 8, null);
         assertFalse(ezshop.updateProduct(this.prodId + 1, "honey", "2905911158926", 11, ""));// no
         assertFalse(ezshop.updateProduct(this.prodId, "honey", "12345678912237", 11, ""));                                                                                     // id
-                                                                                             // found
+        assertFalse(ezshop.updateProduct(this.prodId+8, "honey", "2727377395598", 11, ""));                                                                                     // found
 
 
 
@@ -172,7 +179,10 @@ public class TestR23_ProductTypeEZ {
     @Test
     public void testValidDeleteProductType()
             throws InvalidProductIdException, UnauthorizedException {
+        long start = System.currentTimeMillis();        
         assertTrue(ezshop.deleteProductType(prodId));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
 
@@ -204,9 +214,14 @@ public class TestR23_ProductTypeEZ {
     public void testValidGetAllProductTypes()
             throws UnauthorizedException, InvalidProductDescriptionException,
             InvalidProductCodeException, InvalidPricePerUnitException {
+        
         ezshop.createProductType("chocolate3", "12345678912237", 4, null);
+        long start = System.currentTimeMillis();
         List<ProductType> list = ezshop.getAllProductTypes();
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertEquals(list.size(), 2);
+        
 
     }
 
@@ -224,9 +239,10 @@ public class TestR23_ProductTypeEZ {
     @Test
     public void testValidGetProductTypeByBarCode()
             throws InvalidProductCodeException, UnauthorizedException {
-
+        long start = System.currentTimeMillis();
         assertNotNull(ezshop.getProductTypeByBarCode("2905911158926"));
-
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
 
     @Test
@@ -244,7 +260,9 @@ public class TestR23_ProductTypeEZ {
         assertThrows(InvalidProductCodeException.class, () -> {
             ezshop.getProductTypeByBarCode("234frg4");
         });
-
+        assertThrows(InvalidProductCodeException.class, () -> {
+            ezshop.getProductTypeByBarCode("234");
+        });
         assertNull(ezshop.getProductTypeByBarCode("12345678912237"));
         ezshop.logout();
         assertThrows(UnauthorizedException.class, () -> {
@@ -261,8 +279,12 @@ public class TestR23_ProductTypeEZ {
 
     @Test
     public void testValidgetProductTypesByDescription() throws UnauthorizedException {
+        long start = System.currentTimeMillis();
         assertEquals(ezshop.getProductTypesByDescription("honey").size(), 1);
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertEquals(ezshop.getProductTypesByDescription(null).size(), 1);
+        
     }
 
     @Test
@@ -283,9 +305,13 @@ public class TestR23_ProductTypeEZ {
     @Test
     public void testValidUpdatePostion()
             throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.updatePosition(prodId, "300-abc-203"));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
         assertTrue(ezshop.updatePosition(prodId, ""));
         assertTrue(ezshop.updatePosition(prodId, null));
+        
     }
 
     @Test
@@ -302,6 +328,9 @@ public class TestR23_ProductTypeEZ {
        assertThrows(InvalidLocationException.class, () -> {
             ezshop.updatePosition(prodId, "--");
         });
+       assertThrows(InvalidLocationException.class, () -> {
+           ezshop.updatePosition(prodId, "123-rom-eee");
+       });
         
         assertThrows(InvalidLocationException.class, () -> {
             ezshop.updatePosition(prodId, "-3343434-");
@@ -313,7 +342,7 @@ public class TestR23_ProductTypeEZ {
         assertThrows(InvalidProductIdException.class, () -> {
             ezshop.updatePosition(-1, "347-sdfg-3673");
         });
-
+        assertFalse((ezshop.updatePosition(this.prodId+20,"347-sdfg-3673")));
         ezshop.logout();
         assertThrows(UnauthorizedException.class, () -> {
             ezshop.updatePosition(prodId, "300-abc-203");
@@ -327,7 +356,10 @@ public class TestR23_ProductTypeEZ {
 
     @Test
     public void testValidUpdateQuantity() throws InvalidProductIdException, UnauthorizedException {
+        long start = System.currentTimeMillis();
         assertTrue(ezshop.updateQuantity(prodId, 10));
+        long fine = System.currentTimeMillis();
+        assertTrue(fine - start < 500);
     }
     @Test
     public void testInalidUpdateQuantity()
