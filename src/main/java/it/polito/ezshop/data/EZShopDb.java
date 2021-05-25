@@ -1135,6 +1135,26 @@ public class EZShopDb {
         }
         return r;
     }
+    public boolean payForReturnTransaction(Integer returnID) {
+        boolean done = false;
+        try {
+            PreparedStatement pstmt = connection
+                    .prepareStatement("update returntransactions set status = (?) where id = (?)");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            pstmt.setString(1, "PAYED"); // the index refers to the ? in the statement
+            pstmt.setInt(2, returnID);
+            pstmt.executeUpdate();
+
+            done = true;
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return done;
+    }
+
 
     public boolean recordBalanceUpdate(double toBeAdded) {
         try {
@@ -1159,6 +1179,7 @@ public class EZShopDb {
 
         return true;
     }
+    
 
     public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
         List<BalanceOperation> list = new ArrayList<BalanceOperation>();

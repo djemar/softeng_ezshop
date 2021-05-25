@@ -112,5 +112,21 @@ public class TestR14_ReturnTransactionDb {
         assertEquals(-1, test, 0);
         // ezshopDb.closeConnection();
     } 
- 
+    @Test
+    public void testValidPayForReturnTransaction() {
+        boolean test;
+        ezshopDb.createConnection();
+        test = ezshopDb.payForSaleTransaction(1);
+        assertTrue(test);
+        ezshopDb.closeConnection();
+    }
+
+    @Test
+    public void testInvalidPayForReturnTransaction() {
+        boolean test;
+        // ezshopDb.createConnection();
+        test = ezshopDb.payForSaleTransaction(10);
+        assertFalse(test);
+        // ezshopDb.closeConnection();
+    }
 }

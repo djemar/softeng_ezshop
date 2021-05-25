@@ -1090,6 +1090,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
+        //TODO se era già stata pagata??
         ezshopDb.closeConnection();
         return cash - totalPrice;
     }
@@ -1121,6 +1122,7 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return false;
             }
+            //TODO se era già stata pagata??
             Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "SALE"));
@@ -1156,7 +1158,10 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-
+        if (!ezshopDb.payForReturnTransaction(returnId)) {
+            ezshopDb.closeConnection();
+            return -1;
+        }
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
         ezshopDb.closeConnection();
@@ -1189,8 +1194,10 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-
-
+        if (!ezshopDb.payForReturnTransaction(returnId)) {
+            ezshopDb.closeConnection();
+            return -1;
+        }
         if(!Utils.updateFile("creditcards.txt", creditCard, -r.getTotal())) {
             ezshopDb.closeConnection();
         	return -1;

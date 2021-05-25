@@ -182,7 +182,7 @@ public class TestR18_ReturnTransactionEZ {
 
 	    }
 	    @Test
-	    public void testInvalidDeleteReturnTransaction() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException{
+	    public void testInvalidDeleteReturnTransaction() throws UnauthorizedException, InvalidTransactionIdException, InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPaymentException, InvalidCreditCardException{
 	    	ezshop.login("elisa", "elisa98");
 	    	assertThrows(InvalidTransactionIdException.class, () -> {
 	            ezshop.deleteReturnTransaction(null);
@@ -195,9 +195,14 @@ public class TestR18_ReturnTransactionEZ {
 	        assertFalse(ezshop.deleteReturnTransaction(1));
 	        
 	        //return già in stato pagato
+        	ezshop.startSaleTransaction();
+        	ezshop.addProductToSale(1, "12345678912237", 4);
+        	ezshop.endSaleTransaction(1);
+	    	ezshop.receiveCashPayment(1, 100);
 	    	ezshop.startReturnTransaction(1);
+	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
-	    	ezshop.returnCashPayment(1);
+	    	ezshop.returnCreditCardPayment(1, "4485370086510891");
 	    	assertFalse(ezshop.deleteReturnTransaction(1));
 	    	
 	    	ezshop.logout();
@@ -235,12 +240,16 @@ public class TestR18_ReturnTransactionEZ {
 
 	        //return trans nulla
 	     	assertEquals(ezshop.returnCashPayment(1), -1, 0);
-	     	//return trans no chiusa
+	     	//return trans già pagata
+        	ezshop.startSaleTransaction();
         	ezshop.startSaleTransaction();
         	ezshop.addProductToSale(1, "12345678912237", 4);
         	ezshop.endSaleTransaction(1);
 	    	ezshop.receiveCashPayment(1, 100);
 	    	ezshop.startReturnTransaction(1);
+	    	ezshop.returnProduct(1, "12345678912237", 2);
+	    	ezshop.endReturnTransaction(1, true);
+	    	ezshop.returnCashPayment(1);
 	     	assertEquals(ezshop.returnCashPayment(1), -1, 0);
 	     	
 	        ezshop.logout();
@@ -276,7 +285,7 @@ public class TestR18_ReturnTransactionEZ {
 	        });
 	        assertThrows(InvalidCreditCardException.class, () -> {
 	        	ezshop.returnCreditCardPayment(1, null);
-	        });
+	        }); 
 	        assertThrows(InvalidCreditCardException.class, () -> {
 	        	ezshop.returnCreditCardPayment(1, "");
 	        });
@@ -286,7 +295,7 @@ public class TestR18_ReturnTransactionEZ {
 	        //return trans nulla
 	     	assertEquals(ezshop.returnCreditCardPayment(1,"4485370086510891"), -1, 0);
 	     	
-	     	// TODO return trans già pagata, ma sarà da mettere??
+
         	ezshop.startSaleTransaction();
         	ezshop.addProductToSale(1, "12345678912237", 4);
         	ezshop.endSaleTransaction(1);
@@ -294,10 +303,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
-	    	ezshop.returnCreditCardPayment(1, "4485370086510891");
 	    	//credit card doesn't exist in the system
 	    	assertEquals(ezshop.returnCreditCardPayment(1, "374245455400126"), -1, 0);
-	     	//assertEquals(ezshop.returnCreditCardPayment(1, "4485370086510891"), -1, 0);
+	    	ezshop.returnCreditCardPayment(1, "4485370086510891");
+	     	// TODO return trans già pagata, ma sarà da mettere??
+	     	assertEquals(ezshop.returnCreditCardPayment(1, "4485370086510891"), -1, 0);
 	     	
 	        ezshop.logout();
 	        assertThrows(UnauthorizedException.class, () -> {
