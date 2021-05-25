@@ -117,11 +117,15 @@ public class TestR17_SaleTransactionEZ {
 	    public void testValidAddProductToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidProductIdException {
 	    	ezshop.login("elisa", "elisa98");
 	    	ezshop.startSaleTransaction();
-	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));        
+	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));
+	    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(),46,0);
 	    	assertFalse(ezshop.activeSaleTransaction.getEntries().isEmpty());
 	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));  
 	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.deleteProductFromSale(1, "12345678912237", 1));
+	    	assertEquals(ezshop.activeSaleTransaction.getEntries()
+	    			.stream().filter(x-> x.getBarCode().equals("12345678912237")).findFirst().get().getAmount(),7,0);
+	    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(),43,0);
 	    	long fine = System.currentTimeMillis();
 	    	assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
 	    	assertTrue(ezshop.deleteProductFromSale(1, "12345678912237", 7));
@@ -268,16 +272,22 @@ public class TestR17_SaleTransactionEZ {
 	        }
 	        
 	        @Test
-	        public void testValidComputePointsForSale()throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+	        public void testValidComputePointsForSale()throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
 		    	ezshop.login("elisa", "elisa98");
 		    	ezshop.startSaleTransaction();
-		    	ezshop.addProductToSale(1, "12345678912237", 4);  
-		        assertEquals(ezshop.computePointsForSale(1), -1);
+		    	ezshop.addProductToSale(1, "12345678912237", 5); 
+		    	//stato open
+		        assertEquals(ezshop.computePointsForSale(1), 0, 1);
+		        ezshop.addProductToSale(1, "12345678912237", 5); 
 		        ezshop.endSaleTransaction(1);
 		    	long start = System.currentTimeMillis();
-		        assertNotEquals(ezshop.computePointsForSale(1), -1);
+		    	//stato closed
+		        assertEquals(ezshop.computePointsForSale(1), 0, 2);
 		    	long fine = System.currentTimeMillis();
-		    	assertTrue(fine-start< 500);
+		    	assertTrue(fine-start< 500); 
+		    	//stato payed
+		    	ezshop.receiveCashPayment(1, 500);
+		        assertEquals(ezshop.computePointsForSale(1), 0, 2);
 
 	        }
 	        @Test
@@ -341,6 +351,7 @@ public class TestR17_SaleTransactionEZ {
 		    	long start = System.currentTimeMillis();
 		    	assertTrue(ezshop.deleteSaleTransaction(1));
 		    	long fine = System.currentTimeMillis();
+		    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(),50,0);
 		    	assertTrue(fine-start< 500);
 	        }
 	        @Test
@@ -407,7 +418,7 @@ public class TestR17_SaleTransactionEZ {
 	        	ezshop.startSaleTransaction();
 	          	ezshop.addProductToSale(1, "12345678912237", 4); 
 	        	ezshop.endSaleTransaction(1);
-		    	assertNotEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
+		    	assertEquals(ezshop.receiveCashPayment(1, 10), 2, 0);
 		    	long start = System.currentTimeMillis();
 		    	assertEquals(ezshop.receiveCashPayment(1, 1), -1, 0);
 		    	long fine = System.currentTimeMillis();

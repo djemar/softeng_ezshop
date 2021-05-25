@@ -640,6 +640,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
         int i = -1;
+        //TODO nell'interfaccia non dice di ritornare -1 in caso di errore
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")
                 || currentUser.getRole().equalsIgnoreCase("Cashier")))
@@ -653,7 +654,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount)
-            throws InvalidTransactionIdException, InvalidProductCodeException,
+            throws InvalidTransactionIdException, InvalidProductCodeException, 
             InvalidQuantityException, UnauthorizedException {
         boolean isSuccess = false;
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
@@ -682,8 +683,6 @@ public class EZShop implements EZShopInterface {
                     t.setAmount(amountf);
                 }
                 activeSaleTransaction.estimatePrice();
-                activeSaleTransaction.getEntries().stream().forEach(
-                        x -> System.out.print(x.getProductDescription() + x.getAmount() + "\n"));
                 if (!ezshopDb.updateQuantity(p.getId(), -amount))
                     isSuccess = true;
             }
@@ -711,8 +710,7 @@ public class EZShop implements EZShopInterface {
         if (ezshopDb.createConnection()) {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
             if (p != null && activeSaleTransaction != null
-                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
-            /* && p.getQuantity() >= amount */) {
+                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")) {
                 Optional<TicketEntry> ticketEntry = activeSaleTransaction.getEntries().stream()
                         .filter(x -> x.getBarCode().equals(productCode)).findFirst();
                 if(ticketEntry.isEmpty()) {
@@ -729,8 +727,6 @@ public class EZShop implements EZShopInterface {
                     activeSaleTransaction.getEntries().remove(t);
                 else
                     t.setAmount(a - amount);
-                activeSaleTransaction.getEntries().stream().forEach(
-                        x -> System.out.print(x.getProductDescription() + x.getAmount() + "\n"));
                 activeSaleTransaction.estimatePrice();
                 if (!ezshopDb.updateQuantity(p.getId(), amount))
                     isSuccess = true;
@@ -814,6 +810,11 @@ public class EZShop implements EZShopInterface {
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("Cashier") != 0))
             throw new UnauthorizedException();
+        if (activeSaleTransaction != null
+                && activeSaleTransaction.getTicketNumber() == transactionId) {
+        	  points = (int)(this.activeSaleTransaction.getPrice()/ 10);
+            return points;
+        }
         if (ezshopDb.createConnection()) {
             SaleTransaction s = ezshopDb.getSaleTransaction(transactionId);
             if (s != null)
@@ -835,7 +836,7 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
 
-        if (activeSaleTransaction == null)
+        if (activeSaleTransaction == null || activeSaleTransaction.getTicketNumber() != transactionId)
             return false;
         else {
             activeSaleTransaction.setStatus("CLOSED");
@@ -866,7 +867,6 @@ public class EZShop implements EZShopInterface {
             SaleTransactionImpl s = ezshopDb.getSaleTransaction(transactionId);
             if (s != null && !s.getStatus().equalsIgnoreCase("PAYED")) {
                 s.getEntries().stream().forEach(x -> {
-                    System.out.print("prodotti da rimettere    " + x.getAmount() + x.getBarCode());
                     ezshopDb.updateQuantity(
                             ezshopDb.getProductTypeByBarCode(x.getBarCode()).getId(),
                             x.getAmount());
@@ -1201,7 +1201,6 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-        /*TODO non esiste uno stato diverso da closed nel db!!??*/
         if (!r.getStatus().equalsIgnoreCase("closed")) {
             ezshopDb.closeConnection();
             return -1;
