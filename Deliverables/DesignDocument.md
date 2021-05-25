@@ -331,7 +331,7 @@ Scenario 3-1: Order of product type X issued
 ```plantuml
 "ShopManager" -> "EZShopData": 1. wants to order a new Product
 "EZShopData" -> "EZShopDB" : 2. issueReorder(String productCode, int quantity, double pricePerUnit)
-"Order" -> "Order" : 3. setStatus(String status)
+
 ```
 
 Scenario 3-2: Order of product type X payed
@@ -339,15 +339,14 @@ Scenario 3-2: Order of product type X payed
 ```plantuml
 "ShopManager" -> "EZShopData": 1. wants to pay the Order O
 "EZShopData" -> "EZShopDB" : 2. payOrder(Integer orderId)
-"EZShopData" -> "EZShopDB" : 3. setStatus(String status)
-"EZShopData" -> "EZShopDB" : 4. computeBalace()
+"EZShopData" -> "EZShopDB" : 3. computeBalace()
 ```
 
 Scenario 3-3: Record order of product type X arrival
 
 ```plantuml
 "ShopManager" -> "EZShopData": 1. wants to record Order O's arrival
-"EZShopData" -> "EZShopDB" : 1. recordOrderArrival(Integer orderId)
+"EZShopData" -> "EZShopDB" : 2. recordOrderArrival(Integer orderId)
 "EZShopData" -> "EZShopDB" : 2. setStatus(String status)
 "EZShopData" -> "EZShopDB" : 3. updateQuantity(Integer productId, int toBeAdded)
 ```
@@ -529,7 +528,7 @@ Scenario 8-1: Return transaction of product type X completed, credit card
 "EZShopData" -> "EZShopDB": 2. startReturnTransaction(Integer transactionId)
 "Cashier"->  "EZShopData": 3. reads Bar Code of X
 "EZShopData" -> "EZShopDB": 4. returnProduct(Integer returnId, String productCode, int amount)
-"EZShopData" -> "ProductType" : 5. updateQuantity(Integer productId, int toBeAdded)
+"EZShopData" -> "EZShopDB" : 5. updateQuantity(Integer productId, int toBeAdded)
 "EZShopData" -> "EZShopDB": 7. endReturnTransaction(Integer returnId, boolean commit)
 "EZShopData" -> "Employee" : 8. End Return Transaction
 
@@ -553,14 +552,8 @@ Scenario 8-2: Return transaction of product type X completed, cash
 Scenario 9-1: List credits and debits
 
 ```plantuml
-<<<<<<< HEAD
-"Manager" -> "EZShopData" : 1. selects Start Date and End Date
-
-"EZShopData" -> "AccountBook" : 2. getCreditsAndDebits(LocalDate from, LocalDate to)
-=======
 "Manager" -> "EZShopData" : 1. selects Start Date and End Date   
 "EZShopData" -> "EZShopDB" : 2. getCreditsAndDebits(LocalDate from, LocalDate to)
->>>>>>> f282654 (modified Verification sequence diagrams)
 "EZShopData" -> "Manager" : 3. list of transactions is returned
 
 
