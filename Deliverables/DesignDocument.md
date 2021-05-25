@@ -23,7 +23,6 @@ The design must satisfy the Official Requirements document, notably functional a
 
 # High level design
 
-
 ```plantuml
 package EZShop <<Folder>>{
 
@@ -42,7 +41,9 @@ EZShop <|-- EZShopModel
 EZShop <|-- EZShopGUI
 EZShop <|-- EZShopExceptions
 ```
+
 Architectural pattern: MVC
+
 # Low level design
 
 ```plantuml
@@ -256,16 +257,15 @@ Design pattern: Fachade
 
 # Verification traceability matrix
 
-| FR  | EZShop | User | EZShopData | ProdType | Position | FidelityCard | Customer | Order | Return | Debit | Credit | ReturnTrans | SaleTrans | SaleIt | BalanceOp | AccBook |
-| --- | :----: | :--: | :--------: | :---: | :---: | :-------: | :------: | :---: | :----: | :---: | :----: | :---------: | :------: | :----: | :-----: | :-----: |
-| FR1 |   x    |  x   |     x      |       |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR2 |        |      |            |       |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR3 |   x    |  x   |     x      |   x   |       |           |          |       |        |       |        |             |          |        |         |         |
-| FR4 |   x    |  x   |     x      |   x   |   x   |           |          |   x   |   x    |   x   |        |             |          |        |    x    |    x    |
-| FR5 |   x    |  x   |     x      |       |       |     x     |    x     |       |        |       |        |             |    x     |        |         |    x    |
-| FR6 |   x    |  x   |     x      |   x   |       |     x     |          |       |   x    |   x   |   x    |      x      |    x     |   x    |    x    |    x    |
-| FR7 |   x    |  x   |     x      |   x   |       |           |          |       |        |   x   |   x    |             |          |        |         |    x    |
-| FR8 |   x    |  x   |     x      |       |       |           |          |       |        |   x   |   x    |             |          |        |    x    |    x    |
+| FR  | EZShop | User | EZShopDB | ProdType | Customer | Order | ReturnTrans | SaleTrans | TicketEntry | BalanceOp |
+| --- | :----: | :--: | :------: | :------: | :------: | :---: | :---------: | :-------: | :---------: | :-------: |
+| FR1 |   x    |  x   |    x     |          |          |       |             |           |             |           |
+| FR3 |   x    |      |    x     |    x     |          |       |             |           |             |           |
+| FR4 |   x    |      |    x     |    x     |          |   x   |             |           |             |     x     |
+| FR5 |   x    |      |    x     |          |    x     |       |             |           |             |           |
+| FR6 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |
+| FR7 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |
+| FR8 |   x    |      |    x     |          |          |       |             |           |             |     x     |
 
 # Verification sequence diagrams
 
@@ -471,6 +471,7 @@ Scenario 6-5: Sale of product type X cancelled
 "EZShopData" -> "AccountBook" : 9. deleteSaleTransaction(Integer transactionId)
 
 ```
+
 Scenario 6-6: Sale of product type X with product discount
 
 ```plantuml
@@ -552,7 +553,7 @@ Scenario 9-1: List credits and debits
 
 ```plantuml
 "Manager" -> "EZShopData" : 1. selects Start Date and End Date
-    
+
 "EZShopData" -> "AccountBook" : 2. getCreditsAndDebits(LocalDate from, LocalDate to)
 "EZShopData" -> "Manager" : 3. list of transactions is returned
 
