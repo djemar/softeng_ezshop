@@ -230,9 +230,9 @@ public class TestR22_UserEZ {
     }
     @Test
     public void testValidLogin() throws InvalidUsernameException, InvalidPasswordException{
-        long start = System.currentTimeMillis();
-
+        
         ezshop.logout();
+        long start = System.currentTimeMillis();
         User u=ezshop.login("elisa", "elisa98");
         long fine = System.currentTimeMillis();
         assertTrue(fine - start < 500);

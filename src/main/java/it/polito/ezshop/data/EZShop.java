@@ -39,9 +39,9 @@ public class EZShop implements EZShopInterface {
             throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
         Integer id = -1;
         if (username == null || username.isEmpty())
-            throw new InvalidUsernameException();
+            throw new InvalidUsernameException("InvalidUsernameException");
         if (password == null || password.isEmpty())
-            throw new InvalidPasswordException();
+            throw new InvalidPasswordException("InvalidPasswordException");
         if (role == null || role.isEmpty()
                 || (role.compareToIgnoreCase("Administrator") != 0
                         && role.compareToIgnoreCase("Cashier") != 0
@@ -157,15 +157,15 @@ public class EZShop implements EZShopInterface {
             InvalidPricePerUnitException, UnauthorizedException {
         int id = -1;
         if (description == null || description.isEmpty())
-            throw new InvalidProductDescriptionException();
+            throw new InvalidProductDescriptionException("InvalidProductDescriptionException");
         if (pricePerUnit <= 0)
-            throw new InvalidPricePerUnitException();
+            throw new InvalidPricePerUnitException("InvalidPricePerUnitException");
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
             throw new UnauthorizedException();
         if (productCode == null || productCode.isEmpty() || !Utils.validateBarcode(productCode))
-            throw new InvalidProductCodeException();
+            throw new InvalidProductCodeException("InvalidProductCodeException");
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getProductTypeByBarCode(productCode) == null) {
                 if (note == null)
@@ -186,9 +186,9 @@ public class EZShop implements EZShopInterface {
         if (id == null || id <= 0)
             throw new InvalidProductIdException();
         if (newDescription == null || newDescription.isEmpty())
-            throw new InvalidProductDescriptionException();
+            throw new InvalidProductDescriptionException("InvalidProductDescriptionException");
         if (newPrice <= 0)
-            throw new InvalidPricePerUnitException();
+            throw new InvalidPricePerUnitException("InvalidPricePerUnitException");
         if (this.currentUser == null
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
@@ -283,10 +283,10 @@ public class EZShop implements EZShopInterface {
             throws InvalidProductIdException, UnauthorizedException {
         boolean done = false;
         if (productId == null || productId <= 0)
-            throw new InvalidProductIdException();
+            throw new InvalidProductIdException("InvalidProductIdException");
         if (this.currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("UnauthorizedException");
         if (ezshopDb.createConnection()) {
             ProductType p = ezshopDb.getProductTypeById(productId);
             if (p!=null&&p.getLocation()!=null&&!p.getLocation().isEmpty()
@@ -313,7 +313,7 @@ public class EZShop implements EZShopInterface {
         else {
         String n[] = newPos.split("-");
         if (n.length!=3||(n.length==3 &&(!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?"))))
-            throw new InvalidLocationException();
+            throw new InvalidLocationException(" InvalidLocationException");
         }
         if(pos == null)
         	pos = newPos;
