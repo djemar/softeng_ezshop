@@ -362,7 +362,7 @@ public class TestR23_ProductTypeEZ {
         assertTrue(fine - start < 500);
     }
     @Test
-    public void testInalidUpdateQuantity()
+    public void testInvalidUpdateQuantity()
             throws InvalidProductIdException, UnauthorizedException, InvalidUsernameException,
             InvalidPasswordException, InvalidRoleException, InvalidProductDescriptionException,
             InvalidProductCodeException, InvalidPricePerUnitException {
