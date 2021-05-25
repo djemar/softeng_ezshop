@@ -1184,18 +1184,17 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-        /*TODO potrebbe essere pagata*/
+        /*TODO non esiste uno stato diverso da closed nel db!!??*/
         if (!r.getStatus().equalsIgnoreCase("closed")) {
             ezshopDb.closeConnection();
             return -1;
         }
 
-        if (!Utils.fromFile(creditCard, r.getTotal(), "creditcards.txt")) {
-            ezshopDb.closeConnection();
-            return -1;
-        }
-        Utils.updateFile("creditcards.txt", creditCard, -r.getTotal());
 
+        if(!Utils.updateFile("creditcards.txt", creditCard, -r.getTotal())) {
+            ezshopDb.closeConnection();
+        	return -1;
+        }
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), -r.getTotal(), "RETURN"));
         ezshopDb.closeConnection();
