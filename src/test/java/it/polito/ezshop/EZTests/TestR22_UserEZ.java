@@ -31,8 +31,8 @@ public class TestR22_UserEZ {
     public void setup() throws InvalidUsernameException, InvalidPasswordException,
             InvalidRoleException, InvalidCustomerNameException, UnauthorizedException {
 
-        ezshop.createUser("elisa", "elisa98", "Administrator");
-        userId = ezshop.createUser("diego", "psw", "Cashier");
+       
+        userId =  ezshop.createUser("elisa", "elisa98", "Administrator");
         ezshop.login("elisa", "elisa98");
         
     }
@@ -58,15 +58,27 @@ public class TestR22_UserEZ {
         assertThrows(InvalidUsernameException.class, () -> {
             ezshop.createUser("","Prova","Administrator");
         });
+        assertThrows(InvalidUsernameException.class, () -> {
+            ezshop.createUser(null,"Prova","Administrator");
+        });
 
         assertThrows( InvalidPasswordException.class, () -> {
             ezshop.createUser("Michele","","Administrator");
+        });
+        assertThrows( InvalidPasswordException.class, () -> {
+            ezshop.createUser("Michele",null,"Administrator");
         });
 
         assertThrows(InvalidRoleException.class, () -> {
            ezshop.createUser("Michele","Prova","Test");
         });
-
+        assertThrows(InvalidRoleException.class, () -> {
+            ezshop.createUser("Michele","Prova",null);
+         });
+        assertThrows(InvalidRoleException.class, () -> {
+            ezshop.createUser("Michele","Prova","");
+         });
+        assertEquals(ezshop.createUser("elisa", "elisa98", "Administrator"),-1,0);
         
     }
 
@@ -83,9 +95,13 @@ public class TestR22_UserEZ {
         Integer test = -1;
        
         assertThrows(InvalidUserIdException.class, () -> {
-            ezshop.deleteUser(test);
+            ezshop.deleteUser(-1);
         });
-
+        assertThrows(InvalidUserIdException.class, () -> {
+            ezshop.deleteUser(null);
+        });
+        assertFalse(ezshop.deleteUser(this.userId+10));
+        
         ezshop.logout();
         assertThrows(UnauthorizedException.class, () -> {
             ezshop.deleteUser(test);

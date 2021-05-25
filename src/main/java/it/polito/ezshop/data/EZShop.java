@@ -196,8 +196,9 @@ public class EZShop implements EZShopInterface {
                 || !Utils.validateBarcode(newCode))
             throw new InvalidProductCodeException();
         if (ezshopDb.createConnection()) {
-            if (ezshopDb.getProductTypeByBarCode(newCode) == null
-                    && ezshopDb.getProductTypeById(id) != null) {
+        	ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(newCode) ;
+            if (((p!=null && p.getId()==id)||p==null)&&
+                     ezshopDb.getProductTypeById(id) != null) {
                 if (ezshopDb.updateProductType(id, newDescription, newCode, newPrice, newNote))
                     done = true;
             }
@@ -287,7 +288,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
             ProductType p = ezshopDb.getProductTypeById(productId);
-            if (!p.getLocation().isEmpty() && ezshopDb.getProductTypeById(productId) != null
+            if (p!=null&&!p.getLocation().isEmpty() && ezshopDb.getProductTypeById(productId) != null
                     && !ezshopDb.updateQuantity(productId, toBeAdded))
                 done = true;
             ezshopDb.closeConnection();
