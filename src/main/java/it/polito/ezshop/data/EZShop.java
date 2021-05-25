@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -712,11 +713,18 @@ public class EZShop implements EZShopInterface {
             if (p != null && activeSaleTransaction != null
                     && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
             /* && p.getQuantity() >= amount */) {
-                TicketEntry t = activeSaleTransaction.getEntries().stream()
-                        .filter(x -> x.getBarCode().equals(productCode)).findFirst().get();
-                int a = t.getAmount();
-                if (a < amount)
+                Optional<TicketEntry> ticketEntry = activeSaleTransaction.getEntries().stream()
+                        .filter(x -> x.getBarCode().equals(productCode)).findFirst();
+                if(ticketEntry.isEmpty()) {
+                	ezshopDb.closeConnection();
                     return false;
+                }
+                TicketEntry t = ticketEntry.get();
+                int a = t.getAmount();
+                if (a < amount) {
+                	ezshopDb.closeConnection();
+                    return false;
+                }
                 else if (a == amount)
                     activeSaleTransaction.getEntries().remove(t);
                 else
@@ -791,6 +799,7 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return isSuccess;
         }
+        ezshopDb.closeConnection();
         return false;
     }
 
@@ -826,8 +835,7 @@ public class EZShop implements EZShopInterface {
                 && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
             throw new UnauthorizedException();
 
-        if (activeSaleTransaction == null
-                || activeSaleTransaction.getStatus().equalsIgnoreCase("closed"))
+        if (activeSaleTransaction == null)
             return false;
         else {
             activeSaleTransaction.setStatus("CLOSED");

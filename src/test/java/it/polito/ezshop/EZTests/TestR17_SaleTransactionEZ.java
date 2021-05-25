@@ -66,7 +66,7 @@ public class TestR17_SaleTransactionEZ {
 	        ezshop.logout();
 	        assertThrows(UnauthorizedException.class, () -> {
 	            ezshop.startSaleTransaction();
-	        });
+	        }); 
 	    }
 	    @Test
 	    public void testvalidStartSaleTransaction() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException {
@@ -106,6 +106,7 @@ public class TestR17_SaleTransactionEZ {
 	        assertFalse(ezshop.addProductToSale(1, "2905911158926", 4));
 	        assertFalse(ezshop.addProductToSale(1, "12345678912237", 4));
 	        assertFalse(ezshop.addProductToSale(1, "12345678912237", 3));
+	        assertFalse(ezshop.addProductToSale(1, "12345678912237", 4000));
 	        ezshop.logout();
 	        assertThrows(UnauthorizedException.class, () -> {
 	        	ezshop.addProductToSale(1, "12345678912237", 4);
@@ -118,11 +119,14 @@ public class TestR17_SaleTransactionEZ {
 	    	ezshop.startSaleTransaction();
 	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));        
 	    	assertFalse(ezshop.activeSaleTransaction.getEntries().isEmpty());
+	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));  
 	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.deleteProductFromSale(1, "12345678912237", 1));
 	    	long fine = System.currentTimeMillis();
+	    	assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
+	    	assertTrue(ezshop.deleteProductFromSale(1, "12345678912237", 7));
 	    	assertTrue(fine-start< 500);
-	    	//assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
+	    	assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
 	    }
 	    @Test
 	    public void testInvalidDeleteProductFromSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
@@ -204,7 +208,7 @@ public class TestR17_SaleTransactionEZ {
 
 	        }
 	        @Test
-	        public void testInvalidApplyDiscountRateToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException{
+	        public void testInvalidApplyDiscountRateToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidDiscountRateException, InvalidPaymentException{
 		    	ezshop.login("elisa", "elisa98");
 		        assertThrows(InvalidTransactionIdException.class, () -> {
 		        	ezshop.applyDiscountRateToSale(-1, 0.5);
@@ -222,7 +226,12 @@ public class TestR17_SaleTransactionEZ {
 		        });
 		        //sale trans è null
 		        assertFalse(ezshop.applyDiscountRateToSale(1, 0.1));
-		        //prod id non c'è
+		        //sale id non c'è
+		    	ezshop.startSaleTransaction();
+		        assertFalse(ezshop.applyDiscountRateToSale(100, 0.1));
+		        //sale trans già pagata
+	        	ezshop.endSaleTransaction(1);
+		    	ezshop.receiveCashPayment(1, 500);
 		        assertFalse(ezshop.applyDiscountRateToSale(1, 0.1));
 		        ezshop.logout();
 		        assertThrows(UnauthorizedException.class, () -> {
