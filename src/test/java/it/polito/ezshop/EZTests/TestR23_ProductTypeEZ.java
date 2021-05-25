@@ -113,6 +113,8 @@ public class TestR23_ProductTypeEZ {
             InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
         List<ProductType> list = ezshop.getAllProductTypes();
         assertTrue(ezshop.updateProduct(prodId, "newDescription", "12345678912237", 10, ""));
+        assertTrue(ezshop.updateProduct(prodId, "newDescription", "442723352927", 10, ""));
+
 
     }
 
@@ -149,9 +151,9 @@ public class TestR23_ProductTypeEZ {
 
         // assertNull(ezshop.updateProduct(this.prodId,"honey","2905911158926", 11, ""));//bar code
         // doesn't change
-
+        ezshop.createProductType("stuff", "12345678912237", 8, null);
         assertFalse(ezshop.updateProduct(this.prodId + 1, "honey", "2905911158926", 11, ""));// no
-                                                                                             // id
+        assertFalse(ezshop.updateProduct(this.prodId, "honey", "12345678912237", 11, ""));                                                                                     // id
                                                                                              // found
 
 
@@ -283,6 +285,7 @@ public class TestR23_ProductTypeEZ {
             throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
         assertTrue(ezshop.updatePosition(prodId, "300-abc-203"));
         assertTrue(ezshop.updatePosition(prodId, ""));
+        assertTrue(ezshop.updatePosition(prodId, null));
     }
 
     @Test
@@ -294,7 +297,14 @@ public class TestR23_ProductTypeEZ {
         assertFalse(ezshop.updatePosition(id, "347-sdfg-3673"));
 
         assertThrows(InvalidLocationException.class, () -> {
-            ezshop.updatePosition(prodId, "y4g-345-h8t");
+            ezshop.updatePosition(prodId, "y32133rg-h8t");
+        });
+       assertThrows(InvalidLocationException.class, () -> {
+            ezshop.updatePosition(prodId, "--");
+        });
+        
+        assertThrows(InvalidLocationException.class, () -> {
+            ezshop.updatePosition(prodId, "-3343434-");
         });
 
         assertThrows(InvalidProductIdException.class, () -> {

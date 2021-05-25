@@ -288,7 +288,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         if (ezshopDb.createConnection()) {
             ProductType p = ezshopDb.getProductTypeById(productId);
-            if (p!=null&&!p.getLocation().isEmpty() && ezshopDb.getProductTypeById(productId) != null
+            if (p!=null&&p.getLocation()!=null&&!p.getLocation().isEmpty()
                     && !ezshopDb.updateQuantity(productId, toBeAdded))
                 done = true;
             ezshopDb.closeConnection();
@@ -311,8 +311,7 @@ public class EZShop implements EZShopInterface {
             pos = new String("");
         else {
         String n[] = newPos.split("-");
-        if ((newPos != null && !newPos.isEmpty())
-                && (!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?")))
+        if (n.length!=3||(n.length==3 &&(!n[0].matches("-?\\d+(\\.\\d+)?") || !n[2].matches("-?\\d+(\\.\\d+)?"))))
             throw new InvalidLocationException();
         }
         if(pos == null)
