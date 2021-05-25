@@ -306,7 +306,6 @@ public class EZShop implements EZShopInterface {
                 || (this.currentUser.getRole().compareToIgnoreCase("Administrator") != 0
                         && this.currentUser.getRole().compareToIgnoreCase("ShopManager") != 0))
             throw new UnauthorizedException();
-        // TODO if newpos == null this crashes
         String pos = null;
         if (newPos == null || newPos.isEmpty())
             pos = new String("");
@@ -1084,13 +1083,16 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
+        if (s.getStatus().equalsIgnoreCase("PAYED")) {
+            ezshopDb.closeConnection();
+            return -1;
+        }
         ezshopDb.insertBalanceOperation(
                 new BalanceOperationImpl(LocalDate.now(), totalPrice, "SALE"));
         if (!ezshopDb.payForSaleTransaction(transactionID)) {
             ezshopDb.closeConnection();
             return -1;
         }
-        //TODO se era già stata pagata??
         ezshopDb.closeConnection();
         return cash - totalPrice;
     }
@@ -1117,12 +1119,15 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return false;
         } else {
+            if (s.getStatus().equalsIgnoreCase("PAYED")) {
+                ezshopDb.closeConnection();
+                return false;
+            }
             s.estimatePrice();
             if (!Utils.fromFile(creditCard, s.getPrice(), "creditcards.txt")) {
                 ezshopDb.closeConnection();
                 return false;
             }
-            //TODO se era già stata pagata??
             Utils.updateFile("creditcards.txt", creditCard, s.getPrice());
             ezshopDb.insertBalanceOperation(
                     new BalanceOperationImpl(LocalDate.now(), s.getPrice(), "SALE"));

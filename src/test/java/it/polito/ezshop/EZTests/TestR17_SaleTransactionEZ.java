@@ -379,6 +379,13 @@ public class TestR17_SaleTransactionEZ {
 		        });
 		        //sale trans nulla
 		     	assertEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
+		     	//sale trans già pagata
+	        	ezshop.startSaleTransaction();
+	          	ezshop.addProductToSale(1, "12345678912237", 4); 
+	        	ezshop.endSaleTransaction(1);
+		    	ezshop.receiveCashPayment(1, 500);
+		     	assertEquals(ezshop.receiveCashPayment(1, 500), -1, 0);
+		     	
 		        ezshop.logout();
 		        assertThrows(UnauthorizedException.class, () -> {
 		        	ezshop.receiveCashPayment(1, 500);
@@ -425,6 +432,10 @@ public class TestR17_SaleTransactionEZ {
 	          	ezshop.addProductToSale(1, "12345678912237", 4); 
 	        	ezshop.endSaleTransaction(1);
 		     	assertFalse(ezshop.receiveCreditCardPayment(1, "4716258050958645"));
+		     	//sale trans già pagata
+		     	ezshop.receiveCreditCardPayment(1, "4485370086510891");
+		    	assertFalse(ezshop.receiveCreditCardPayment(1, "4485370086510891"));
+		    	
 		        ezshop.logout();
 		        assertThrows(UnauthorizedException.class, () -> {
 		        	ezshop.receiveCreditCardPayment(1, "4485370086510891");
