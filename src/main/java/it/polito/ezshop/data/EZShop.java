@@ -16,7 +16,7 @@ public class EZShop implements EZShopInterface {
     EZShopDb ezshopDb = new EZShopDb();
     User currentUser = null;
     public SaleTransactionImpl activeSaleTransaction = null;
-    ReturnTransaction activeReturnTransaction = null;
+    public ReturnTransaction activeReturnTransaction = null;
 
     @Override
     public void reset() {
@@ -965,8 +965,8 @@ public class EZShop implements EZShopInterface {
             return false;
         }
 
-        double money = ticketEntry.getPricePerUnit()
-                - ((ticketEntry.getPricePerUnit() * ticketEntry.getDiscountRate()));
+        double money = ticketEntry.getPricePerUnit() * amount
+                - ((ticketEntry.getPricePerUnit() * amount * ticketEntry.getDiscountRate()));
         activeReturnTransaction.updateTotal(money);
 
         activeReturnTransaction.addProductToReturn(productCode, amount);
@@ -1075,13 +1075,13 @@ public class EZShop implements EZShopInterface {
             ezshopDb.closeConnection();
             return -1;
         }
-        s.estimatePrice();
-        Double totalPrice = s.getPrice();
-        if (cash < totalPrice) {
+        if (s.getStatus().equalsIgnoreCase("PAYED")) {
             ezshopDb.closeConnection();
             return -1;
         }
-        if (s.getStatus().equalsIgnoreCase("PAYED")) {
+        s.estimatePrice();
+        Double totalPrice = s.getPrice();
+        if (cash < totalPrice) {
             ezshopDb.closeConnection();
             return -1;
         }
@@ -1223,7 +1223,7 @@ public class EZShop implements EZShopInterface {
         double balance = 0;
         if (!list.isEmpty())
             balance = list.stream().mapToDouble(item -> item.getMoney()).sum();
-        if (toBeAdded + balance <= 0)
+        if (toBeAdded + balance < 0)
             return false;
 
         boolean isSuccess = ezshopDb.recordBalanceUpdate(toBeAdded);
