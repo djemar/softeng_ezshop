@@ -65,7 +65,6 @@ public class TestR21_BalanceOperationEZ {
 			throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException,
 			InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
 		ezshop.login("elisa", "elisa98");
-		assertFalse(ezshop.recordBalanceUpdate(0));
 
 		ezshop.login("elisa", "elisa98");
 		ezshop.startSaleTransaction();
@@ -94,7 +93,10 @@ public class TestR21_BalanceOperationEZ {
 		ezshop.endSaleTransaction(1);
 		ezshop.receiveCreditCardPayment(1, "4485370086510891");
 		long start = System.currentTimeMillis();
-		assertTrue(ezshop.recordBalanceUpdate(1000));
+		assertTrue(ezshop.recordBalanceUpdate(-8));
+		assertEquals(ezshop.computeBalance(), 0, 0);
+		assertTrue(ezshop.recordBalanceUpdate(8));
+		assertEquals(ezshop.computeBalance(), 8, 0);
 		long fine = System.currentTimeMillis();
 		assertTrue(fine - start < 500);
 
@@ -109,7 +111,10 @@ public class TestR21_BalanceOperationEZ {
 		assertTrue(ezshop.getCreditsAndDebits(null, null).isEmpty());
 		long fine = System.currentTimeMillis();
 		assertTrue(fine - start < 500);
-
+		ezshop.recordBalanceUpdate(8);
+		assertEquals(ezshop.getCreditsAndDebits(null, null).size(), 1, 0);
+		ezshop.recordBalanceUpdate(-80);
+		assertEquals(ezshop.getCreditsAndDebits(null, null).size(), 1, 0);
 		ezshop.logout();
 		ezshop.login("diego", "diego96");
 		assertThrows(UnauthorizedException.class, () -> {
@@ -130,10 +135,8 @@ public class TestR21_BalanceOperationEZ {
 		assertEquals(ezshop.computeBalance(), 0.0, 0);
 		long fine = System.currentTimeMillis();
 		assertTrue(fine - start < 500);
-
-		ezshop.login("elisa", "elisa98");
 		ezshop.recordBalanceUpdate(100);
-		assertNotEquals(ezshop.computeBalance(), 0.0, 0);
+		assertEquals(ezshop.computeBalance(), 100, 0);
 
 		ezshop.logout();
 		assertThrows(UnauthorizedException.class, () -> {

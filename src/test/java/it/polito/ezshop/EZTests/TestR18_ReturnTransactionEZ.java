@@ -111,8 +111,7 @@ public class TestR18_ReturnTransactionEZ {
 	        });
 	        //return trans nulla
 	        assertFalse(ezshop.returnProduct(1, "12345678912237", 2));
-	        //prod non è nella lista ticketentry
-	        
+	        //prod non è nella lista ticketentry	        
         	ezshop.startSaleTransaction();
         	ezshop.addProductToSale(1, "12345678912237", 4);
         	ezshop.endSaleTransaction(1);
@@ -141,6 +140,8 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.returnProduct(1, "12345678912237", 2));
+	    	assertEquals(ezshop.activeReturnTransaction.getTotal(), 4, 0);
+	    	assertEquals(ezshop.activeReturnTransaction.getReturnedProductsMap().size(), 1, 0);
 	    	long fine = System.currentTimeMillis();
 	    	assertTrue(fine-start< 500);
 
@@ -176,6 +177,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.startReturnTransaction(1);
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	assertTrue(ezshop.endReturnTransaction(1, true));
+	    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(), 48, 0);
+	    	assertEquals(ezshop.getSaleTransaction(1).getPrice(), 4 , 0);
+	    	assertEquals(ezshop.getSaleTransaction(1)
+	    			.getEntries().stream().filter(x->x.getBarCode()
+	    					.equals("12345678912237")).findFirst().get().getAmount(), 2 , 0);
 	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.endReturnTransaction(1, false));
 	    	long fine = System.currentTimeMillis();
@@ -225,6 +231,11 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.endReturnTransaction(1, true);
 	    	long start = System.currentTimeMillis();
 	    	assertTrue(ezshop.deleteReturnTransaction(1));
+	    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(), 46, 0);
+	    	assertEquals(ezshop.getSaleTransaction(1).getPrice(), 8 , 0);
+	    	assertEquals(ezshop.getSaleTransaction(1)
+	    			.getEntries().stream().filter(x->x.getBarCode()
+	    					.equals("12345678912237")).findFirst().get().getAmount(), 4 , 0);
 	    	long fine = System.currentTimeMillis();
 	    	assertTrue(fine-start< 500);
 
@@ -270,7 +281,7 @@ public class TestR18_ReturnTransactionEZ {
 	    	ezshop.returnProduct(1, "12345678912237", 2);
 	    	ezshop.endReturnTransaction(1, true);
 	    	long start = System.currentTimeMillis();
-	     	assertNotEquals(ezshop.returnCashPayment(1), -1, 0);
+	     	assertEquals(ezshop.returnCashPayment(1), 4, 0);
 	    	long fine = System.currentTimeMillis();
 	    	assertTrue(fine-start< 500);
 
