@@ -137,7 +137,6 @@ class EZShopDb{
     + public boolean updatePosition(Integer productId, String newPos)
     + public boolean checkExistingPosition(String position)
     + public Integer insertOrder(OrderImpl order)
-    + public boolean resetTables()
     + public boolean resetDB()
     + public boolean updateOrder(int orderId, String status, int balanceid)
     + public OrderImpl getOrder(Integer orderId)
