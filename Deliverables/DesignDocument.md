@@ -62,10 +62,10 @@ class EZShop{
 }
 
 class EZShopData{
-    + currentUser: User
+    currentUser: User
     + activeReturnTransaction: ReturnTransaction
     + activeSaleTransaction: SaleTransaction
-    + ezshopDb: EZShopDb
+    ezshopDb: EZShopDb
     +createUser(String username, String password, String role)
     +getAllUsers()
     +getUser(Integer id)
