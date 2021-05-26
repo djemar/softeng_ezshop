@@ -1,10 +1,10 @@
 # Integration and API Test Documentation
 
-Authors:
+Authors: Diego Marino, Michele Massetti, Elisa Tedde
 
-Date:
+Date: 26/05/2021
 
-Version:
+Version: 1.0
 
 # Contents
 
@@ -204,6 +204,8 @@ JUnit test cases applied to them> JUnit test classes should be here src/test/jav
 | EZShopDB        | testInvalidGetgetProductTypesByDescription() |
 | EZShopDB        | testGetProductById()                         |
 | EZShopDB        | getProductTypeByBarCode()                    |
+| EZShopDB        | testValidPayForReturnTransaction()           |
+| EZShopDB        | testInvalidPayForReturnTransaction()         |
 | Utils           | testContainsProduct()                        |
 | Utils           | testDoesntContainProduct()                   |
 | Utils           | testGetProductFromEntries()                  |
@@ -311,15 +313,6 @@ JUnit test cases applied to them> JUnit test classes should be here src/test/jav
 <If needed, define here additional scenarios for the application. Scenarios should be named
 referring the UC in the OfficialRequirements that they detail>
 
-## Scenario UCx.y
-
-| Scenario       |    name     |
-| -------------- | :---------: |
-| Precondition   |             |
-| Post condition |             |
-| Step#          | Description |
-| 1              |     ...     |
-| 2              |     ...     |
 
 # Coverage of Scenarios and FR
 
