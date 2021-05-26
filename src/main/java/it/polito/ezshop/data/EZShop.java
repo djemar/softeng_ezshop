@@ -21,7 +21,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public void reset() {
         if (ezshopDb.createConnection()) {
-            ezshopDb.resetTables();
+            ezshopDb.resetDB();
             ezshopDb.closeConnection();
         }
     }
