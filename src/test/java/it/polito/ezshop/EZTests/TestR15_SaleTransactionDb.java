@@ -8,6 +8,8 @@ import it.polito.ezshop.data.TicketEntryImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,12 +47,41 @@ public class TestR15_SaleTransactionDb {
         ezshopDb.resetDB();
         ezshopDb.closeConnection();
     }
+    
+    @Test
+    public void testValidGetSaleTransaction() {
+        SaleTransactionImpl test;
+        ezshopDb.createConnection();
+        test = ezshopDb.getSaleTransaction(1);
+        assertNotNull(test);
+        ezshopDb.closeConnection();
+    }
+    
+    @Test
+    public void testNullGetSaleTransaction() {
+        SaleTransactionImpl test;
+        ezshopDb.createConnection();
+        test = ezshopDb.getSaleTransaction(100);
+        assertNull(test);
+        ezshopDb.closeConnection();
+    }
+    
+    @Test
+    public void testInvalidGetSaleTransaction() {
+        SaleTransactionImpl test;
+        //ezshopDb.createConnection();
+        test = ezshopDb.getSaleTransaction(1);
+        assertNull(test);
+        //ezshopDb.closeConnection();
+    }
 
     @Test
     public void testValidUpdateSaleTransaction() {
         boolean test;
         ezshopDb.createConnection();
         test = ezshopDb.updateSaleTransaction(1, returnedProducts, 1, true);
+        assertTrue(test);
+        test = ezshopDb.updateSaleTransaction(1, returnedProducts, 1, false);
         assertTrue(test);
         ezshopDb.closeConnection();
     }

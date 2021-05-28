@@ -1,8 +1,15 @@
 package it.polito.ezshop.utilsTest;
 
 import org.junit.Test;
+
+import it.polito.ezshop.data.Customer;
+import it.polito.ezshop.data.CustomerImpl;
+import it.polito.ezshop.data.EZShop;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
+import it.polito.ezshop.exceptions.InvalidPasswordException;
+import it.polito.ezshop.exceptions.InvalidRoleException;
+import it.polito.ezshop.exceptions.InvalidUsernameException;
 import it.polito.ezshop.utils.Utils;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,6 +27,7 @@ import org.junit.Before;
 public class UtilsTest {
     Utils u = new Utils();
     List<TicketEntry> list;
+    List<Customer> listC;
     static String file;
     static {
         File outFile;
@@ -47,12 +55,17 @@ public class UtilsTest {
     @Before
     public void setUp() throws IOException {
         list = new ArrayList<TicketEntry>();
+        listC = new ArrayList<Customer>();
         TicketEntry t1 = new TicketEntryImpl("12345678912237", "Test", 1, 1, 0);
         TicketEntry t2 = new TicketEntryImpl("2905911158926", "Test", 1, 1, 0);
         TicketEntry t3 = new TicketEntryImpl("65164684113337", "Test", 1, 1, 0);
+        Customer c1 = new CustomerImpl("Elisa");
+        Customer c2 = new CustomerImpl("Diego");
         list.add(t1);
         list.add(t2);
         list.add(t3);
+        listC.add(c1);
+        listC.add(c2);
     }
 
     @Test
@@ -188,6 +201,20 @@ public class UtilsTest {
         assertThrows(NoSuchElementException.class, () -> {
             Utils.getProductFromEntries(list, null);
         });
+    }
+    @Test
+    public void testValidContainsCustomer() {
+    	assertTrue(Utils.containsCustomer(listC, "Elisa"));
+    }
+    
+    @Test
+    public void testInvalidContainsCustomer() {
+    	assertFalse(Utils.containsCustomer(listC, "Eli"));
+        assertThrows(NullPointerException.class, () -> {
+            Utils.containsCustomer(null, "Elisa");
+        });
+        assertFalse(Utils.containsCustomer(listC, null));
+    	
     }
 
 }

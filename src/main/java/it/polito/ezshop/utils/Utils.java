@@ -48,7 +48,7 @@ public class Utils {
 		int nDigits = number.length();
 		int nSum = 0;
 		boolean isSecond = false;
-		if(nDigits < 13 || nDigits > 19)
+		if (nDigits < 13 || nDigits > 19)
 			return false;
 		for (int i = nDigits - 1; i >= 0; i--) {
 			int d = number.charAt(i) - '0';
@@ -64,6 +64,10 @@ public class Utils {
 
 	public static boolean containsProduct(final List<TicketEntry> list, final String productCode) {
 		return list.stream().anyMatch(x -> x.getBarCode().equals(productCode));
+	}
+
+	public static boolean containsCustomer(final List<Customer> list, final String name) {
+		return list.stream().anyMatch(x -> x.getCustomerName().equals(name));
 	}
 
 	public static TicketEntry getProductFromEntries(final List<TicketEntry> list,
@@ -95,7 +99,9 @@ public class Utils {
 		boolean found = false;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line, newline, content = null;
+			String line = null;
+			String newline, content = "";
+
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("#")) {
 					content = content + line + "\n";
