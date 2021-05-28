@@ -190,7 +190,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException();
         if (ezshopDb.createConnection()) {
         	ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(newCode) ;
-            if (((p!=null && p.getId()==id)||p==null)&&
+            if (((p!=null && p.getId().equals(id))||p==null)&&
                      ezshopDb.getProductTypeById(id) != null) {
                 if (ezshopDb.updateProductType(id, newDescription, newCode, newPrice, newNote))
                     done = true;
@@ -477,6 +477,8 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (newCustomerName == null || newCustomerName == "")
             throw new InvalidCustomerNameException("invalid customer name");
+        if(id==null || id<=0)    
+                throw new InvalidCustomerIdException();
         if (ezshopDb.createConnection()) {
             CustomerImpl c = ezshopDb.getCustomer(id);
             if (c == null) {
@@ -589,6 +591,11 @@ public class EZShop implements EZShopInterface {
         if (customerCard == null || customerCard == "" || customerCard.length() != 10
                 || !Utils.isOnlyDigit(customerCard))
             throw new InvalidCustomerCardException("Invalid customer card");
+
+        if (customerId==null || customerId<=0)
+                throw new InvalidCustomerIdException();
+
+
 
         if (ezshopDb.createConnection()) {
             if (ezshopDb.getCustomerCard(customerCard)) {
