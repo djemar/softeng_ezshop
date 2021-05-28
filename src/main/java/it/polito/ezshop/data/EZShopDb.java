@@ -335,7 +335,6 @@ public class EZShopDb {
         return p;
     }
 
-    // check
     public List<ProductType> getProductTypesByDescription(String descr) {
         List<ProductType> products = new ArrayList<ProductType>();
         try {
@@ -343,21 +342,23 @@ public class EZShopDb {
             ResultSet ris;
             ris = stmt.executeQuery("select description as description from producttypes");
             while (ris.next()) {
-                if (ris.getString("description").toLowerCase().contains(descr.toLowerCase()))
-                    descr = ris.getString("description");
+                if (ris.getString("description").toLowerCase().contains(descr.toLowerCase())) {
+                    String descript = ris.getString("description");
+                    PreparedStatement pstmt =
+                            connection.prepareStatement("select * from producttypes where Description = ?");
+                    ResultSet rs;
+                    pstmt.setString(1, descript);
+                    rs = pstmt.executeQuery();
+                    while (rs.next()) {
+                        ProductType p = new ProductTypeImpl(rs.getInt("id"), rs.getString("description"),
+                                rs.getString("productCode"), rs.getDouble("priceperunit"),
+                                rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
+                        products.add(p);
+                    }
+                    products.forEach(x -> System.out.println("ricerca per descrizione" + x.getId()));
+                }
             }
-            PreparedStatement pstmt =
-                    connection.prepareStatement("select * from producttypes where Description = ?");
-            ResultSet rs;
-            pstmt.setString(1, descr);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                ProductType p = new ProductTypeImpl(rs.getInt("id"), rs.getString("description"),
-                        rs.getString("productCode"), rs.getDouble("priceperunit"),
-                        rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
-                products.add(p);
-            }
-            products.forEach(x -> System.out.println("ricerca per descrizione" + x.getId()));
+
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
