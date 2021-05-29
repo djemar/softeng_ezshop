@@ -95,8 +95,6 @@ public class TestR20_CustomerEZ {
             throws InvalidUsernameException, InvalidPasswordException, InvalidCustomerNameException,
             UnauthorizedException, InvalidCustomerCardException, InvalidCustomerIdException {
 
-        assertFalse(ezshop.modifyCustomer(-1, "Sinbad", ""));
-
         assertThrows(InvalidCustomerCardException.class, () -> {
             ezshop.modifyCustomer(customerId, "Sinbad", "468");
         });
