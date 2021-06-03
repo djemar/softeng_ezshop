@@ -11,12 +11,13 @@ on April 30, discuss whether the design could be improved>
 <Applying Structure 101 to your project, version to be delivered on june 4, produce the Levelized structure map,
 with all elements explosed, all dependencies, NO tangles; and report it here as a picture>
 ```
+  <img src="res/structure101/Levelizedstructuremap.png" alt="Levelized structure map"/>
 
 # Structural over complexity chart
 ```
 <Applying Structure 101 to your project, version to be delivered on june 4, produce the structural over complexity chart; and report it here as a picture>
 ```
-
+  <img src="res/structure101/Structuralovecomplexitychart.png" alt="Structural over complexity chart"/>
 
 
 # Size metrics
@@ -29,11 +30,11 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 
 | Metric                                    | Measure |
 | ----------------------------------------- | ------- |
-| Packages                                  |         |
-| Classes (outer)                           |         |
-| Classes (all)                             |         |
-| NI (number of bytecode instructions)      |         |
-| LOC (non comment non blank lines of code) |         |
+| Packages                                  | 5        |
+| Classes (outer)                           | 39        |
+| Classes (all)                             | 40        |
+| NI (number of bytecode instructions)      | 7942        |
+| LOC (non comment non blank lines of code) | 3415        |
 
 
 
@@ -42,11 +43,8 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 ```
 <Report here information about code tangles and fat packages>
 ```
-
-| Item | Tangled | Fat  | Size | XS   |
-| ---- | ------- | ---- | ---- | ---- |
-|      |         |      |      |      |
-|      |         |      |      |      |
+Our code doesn't contain any fat methods
+<img src="res/structure101/XS.png" alt="XS"/>
 
 
 
@@ -56,6 +54,8 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 <Report screen captures of the package-level tangles by opening the items in the "composition perspective" 
 (double click on the tangle from the Views->Complexity page)>
 ```
+Our project doesn't contain any recursive dependencies
+  <img src="res/structure101/Packaglevetangles.png" alt="Package level tangles"/>
 
 # Summary analysis
 ```
