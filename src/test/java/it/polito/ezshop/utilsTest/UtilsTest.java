@@ -7,10 +7,11 @@ import it.polito.ezshop.data.CustomerImpl;
 import it.polito.ezshop.data.EZShop;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
+import it.polito.ezshop.data.Utils;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidRoleException;
 import it.polito.ezshop.exceptions.InvalidUsernameException;
-import it.polito.ezshop.utils.Utils;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;

@@ -1,4 +1,4 @@
-package it.polito.ezshop.utils;
+package it.polito.ezshop.data;
 
 import static java.util.stream.Collectors.toList;
 
@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-
-import it.polito.ezshop.data.*;
 
 
 public class Utils {
