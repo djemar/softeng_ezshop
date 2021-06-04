@@ -235,14 +235,14 @@ class TicketEntry{
     -discountrate : double
 }
 class Utils{
-    - validateBarcode : boolean
-    - isOnlyDigit : boolean
-    - validateCreditCard : boolean
-    - containsProduct : boolean
-    - containsCustomer : boolean
-    - getProductFromEntries : TicketEntry
-    - fromFile : boolean
-    - updateFile : boolean
+    + public static boolean validateBarcode(String code)
+    + public static boolean isOnlyDigit(String string)
+    + public static boolean validateCreditCard(String number)
+    + public static boolean containsProduct(final List<TicketEntry> list, final String productCode)
+    + public static boolean containsCustomer(final List<Customer> list, final String name)
+    + public static TicketEntry getProductFromEntries(final List<TicketEntry> lis
+    + public static boolean fromFile(String creditcard, double total, String file)
+    + public static boolean updateFile(String file, String creditcard, double total)
 }
 
 
