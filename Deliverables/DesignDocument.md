@@ -247,16 +247,22 @@ class Utils{
 
 
 EZShop --"*" Customer
+EZShopDB --"*" Customer
 EZShop "*" -- SaleTransaction
+EZShopDB "*" -- SaleTransaction
 EZShop -- EZShop
 User "*"-- EZShop
+User "*"-- EZShopDB
 EZShop -- ProductType
+EZShopDB -- ProductType
 EZShop -- EZShopDB
 EZShop -- ReturnTransaction
+EZShopDB -- ReturnTransaction
 EZShop -- Utils
 Customer -- Utils
 TicketEntry -- Utils
 BalanceOperation -- EZShop
+BalanceOperation -- EZShopDB
 BalanceOperation -- ReturnTransaction
 BalanceOperation -- SaleTransaction
 BalanceOperation -- Order
