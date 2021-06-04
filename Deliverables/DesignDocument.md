@@ -57,7 +57,7 @@ note top of Customer : Instances are persistent in the db
 
 
 
-class EZShop{
+class EZshop{
 }
 
 class EZShop{
@@ -250,7 +250,7 @@ EZShop --"*" Customer
 EZShopDB --"*" Customer
 EZShop "*" -- SaleTransaction
 EZShopDB "*" -- SaleTransaction
-EZShop -- EZShop
+EZShop -- EZshop
 User "*"-- EZShop
 User "*"-- EZShopDB
 EZShop -- ProductType
