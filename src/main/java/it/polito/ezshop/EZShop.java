@@ -2,8 +2,8 @@ package it.polito.ezshop;
 
 import it.polito.ezshop.data.EZShopDb;
 import it.polito.ezshop.data.EZShopInterface;
+import it.polito.ezshop.data.Utils;
 import it.polito.ezshop.exceptions.UnauthorizedException;
-import it.polito.ezshop.utils.Utils;
 import it.polito.ezshop.view.EZShopGUI;
 
 public class EZShop {
