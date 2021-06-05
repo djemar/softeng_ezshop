@@ -433,6 +433,11 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
+    public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, 
+InvalidLocationException, InvalidRFIDException {
+        return false;
+    }
+    @Override
     public List<Order> getAllOrders() throws UnauthorizedException {
         List<Order> list = null;
 
@@ -689,6 +694,17 @@ public class EZShop implements EZShopInterface {
         }
         return isSuccess;
 
+    }
+
+    @Override
+    public boolean addProductToSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
+        return false;
+    }
+    
+
+    @Override
+    public boolean deleteProductFromSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
+        return false;
     }
 
     @Override
@@ -981,6 +997,12 @@ public class EZShop implements EZShopInterface {
 
         return true;
 
+    }
+
+    @Override
+    public boolean returnProductRFID(Integer returnId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException 
+    {
+        return false;
     }
 
     @Override
