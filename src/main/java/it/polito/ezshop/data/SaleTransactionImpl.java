@@ -6,7 +6,16 @@ import java.util.List;
 public class SaleTransactionImpl implements SaleTransaction {
 
 	Integer transactionID;
-	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();;
+	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();
+	ArrayList<Product> RFIDs = new ArrayList<Product>();
+	public ArrayList<Product> getRFIDs() {
+		return RFIDs;
+	}
+
+	public void setRFIDs(ArrayList<Product> rFIDs) {
+		RFIDs = rFIDs;
+	}
+
 	private double discountRate = 0;
 	private double price;
 	// (open, closed, payed)
@@ -80,6 +89,18 @@ public class SaleTransactionImpl implements SaleTransaction {
 	public double getPrice() {
 		return this.price;
 	}
+	
+	public void estimatePricebyRFID() {
+		if (this.RFIDs.isEmpty())
+			this.setPrice(0);
+		else {
+			this.price = RFIDs.stream()
+					.mapToDouble(
+							a -> a.getPrice())
+					.sum() * (1 - this.discountRate);
+		}
+	}
+
 
 	public void estimatePrice() {
 		if (this.ticketsList.isEmpty())

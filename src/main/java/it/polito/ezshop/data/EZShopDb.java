@@ -1200,6 +1200,24 @@ public class EZShopDb {
 
     }
 
+	public String getBarCodebyRFID(String rFID) {
+        String barcode = null;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select * from product where RFID = ?");
+            ResultSet rs;
+            pstmt.setString(1, rFID);
+            rs = pstmt.executeQuery();
+            if (rs.next() != false)
+            	barcode = new String(rs.getString("barcode"));
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return barcode;
+	}
+
 
 
 }

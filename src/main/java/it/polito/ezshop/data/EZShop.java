@@ -436,6 +436,7 @@ public class EZShop implements EZShopInterface {
     /*TODO*/
     public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, 
 InvalidLocationException, InvalidRFIDException {
+    	
         return false;
     }
     @Override
@@ -700,7 +701,33 @@ InvalidLocationException, InvalidRFIDException {
     @Override
     /*TODO*/
     public boolean addProductToSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
-        return false;
+        boolean isSuccess = false;
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length()!= 10)
+            throw new InvalidRFIDException("rfid invalid");
+
+        if (ezshopDb.createConnection()) {
+            String productCode = ezshopDb.getBarCodebyRFID(RFID);
+            if(productCode == null)
+            	return false;
+            ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
+            if (p != null && activeSaleTransaction != null
+                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")
+                   ) {
+                    activeSaleTransaction.getRFIDs().add(new Product(RFID, productCode, p.getPricePerUnit()));
+
+                activeSaleTransaction.estimatePricebyRFID();
+                if (!ezshopDb.updateQuantity(p.getId(), -1))
+                    isSuccess = true;
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
     
 
