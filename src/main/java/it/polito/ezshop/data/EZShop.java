@@ -436,7 +436,50 @@ public class EZShop implements EZShopInterface {
     /*TODO*/
     public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, 
 InvalidLocationException, InvalidRFIDException {
-        return false;
+    boolean isSuccess = false;
+        if (orderId == null || orderId <= 0)
+            throw new InvalidOrderIdException("Invalid order id");
+        if( RFIDfrom==null || RFIDfrom.isEmpty())
+            throw new InvalidRFIDException();
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (ezshopDb.createConnection()) {
+            
+            OrderImpl o = ezshopDb.getOrder(orderId);
+            if(o==null){
+                ezshopDb.closeConnection();
+                return false;
+            }
+            
+            if (o != null && o.getStatus().equals("COMPLETED")) {
+                ezshopDb.closeConnection();
+                return true;
+            }
+            if(RFIDfrom==null || RFIDfrom.isEmpty()||
+            RFIDfrom.length()!=10||!Utils.isOnlyDigit(RFIDfrom)||
+            !ezshopDb.verifyRFID(RFIDfrom,o.getQuantity())){
+                ezshopDb.closeConnection();
+                throw new InvalidRFIDException();
+            }
+                
+            
+            if (o.getStatus().equals("PAYED")) {
+                ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
+                if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
+                    ezshopDb.closeConnection();
+                    throw new InvalidLocationException("Invalid Location");
+                }
+                
+
+                if (ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId())
+                        && !ezshopDb.updateQuantity(prod.getId(), o.getQuantity())&& ezshopDb.insertProducts(RFIDfrom,o.getQuantity(),o.getProductCode())) {
+                    isSuccess = true;
+                }
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
     @Override
     public List<Order> getAllOrders() throws UnauthorizedException {

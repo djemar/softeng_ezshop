@@ -1200,6 +1200,66 @@ public class EZShopDb {
 
     }
 
+    public boolean verifyRFID(String RFIDfrom,int value) {
+        try {
+            int n=Integer.valueOf(RFIDfrom);
+            String n_string=Integer.toString(n+value);
+            String top="";
+            for(int i=0;i<10-n_string.length();i++)
+                top+='0';
+            top+=n_string;
+            PreparedStatement pstmt = connection
+                    .prepareStatement("select count(*) as number from product where RFID>=? and RFID<=? ");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+
+            pstmt.setString(1, RFIDfrom);
+            pstmt.setString(2, top);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            if(rs.getInt("number")>0)
+                return false;
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean insertProducts(String RFIDfrom, int quantity,String BarCode) {
+        
+        boolean isSuccess = true;
+        try {
+            for (int i=0;i<quantity;i++){
+                PreparedStatement pstmt = connection.prepareStatement(
+                    "insert into product(RFID,BarCode)values(?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+            int n=Integer.valueOf(RFIDfrom);
+            String n_string=Integer.toString(n+i);
+            String top="";
+            for(int j=0;j<10-n_string.length();i++)
+                top+='0';
+            top+=n_string;
+            pstmt.setString(1, top); // the index refers to the ? in the statement
+            pstmt.setString(2, BarCode);
+            pstmt.executeUpdate();
+            }
+            isSuccess=true;
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return isSuccess;
+    }
+
 
 
 }
