@@ -472,6 +472,7 @@ public class EZShopDb {
             stmt.executeUpdate("delete from returnentries");
             stmt.executeUpdate("delete from users");
             stmt.executeUpdate("delete from ticketentries");
+            stmt.executeUpdate("delete from product");
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -1242,7 +1243,7 @@ public class EZShopDb {
             int n=Integer.valueOf(RFIDfrom);
             String n_string=Integer.toString(n+i);
             String top="";
-            for(int j=0;j<10-n_string.length();i++)
+            for(int j=0;j<10-n_string.length();j++)
                 top+='0';
             top+=n_string;
             pstmt.setString(1, top); // the index refers to the ? in the statement
