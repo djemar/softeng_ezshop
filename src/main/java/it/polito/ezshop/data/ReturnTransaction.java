@@ -1,6 +1,7 @@
 package it.polito.ezshop.data;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class ReturnTransaction {
 
@@ -10,6 +11,8 @@ public class ReturnTransaction {
 	private double total = 0;
 
 	private HashMap<String, Integer> returnedProductsMap = new HashMap<String, Integer>();
+	private LinkedList<String> returnedProductsbyRFID = new LinkedList<String>();
+
 
 	public ReturnTransaction(Integer returnId, Integer transactionId) {
 		this.returnId = returnId;
@@ -23,7 +26,15 @@ public class ReturnTransaction {
 		this.status = status;
 		this.total = total;
 	}
+	
+	public LinkedList<String> getReturnedProductsbyRFID() {
+		return returnedProductsbyRFID;
+	}
 
+	public void setReturnedProductsMapbyRFID(String RFID) {
+		this.returnedProductsbyRFID.add(RFID);
+	}
+	
 	public Integer getReturnId() {
 		return returnId;
 	}
