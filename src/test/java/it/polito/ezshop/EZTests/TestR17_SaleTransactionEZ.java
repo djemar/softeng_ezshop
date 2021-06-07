@@ -12,6 +12,7 @@ import it.polito.ezshop.data.Utils;
 import it.polito.ezshop.exceptions.InvalidCreditCardException;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
+import it.polito.ezshop.exceptions.InvalidOrderIdException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidPaymentException;
 import it.polito.ezshop.exceptions.InvalidPricePerUnitException;
@@ -148,7 +149,7 @@ public class TestR17_SaleTransactionEZ {
 	    public void testValidAddProductToSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidProductIdException {
 	    	ezshop.login("elisa", "elisa98");
 	    	ezshop.startSaleTransaction();
-	    	assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));
+	    	assertTrue(ezshop.addProductToSale(1, "1234567891", 4));
 	     	assertEquals(ezshop.activeSaleTransaction.getPrice(), 8, 0);
 	    	assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(),46,0);
 	    	assertFalse(ezshop.activeSaleTransaction.getEntries().isEmpty());
@@ -166,6 +167,22 @@ public class TestR17_SaleTransactionEZ {
 	     	assertEquals(ezshop.activeSaleTransaction.getEntries().size(), 0, 0);
 	    	assertTrue(fine-start< 500);
 	    	assertFalse(ezshop.deleteProductFromSale(1, "12345678912237", 1000));
+	    }
+	    @Test
+	    /*TODO PROVARE */
+	    public void testValidAddProductToSaleRFID() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, InvalidProductIdException, InvalidRFIDException, InvalidOrderIdException, InvalidLocationException, InvalidPricePerUnitException {
+	    	ezshop.login("elisa", "elisa98");
+	    	ezshop.payOrderFor("12345678912237", 1, 4);
+	    	ezshop.recordOrderArrivalRFID(1, "1234567891");
+	    	ezshop.startSaleTransaction();
+	    	long start = System.currentTimeMillis();
+	    	assertTrue(ezshop.addProductToSaleRFID(1, "1234567891"));
+	    	long fine = System.currentTimeMillis();
+	    	assertTrue(fine-start< 500);
+	     	assertEquals(ezshop.activeSaleTransaction.getPrice(), 2, 0);
+	    	assertEquals(ezshop.getProductTypeByBarCode("1234567891").getQuantity(),49,0);
+	    	assertFalse(ezshop.activeSaleTransaction.getRFIDs().isEmpty());
+
 	    }
 	    @Test
 	    public void testInvalidDeleteProductFromSale() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
