@@ -8,6 +8,7 @@ import it.polito.ezshop.data.SaleTransactionImpl;
 import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.data.TicketEntryImpl;
 import it.polito.ezshop.data.User;
+import it.polito.ezshop.data.Utils;
 import it.polito.ezshop.exceptions.InvalidCreditCardException;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
@@ -18,6 +19,7 @@ import it.polito.ezshop.exceptions.InvalidProductCodeException;
 import it.polito.ezshop.exceptions.InvalidProductDescriptionException;
 import it.polito.ezshop.exceptions.InvalidProductIdException;
 import it.polito.ezshop.exceptions.InvalidQuantityException;
+import it.polito.ezshop.exceptions.InvalidRFIDException;
 import it.polito.ezshop.exceptions.InvalidRoleException;
 import it.polito.ezshop.exceptions.InvalidTransactionIdException;
 import it.polito.ezshop.exceptions.InvalidUsernameException;
@@ -110,6 +112,35 @@ public class TestR17_SaleTransactionEZ {
 	        ezshop.logout();
 	        assertThrows(UnauthorizedException.class, () -> {
 	        	ezshop.addProductToSale(1, "12345678912237", 4);
+	        });
+	        
+	    }
+	    @Test
+
+	    public void testInvalidAddProductToSalebyRFID() throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException {
+	    	ezshop.login("elisa", "elisa98");
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	        	ezshop.addProductToSaleRFID(-1, "1234567891");
+	        });
+	        assertThrows(InvalidTransactionIdException.class, () -> {
+	        	ezshop.addProductToSaleRFID(null, "1234567891");
+	        });
+	        assertThrows(InvalidRFIDException.class, () -> {
+	        	ezshop.addProductToSaleRFID(1, "");
+	        });
+	        assertThrows(InvalidRFIDException.class, () -> {
+	        	ezshop.addProductToSaleRFID(1, null);
+	        });
+	        assertThrows(InvalidRFIDException.class, () -> {
+	        	ezshop.addProductToSaleRFID(1, "123456gtf7891");
+	        });
+	        assertThrows(InvalidRFIDException.class, () -> {
+	        	ezshop.addProductToSaleRFID(1, "12345678915453");
+	        });
+
+	        ezshop.logout();
+	        assertThrows(UnauthorizedException.class, () -> {
+	        	ezshop.addProductToSale(1, "1234567891", 4);
 	        });
 	        
 	    }
