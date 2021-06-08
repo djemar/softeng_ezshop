@@ -765,8 +765,18 @@ public class EZShop implements EZShopInterface {
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
             if (p != null && activeSaleTransaction != null
                     && activeSaleTransaction.getStatus().equalsIgnoreCase("open")) {
-                activeSaleTransaction.getRFIDs()
-                        .add(new Product(RFID, productCode, p.getPricePerUnit()));
+                if (!activeSaleTransaction.getEntries().stream()
+                        .anyMatch(x -> x.getBarCode().equals(productCode)))
+                    activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
+                            p.getProductDescription(), 1, p.getPricePerUnit(), RFID));
+                else {
+                    TicketEntryImpl t = (TicketEntryImpl) activeSaleTransaction.getEntries()
+                            .stream().filter(x -> x.getBarCode().equals(productCode)).findFirst()
+                            .get();
+                    int amountf = t.getAmount() + 1;
+                    t.setAmount(amountf);
+                    t.addRFID(RFID);
+                }
 
                 activeSaleTransaction.estimatePricebyRFID();
                 if (!ezshopDb.updateQuantity(p.getId(), -1))
@@ -1160,9 +1170,10 @@ public class EZShop implements EZShopInterface {
             return false;
 
         saleTransaction = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
+        Integer idRFID = ezshopDb.getTransactionByRFID(RFID);
         ezshopDb.closeConnection();
 
-        if (saleTransaction == null) {
+        if (saleTransaction == null || saleTransaction.getTicketNumber() != idRFID) {
             return false;
         }
         String productCode = ezshopDb.getBarCodebyRFID(RFID);
