@@ -832,6 +832,12 @@ public class EZShopDb {
                     pstm.setString(6, t.getProductDescription());
 
                     pstm.executeUpdate();
+
+                    pstm = connection.prepareStatement("update product set TransactionId=?");
+                    pstm.setInt(1, saleTransaction.getTicketNumber());
+
+                    pstm.executeUpdate();
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return;
