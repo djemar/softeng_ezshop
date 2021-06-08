@@ -94,8 +94,8 @@ class EZShop{
     +attachCardToCustomer(String customerCard, Integer customerId)
     +modifyPointsOnCard(String customerCard, int pointsToBeAdded)
     +startSaleTransaction()
-    +addProductToSale(Integer transactionId, String productCode, int amount)
-    +deleteProductFromSale(Integer transactionId, String productCode, int amount)
+    +addProductToSaleRFID(Integer transactionId, String RFID)
+    +deleteProductFromSaleRFID(Integer transactionId, String RFID)
     +applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
     +applyDiscountRateToSale(Integer transactionId, double discountRate)
     +computePointsForSale(Integer transactionId)
@@ -103,7 +103,7 @@ class EZShop{
     +deleteSaleTransaction(Integer transactionId)
     +getSaleTransaction(Integer transactionId)
     +startReturnTransaction(Integer transactionId)
-    +returnProduct(Integer returnId, String productCode, int amount)
+    +returnProductRFID(Integer returnId, String RFID)
     +endReturnTransaction(Integer returnId, boolean commit)
     +deleteReturnTransaction(Integer returnId)
     +receiveCashPayment(Integer transactionId, double cash)
@@ -166,6 +166,9 @@ class EZShopDB{
     + public boolean payForReturnTransaction(Integer returnID)
     + public boolean recordBalanceUpdate(double toBeAdded)
     + public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to)
+    +public String getBarCodebyRFID(String rFID)
+    +public boolean verifyRFID(String RFIDfrom, int value)
+    +public boolean insertProducts(String RFIDfrom, int quantity, String BarCode)
 }
 
 class EZShop implements EZShopInterface
@@ -244,6 +247,10 @@ class Utils{
     + public static boolean fromFile(String creditcard, double total, String file)
     + public static boolean updateFile(String file, String creditcard, double total)
 }
+class Product{
+     RFID
+}
+ProductType -- "*" Product : describes
 
 
 EZShop --"*" Customer
@@ -277,15 +284,15 @@ Design pattern: Facade
 
 # Verification traceability matrix
 
-| FR  | EZShop | User | EZShopDB | ProdType | Customer | Order | ReturnTrans | SaleTrans | TicketEntry | BalanceOp |
-| --- | :----: | :--: | :------: | :------: | :------: | :---: | :---------: | :-------: | :---------: | :-------: |
-| FR1 |   x    |  x   |    x     |          |          |       |             |           |             |           |
-| FR3 |   x    |      |    x     |    x     |          |       |             |           |             |           |
-| FR4 |   x    |      |    x     |    x     |          |   x   |             |           |             |     x     |
-| FR5 |   x    |      |    x     |          |    x     |       |             |           |             |           |
-| FR6 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |
-| FR7 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |
-| FR8 |   x    |      |    x     |          |          |       |             |           |             |     x     |
+| FR  | EZShop | User | EZShopDB | ProdType | Customer | Order | ReturnTrans | SaleTrans | TicketEntry | BalanceOp | Product |
+| --- | :----: | :--: | :------: | :------: | :------: | :---: | :---------: | :-------: | :---------: | :-------: | :-----: |
+| FR1 |   x    |  x   |    x     |          |          |       |             |           |             |           |         |
+| FR3 |   x    |      |    x     |    x     |          |       |             |           |             |           |    x    |
+| FR4 |   x    |      |    x     |    x     |          |   x   |             |           |             |     x     |    x    |
+| FR5 |   x    |      |    x     |          |    x     |       |             |           |             |           |         |
+| FR6 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |    x    |
+| FR7 |   x    |      |    x     |    x     |    x     |       |      x      |     x     |      x      |     x     |    x    |
+| FR8 |   x    |      |    x     |          |          |       |             |           |             |     x     |         |
 
 # Verification sequence diagrams
 
@@ -363,7 +370,7 @@ Scenario 3-3: Record order of product type X arrival
 
 ```plantuml
 "ShopManager" -> "EZShop": 1. wants to record Order O's arrival
-"EZShop" -> "EZShopDB" : 2. recordOrderArrival(Integer orderId)
+"EZShop" -> "EZShopDB" : 2. recordOrderArrival(Integer orderId, String RFID)
 "EZShop" -> "EZShopDB" : 2. setStatus(String status)
 "EZShop" -> "EZShopDB" : 3. updateQuantity(Integer productId, int toBeAdded)
 ```
@@ -416,7 +423,7 @@ Scenario 6-1: Sale of product type X completed
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier closes sale transaction
 "EZShop" -> "EZShopDB" : 7.   endSaleTransaction(Integer transactionId)
@@ -431,7 +438,7 @@ Scenario 6-2: Sale of product type X with product discount
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier applies a product discount rate
 "EZShop" -> "EZShopDB" : 7.   applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate)
@@ -448,7 +455,7 @@ Scenario 6-3: Sale of product type X with sale discount
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier applies a sale discount rate
 "EZShop" -> "EZShopDB" : 7.   applyDiscountRateToSale(Integer transactionId, double discountRate)
@@ -465,7 +472,7 @@ Scenario 6-4: Sale of product type X with Loyalty Card update
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier closes sale transaction
 "EZShop" -> "EZShopDB" : 7.   endSaleTransaction(Integer transactionId)
@@ -481,7 +488,7 @@ Scenario 6-5: Sale of product type X cancelled
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier closes sale transaction
 "EZShop" -> "EZShopDB" : 7.   endSaleTransaction(Integer transactionId)
@@ -496,7 +503,7 @@ Scenario 6-6: Sale of product type X with product discount
 "Cashier" -> "EZShop" : 1. Cashier starts a new sale transaction
 "EZShop" -> "EZShopDB" : 2.  startSaleTransaction()
 "Cashier" -> "EZShop" : 3. Cashier adds a product to sale
-"EZShop" -> "EZShopDB" : 4.   addProductToSale(Integer transactionId, String productCode, int amount)
+"EZShop" -> "EZShopDB" : 4.   addProductToSaleRFID(Integer transactionId, String RFID)
 "EZShop" -> "EZShopDB" : 5.   updateQuantity(Integer productId, int toBeAdded)
 "Cashier" -> "EZShop" : 6. Cashier closes sale transaction
 "EZShop" -> "EZShopDB" : 7.   endSaleTransaction(Integer transactionId)
@@ -543,8 +550,8 @@ Scenario 8-1: Return transaction of product type X completed, credit card
 "Cashier" -> "EZShop" : 1. Start Return Transaction
 
 "EZShop" -> "EZShopDB": 2. startReturnTransaction(Integer transactionId)
-"Cashier"->  "EZShop": 3. reads Bar Code of X
-"EZShop" -> "EZShopDB": 4. returnProduct(Integer returnId, String productCode, int amount)
+"Cashier"->  "EZShop": 3. reads RFID of X
+"EZShop" -> "EZShopDB": 4. returnProductRFID(Integer returnId, String RFID)
 "EZShop" -> "EZShopDB" : 5. updateQuantity(Integer productId, int toBeAdded)
 "EZShop" -> "EZShopDB": 7. endReturnTransaction(Integer returnId, boolean commit)
 "EZShop" -> "Employee" : 8. End Return Transaction
@@ -557,8 +564,8 @@ Scenario 8-2: Return transaction of product type X completed, cash
 "Cashier" -> "EZShop" : 1. Start Return Transaction
 
 "EZShop" -> "EZShopDB": 2. startReturnTransaction(Integer transactionId)
-"Cashier"->  "EZShop": 3. reads Bar Code of X
-"EZShop" -> "EZShopDB":4. returnProduct(Integer returnId, String productCode, int amount)
+"Cashier"->  "EZShop": 3. reads RFID of X
+"EZShop" -> "EZShopDB":4. returnProductRFID(Integer returnId, String RFID)
 "EZShop" -> "EZShopDB" : 5. updateQuantity(Integer productId, int toBeAdded)
 "EZShop" -> "EZShopDB":6. Manage cash return
 "EZShop"-> "EZShopDB" : 7. endReturnTransaction(Integer returnId, boolean commit)
