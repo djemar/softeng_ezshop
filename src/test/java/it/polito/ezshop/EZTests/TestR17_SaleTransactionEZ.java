@@ -166,7 +166,7 @@ public class TestR17_SaleTransactionEZ {
 			InvalidQuantityException, InvalidProductIdException {
 		ezshop.login("elisa", "elisa98");
 		ezshop.startSaleTransaction();
-		assertTrue(ezshop.addProductToSale(1, "1234567891", 4));
+		assertTrue(ezshop.addProductToSale(1, "12345678912237", 4));
 		assertEquals(ezshop.activeSaleTransaction.getPrice(), 8, 0);
 		assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(), 46, 0);
 		assertFalse(ezshop.activeSaleTransaction.getEntries().isEmpty());
@@ -188,23 +188,23 @@ public class TestR17_SaleTransactionEZ {
 	}
 
 	@Test
-	/* TODO PROVARE */
+	/* TODO */
 	public void testValidAddProductToSaleRFID()
 			throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException,
 			InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException,
 			InvalidProductIdException, InvalidRFIDException, InvalidOrderIdException,
 			InvalidLocationException, InvalidPricePerUnitException {
 		ezshop.login("elisa", "elisa98");
-		ezshop.payOrderFor("12345678912237", 1, 4);
-		ezshop.recordOrderArrivalRFID(1, "1234567891");
+		ezshop.recordBalanceUpdate(100);
+		int orderId = ezshop.payOrderFor("12345678912237", 1, 4);
+		ezshop.recordOrderArrivalRFID(orderId, "1234567891");
 		ezshop.startSaleTransaction();
 		long start = System.currentTimeMillis();
 		assertTrue(ezshop.addProductToSaleRFID(1, "1234567891"));
 		long fine = System.currentTimeMillis();
 		assertTrue(fine - start < 500);
 		assertEquals(ezshop.activeSaleTransaction.getPrice(), 2, 0);
-		assertEquals(ezshop.getProductTypeByBarCode("1234567891").getQuantity(), 49, 0);
-		assertFalse(ezshop.activeSaleTransaction.getRFIDs().isEmpty());
+		assertEquals(ezshop.getProductTypeByBarCode("12345678912237").getQuantity(), 50, 0);
 
 	}
 
