@@ -1210,6 +1210,24 @@ public class EZShopDb {
 
     }
 
+    public Integer getTransactionByRFID(String rFID) {
+        Integer id = -1;
+        try {
+            PreparedStatement pstmt =
+                    connection.prepareStatement("select TransactionId from product where RFID = ?");
+            ResultSet rs;
+            pstmt.setString(1, rFID);
+            rs = pstmt.executeQuery();
+            if (rs.next() != false)
+                id = rs.getInt("TransactionId");
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+        return id;
+    }
+
     public String getBarCodebyRFID(String rFID) {
         String barcode = null;
         try {
@@ -1264,9 +1282,9 @@ public class EZShopDb {
         boolean isSuccess = true;
         try {
             for (int i = 0; i < quantity; i++) {
-                PreparedStatement pstmt =
-                        connection.prepareStatement("insert into product(RFID,BarCode)values(?, ?)",
-                                Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement pstmt = connection.prepareStatement(
+                        "insert into product(RFID,BarCode,TransactionId)values(?, ?, -1)",
+                        Statement.RETURN_GENERATED_KEYS);
                 pstmt.setQueryTimeout(30); // set timeout to 30 sec.
                 int n = Integer.valueOf(RFIDfrom);
                 String n_string = Integer.toString(n + i);
