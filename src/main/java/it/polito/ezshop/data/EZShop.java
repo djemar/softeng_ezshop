@@ -778,7 +778,7 @@ public class EZShop implements EZShopInterface {
                     t.addRFID(RFID);
                 }
 
-                activeSaleTransaction.estimatePricebyRFID();
+                activeSaleTransaction.estimatePrice();
                 if (!ezshopDb.updateQuantity(p.getId(), -1))
                     isSuccess = true;
             }
@@ -827,7 +827,7 @@ public class EZShop implements EZShopInterface {
                 return false;
             }
 
-            activeSaleTransaction.estimatePricebyRFID();
+            activeSaleTransaction.estimatePrice();
 
         } else {
             return false;

@@ -8,6 +8,7 @@ public class SaleTransactionImpl implements SaleTransaction {
 	Integer transactionID;
 	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();
 	ArrayList<Product> RFIDs = new ArrayList<Product>();
+
 	public ArrayList<Product> getRFIDs() {
 		return RFIDs;
 	}
@@ -88,17 +89,6 @@ public class SaleTransactionImpl implements SaleTransaction {
 	@Override
 	public double getPrice() {
 		return this.price;
-	}
-	
-	public void estimatePricebyRFID() {
-		if (this.RFIDs.isEmpty())
-			this.setPrice(0);
-		else {
-			this.price = RFIDs.stream()
-					.mapToDouble(
-							a -> a.getPrice())
-					.sum() * (1 - this.discountRate);
-		}
 	}
 
 
