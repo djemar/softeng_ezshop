@@ -249,7 +249,19 @@ public class TestR19_OrderEZ {
 
         });
 
+
     }
+    @Test
+    public void testValidRecordOrderArrivalRFID() throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException, InvalidRFIDException{
+        ezshop.payOrder(orderId);
+        boolean result;
+        long start = System.currentTimeMillis();
+        result = ezshop.recordOrderArrivalRFID(orderId,"0000000010");
+        long fine = System.currentTimeMillis();
+        //assertTrue(fine - start < 500);
+        assertTrue(result);
+    }
+    
 
 }
 

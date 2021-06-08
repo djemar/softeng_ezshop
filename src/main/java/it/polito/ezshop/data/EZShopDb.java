@@ -42,7 +42,7 @@ public class EZShopDb {
 
     public boolean closeConnection() {
         try {
-            if (connection != null) 
+            if (connection != null)
                 connection.close();
         } catch (SQLException e) {
             // connection close failed.
@@ -146,7 +146,7 @@ public class EZShopDb {
             if (rs.next() == false)
                 user = false;
             else
-            	user = true;
+                user = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -275,7 +275,7 @@ public class EZShopDb {
 
     public boolean deleteProductType(Integer id) {
         boolean done = false;
-        try { 
+        try {
             PreparedStatement pstmt =
                     connection.prepareStatement("delete from producttypes where ID = (?)");
             pstmt.setQueryTimeout(30); // set timeout to 30 sec.
@@ -344,18 +344,20 @@ public class EZShopDb {
             while (ris.next()) {
                 if (ris.getString("description").toLowerCase().contains(descr.toLowerCase())) {
                     String descript = ris.getString("description");
-                    PreparedStatement pstmt =
-                            connection.prepareStatement("select * from producttypes where Description = ?");
+                    PreparedStatement pstmt = connection
+                            .prepareStatement("select * from producttypes where Description = ?");
                     ResultSet rs;
                     pstmt.setString(1, descript);
                     rs = pstmt.executeQuery();
                     while (rs.next()) {
-                        ProductType p = new ProductTypeImpl(rs.getInt("id"), rs.getString("description"),
-                                rs.getString("productCode"), rs.getDouble("priceperunit"),
-                                rs.getString("note"), rs.getString("location"), rs.getInt("quantity"));
+                        ProductType p = new ProductTypeImpl(rs.getInt("id"),
+                                rs.getString("description"), rs.getString("productCode"),
+                                rs.getDouble("priceperunit"), rs.getString("note"),
+                                rs.getString("location"), rs.getInt("quantity"));
                         products.add(p);
                     }
-                    products.forEach(x -> System.out.println("ricerca per descrizione" + x.getId()));
+                    products.forEach(
+                            x -> System.out.println("ricerca per descrizione" + x.getId()));
                 }
             }
 
@@ -472,6 +474,7 @@ public class EZShopDb {
             stmt.executeUpdate("delete from returnentries");
             stmt.executeUpdate("delete from users");
             stmt.executeUpdate("delete from ticketentries");
+            stmt.executeUpdate("delete from product");
             done = true;
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -1115,6 +1118,7 @@ public class EZShopDb {
         }
         return r;
     }
+
     public boolean payForReturnTransaction(Integer returnID) {
         boolean done = false;
         try {
@@ -1159,7 +1163,7 @@ public class EZShopDb {
 
         return true;
     }
-    
+
 
     public List<BalanceOperation> getAllBalanceOperations(LocalDate from, LocalDate to) {
         List<BalanceOperation> list = new ArrayList<BalanceOperation>();
@@ -1200,7 +1204,7 @@ public class EZShopDb {
 
     }
 
-	public String getBarCodebyRFID(String rFID) {
+    public String getBarCodebyRFID(String rFID) {
         String barcode = null;
         try {
             PreparedStatement pstmt =
@@ -1209,14 +1213,75 @@ public class EZShopDb {
             pstmt.setString(1, rFID);
             rs = pstmt.executeQuery();
             if (rs.next() != false)
-            	barcode = new String(rs.getString("barcode"));
+                barcode = new String(rs.getString("barcode"));
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
         return barcode;
-	}
+    }
+
+    public boolean verifyRFID(String RFIDfrom, int value) {
+        try {
+            int n = Integer.valueOf(RFIDfrom);
+            String n_string = Integer.toString(n + value);
+            String top = "";
+            for (int i = 0; i < 10 - n_string.length(); i++)
+                top += '0';
+            top += n_string;
+            PreparedStatement pstmt = connection.prepareStatement(
+                    "select count(*) as number from product where RFID>=? and RFID<=? ");
+            pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+
+            pstmt.setString(1, RFIDfrom);
+            pstmt.setString(2, top);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            if (rs.getInt("number") > 0)
+                return false;
+
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public boolean insertProducts(String RFIDfrom, int quantity, String BarCode) {
+
+        boolean isSuccess = true;
+        try {
+            for (int i = 0; i < quantity; i++) {
+                PreparedStatement pstmt =
+                        connection.prepareStatement("insert into product(RFID,BarCode)values(?, ?)",
+                                Statement.RETURN_GENERATED_KEYS);
+                pstmt.setQueryTimeout(30); // set timeout to 30 sec.
+                int n = Integer.valueOf(RFIDfrom);
+                String n_string = Integer.toString(n + i);
+                String top = "";
+                for (int j = 0; j < 10 - n_string.length(); j++)
+                    top += '0';
+                top += n_string;
+                pstmt.setString(1, top); // the index refers to the ? in the statement
+                pstmt.setString(2, BarCode);
+                pstmt.executeUpdate();
+            }
+            isSuccess = true;
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory",
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }
+
+        return isSuccess;
+    }
 
 
 

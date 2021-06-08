@@ -437,8 +437,51 @@ public class EZShop implements EZShopInterface {
     public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom)
             throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException,
             InvalidRFIDException {
+        boolean isSuccess = false;
+        if (orderId == null || orderId <= 0)
+            throw new InvalidOrderIdException("Invalid order id");
+        if (RFIDfrom == null || RFIDfrom.isEmpty())
+            throw new InvalidRFIDException();
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (ezshopDb.createConnection()) {
 
-        return false;
+            OrderImpl o = ezshopDb.getOrder(orderId);
+            if (o == null) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+
+            if (o != null && o.getStatus().equals("COMPLETED")) {
+                ezshopDb.closeConnection();
+                return true;
+            }
+            if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 10
+                    || !Utils.isOnlyDigit(RFIDfrom)
+                    || !ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
+                ezshopDb.closeConnection();
+                throw new InvalidRFIDException();
+            }
+
+
+            if (o.getStatus().equals("PAYED")) {
+                ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
+                if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
+                    ezshopDb.closeConnection();
+                    throw new InvalidLocationException("Invalid Location");
+                }
+
+
+                if (ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId())
+                        && !ezshopDb.updateQuantity(prod.getId(), o.getQuantity())
+                        && ezshopDb.insertProducts(RFIDfrom, o.getQuantity(), o.getProductCode())) {
+                    isSuccess = true;
+                }
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
 
     @Override
@@ -1076,32 +1119,33 @@ public class EZShop implements EZShopInterface {
         return true;
 
     }
+
     /**
-     * This method adds a product to the return transaction, starting from its RFID
-     * This method DOES NOT update the product quantity
-     * It can be invoked only after a user with role "Administrator", "ShopManager" or "Cashier" is logged in.
+     * This method adds a product to the return transaction, starting from its RFID This method DOES
+     * NOT update the product quantity It can be invoked only after a user with role
+     * "Administrator", "ShopManager" or "Cashier" is logged in.
      *
      * @param returnId the id of the return transaction
      * @param RFID the RFID of the product to be returned
      *
-     * @return  true if the operation is successful
-     *          false   if the the product to be returned does not exists,
-     *                  if it was not in the transaction,
-     *                  if the transaction does not exist
+     * @return true if the operation is successful false if the the product to be returned does not
+     *         exists, if it was not in the transaction, if the transaction does not exist
      *
-     * @throws InvalidTransactionIdException if the return id is less ther or equal to 0 or if it is null
+     * @throws InvalidTransactionIdException if the return id is less ther or equal to 0 or if it is
+     *         null
      * @throws InvalidRFIDException if the RFID is empty, null or invalid
-     * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
+     * @throws UnauthorizedException if there is no logged user or if it has not the rights to
+     *         perform the operation
      */
 
     @Override
-    /*TODO*/
-    public boolean returnProductRFID(Integer returnId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException 
-    {
+    /* TODO */
+    public boolean returnProductRFID(Integer returnId, String RFID)
+            throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException {
         SaleTransactionImpl saleTransaction;
         if (returnId == null || returnId <= 0)
             throw new InvalidTransactionIdException("invalid id");
-        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length()!= 10)
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 10)
             throw new InvalidRFIDException("rfid invalid");
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
@@ -1122,8 +1166,8 @@ public class EZShop implements EZShopInterface {
             return false;
         }
         String productCode = ezshopDb.getBarCodebyRFID(RFID);
-        if(productCode == null)
-        	return false;
+        if (productCode == null)
+            return false;
         ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
         double money = p.getPricePerUnit();
         activeReturnTransaction.updateTotal(money);
