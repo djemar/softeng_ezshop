@@ -440,7 +440,7 @@ public class EZShop implements EZShopInterface {
         boolean isSuccess = false;
         if (orderId == null || orderId <= 0)
             throw new InvalidOrderIdException("Invalid order id");
-        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 10 || !Utils.isOnlyDigit(RFIDfrom))
+        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 12 || !Utils.isOnlyDigit(RFIDfrom))
             throw new InvalidRFIDException();
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
@@ -458,9 +458,7 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return true;
             }
-            if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 10
-                    || !Utils.isOnlyDigit(RFIDfrom)
-                    || !ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
+            if(!ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
                 ezshopDb.closeConnection();
                 throw new InvalidRFIDException();
             }
@@ -756,7 +754,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 10)
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 12)
             throw new InvalidRFIDException("rfid invalid");
 
         if (ezshopDb.createConnection()) {
@@ -800,7 +798,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        if (RFID == null || RFID.isEmpty() || RFID.length() != 10 || !Utils.isOnlyDigit(RFID))
+        if (RFID == null || RFID.isEmpty() || RFID.length() != 12 || !Utils.isOnlyDigit(RFID))
             throw new InvalidRFIDException();
 
         if (ezshopDb.createConnection()) {
@@ -1156,7 +1154,7 @@ public class EZShop implements EZShopInterface {
         SaleTransactionImpl saleTransaction;
         if (returnId == null || returnId <= 0)
             throw new InvalidTransactionIdException("invalid id");
-        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 10)
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 12)
             throw new InvalidRFIDException("rfid invalid");
         if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
                 && !currentUser.getRole().equalsIgnoreCase("cashier")
