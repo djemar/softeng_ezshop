@@ -252,10 +252,10 @@ public class TestR17_SaleTransactionEZ {
 			InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException {
 		ezshop.login("elisa", "elisa98"); // TODO
 		assertThrows(InvalidTransactionIdException.class, () -> {
-			ezshop.deleteProductFromSaleRFID(-1, "0000000001");
+			ezshop.deleteProductFromSaleRFID(-1, "123456789111");
 		});
 		assertThrows(InvalidTransactionIdException.class, () -> {
-			ezshop.deleteProductFromSaleRFID(null, "0000000001");
+			ezshop.deleteProductFromSaleRFID(null, "123456789111");
 		});
 		assertThrows(InvalidRFIDException.class, () -> {
 			ezshop.deleteProductFromSaleRFID(1, null);
@@ -267,14 +267,14 @@ public class TestR17_SaleTransactionEZ {
 			ezshop.deleteProductFromSaleRFID(1, "error00");
 		});
 		assertThrows(InvalidRFIDException.class, () -> {
-			ezshop.deleteProductFromSaleRFID(1, "123458912237");
+			ezshop.deleteProductFromSaleRFID(1, "12345891223165167");
 		});
 
 
-		assertFalse(ezshop.deleteProductFromSaleRFID(1, "2905911158"));
+		assertFalse(ezshop.deleteProductFromSaleRFID(1, "290591115822"));
 		ezshop.logout();
 		assertThrows(UnauthorizedException.class, () -> {
-			ezshop.deleteProductFromSaleRFID(1, "2905911158");
+			ezshop.deleteProductFromSaleRFID(1, "123456789111");
 		});
 	}
 
