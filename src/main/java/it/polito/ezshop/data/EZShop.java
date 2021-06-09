@@ -359,7 +359,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
             ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(productCode);
-            if (prod != null && ezshopDb.getBalance() > pricePerUnit * quantity) {
+            if (prod != null && ezshopDb.getBalance() >= pricePerUnit * quantity) {
                 BalanceOperationImpl balanceOp = new BalanceOperationImpl(LocalDate.now(),
                         -quantity * pricePerUnit, "ORDER");
                 int idBOp = ezshopDb.insertBalanceOperation(balanceOp);
@@ -440,11 +440,12 @@ public class EZShop implements EZShopInterface {
         boolean isSuccess = false;
         if (orderId == null || orderId <= 0)
             throw new InvalidOrderIdException("Invalid order id");
-        if (RFIDfrom == null || RFIDfrom.isEmpty())
+        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 10 || !Utils.isOnlyDigit(RFIDfrom))
             throw new InvalidRFIDException();
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
+        
         if (ezshopDb.createConnection()) {
 
             OrderImpl o = ezshopDb.getOrder(orderId);
@@ -452,7 +453,7 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return false;
             }
-
+            
             if (o != null && o.getStatus().equals("COMPLETED")) {
                 ezshopDb.closeConnection();
                 return true;
