@@ -802,7 +802,7 @@ public class EZShopDb {
         return i;
 
     }
-
+/*TODO*/
     public boolean insertSaleTransaction(SaleTransactionImpl saleTransaction) {
         // to be called by endSaleTransaction
         try {
@@ -833,7 +833,7 @@ public class EZShopDb {
 
                     pstm.executeUpdate();
 
-                    pstm = connection.prepareStatement("update product set TransactionId=?");
+                    pstm = connection.prepareStatement("update product set TransactionId=? ");
                     pstm.setInt(1, saleTransaction.getTicketNumber());
 
                     pstm.executeUpdate();

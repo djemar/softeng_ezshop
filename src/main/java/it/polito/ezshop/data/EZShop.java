@@ -820,7 +820,7 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return false;
             }
-            	
+            /*TODO rimuovere rfid da elenco*/	
             int a = t.getAmount();
             if (a == 1)
                 activeSaleTransaction.getEntries().remove(t);
@@ -1135,26 +1135,8 @@ public class EZShop implements EZShopInterface {
 
     }
 
-    /**
-     * This method adds a product to the return transaction, starting from its RFID This method DOES
-     * NOT update the product quantity It can be invoked only after a user with role
-     * "Administrator", "ShopManager" or "Cashier" is logged in.
-     *
-     * @param returnId the id of the return transaction
-     * @param RFID the RFID of the product to be returned
-     *
-     * @return true if the operation is successful false if the the product to be returned does not
-     *         exists, if it was not in the transaction, if the transaction does not exist
-     *
-     * @throws InvalidTransactionIdException if the return id is less ther or equal to 0 or if it is
-     *         null
-     * @throws InvalidRFIDException if the RFID is empty, null or invalid
-     * @throws UnauthorizedException if there is no logged user or if it has not the rights to
-     *         perform the operation
-     */
-
     @Override
-    /* TODO */
+    /* TODO!!!!!!! */
     public boolean returnProductRFID(Integer returnId, String RFID)
             throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException {
         SaleTransactionImpl saleTransaction;
@@ -1176,18 +1158,21 @@ public class EZShop implements EZShopInterface {
 
         saleTransaction = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
         Integer idRFID = ezshopDb.getTransactionByRFID(RFID);
-        ezshopDb.closeConnection();
+ 
 
         if (saleTransaction == null || saleTransaction.getTicketNumber() != idRFID) {
+            ezshopDb.closeConnection();
             return false;
         }
         String productCode = ezshopDb.getBarCodebyRFID(RFID);
-        if (productCode == null)
+        if (productCode == null) {
+            ezshopDb.closeConnection();
             return false;
+        }
         ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
         double money = p.getPricePerUnit();
         activeReturnTransaction.updateTotal(money);
-        activeReturnTransaction.setReturnedProductsMapbyRFID(RFID);
+        activeReturnTransaction.addProductToReturn(productCode, 1);
 
         return true;
 
