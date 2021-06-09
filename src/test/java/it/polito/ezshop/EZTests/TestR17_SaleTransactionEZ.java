@@ -197,10 +197,10 @@ public class TestR17_SaleTransactionEZ {
 		ezshop.login("elisa", "elisa98");
 		ezshop.recordBalanceUpdate(100);
 		int orderId = ezshop.payOrderFor("12345678912237", 1, 4);
-		ezshop.recordOrderArrivalRFID(orderId, "1234567891");
+		ezshop.recordOrderArrivalRFID(orderId, "123456789111");
 		ezshop.startSaleTransaction();
 		long start = System.currentTimeMillis();
-		assertTrue(ezshop.addProductToSaleRFID(1, "1234567891"));
+		assertTrue(ezshop.addProductToSaleRFID(1, "123456789111"));
 		long fine = System.currentTimeMillis();
 		assertTrue(fine - start < 500);
 		assertEquals(ezshop.activeSaleTransaction.getPrice(), 2, 0);

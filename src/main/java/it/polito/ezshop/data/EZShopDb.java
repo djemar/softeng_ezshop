@@ -1248,10 +1248,10 @@ public class EZShopDb {
 
     public boolean verifyRFID(String RFIDfrom, int value) {
         try {
-            int n = Integer.valueOf(RFIDfrom);
-            String n_string = Integer.toString(n + value);
+            Long n = Long.valueOf(RFIDfrom);
+            String n_string = Long.toString(n + value);
             String top = "";
-            for (int i = 0; i < 10 - n_string.length(); i++)
+            for (int i = 0; i < 12 - n_string.length(); i++)
                 top += '0';
             top += n_string;
             PreparedStatement pstmt = connection.prepareStatement(
@@ -1286,10 +1286,10 @@ public class EZShopDb {
                         "insert into product(RFID,BarCode,TransactionId)values(?, ?, -1)",
                         Statement.RETURN_GENERATED_KEYS);
                 pstmt.setQueryTimeout(30); // set timeout to 30 sec.
-                int n = Integer.valueOf(RFIDfrom);
-                String n_string = Integer.toString(n + i);
+                Long n = Long.valueOf(RFIDfrom);
+                String n_string = Long.toString(n + i);
                 String top = "";
-                for (int j = 0; j < 10 - n_string.length(); j++)
+                for (int j = 0; j < 12 - n_string.length(); j++)
                     top += '0';
                 top += n_string;
                 pstmt.setString(1, top); // the index refers to the ? in the statement
