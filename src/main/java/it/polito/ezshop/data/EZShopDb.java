@@ -802,7 +802,8 @@ public class EZShopDb {
         return i;
 
     }
-/*TODO*/
+
+    /* TODO */
     public boolean insertSaleTransaction(SaleTransactionImpl saleTransaction) {
         // to be called by endSaleTransaction
         try {
@@ -832,12 +833,20 @@ public class EZShopDb {
                     pstm.setString(6, t.getProductDescription());
 
                     pstm.executeUpdate();
-                    /*TicketEntryImpl t = (TicketEntryImpl)t;
-                    t.getRFID().forEach(x->)*/
-                    pstm = connection.prepareStatement("update product set TransactionId=? ");
-                    pstm.setInt(1, saleTransaction.getTicketNumber());
+                    TicketEntryImpl ticketEntry = (TicketEntryImpl) t;
+                    ticketEntry.getRFID().forEach(x -> {
+                        try {
+                            PreparedStatement stmt = connection.prepareStatement(
+                                    "update product set TransactionId=? where rfid=?");
+                            stmt.setInt(1, saleTransaction.getTicketNumber());
+                            stmt.setString(2, x);
+                            stmt.executeUpdate();
 
-                    pstm.executeUpdate();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    });
 
                 } catch (SQLException e) {
                     e.printStackTrace();

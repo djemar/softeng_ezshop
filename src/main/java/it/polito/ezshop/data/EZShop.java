@@ -440,12 +440,13 @@ public class EZShop implements EZShopInterface {
         boolean isSuccess = false;
         if (orderId == null || orderId <= 0)
             throw new InvalidOrderIdException("Invalid order id");
-        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 12 || !Utils.isOnlyDigit(RFIDfrom))
+        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 12
+                || !Utils.isOnlyDigit(RFIDfrom))
             throw new InvalidRFIDException();
         if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
                 || currentUser.getRole().equalsIgnoreCase("ShopManager")))
             throw new UnauthorizedException("Unauthorized user");
-        
+
         if (ezshopDb.createConnection()) {
 
             OrderImpl o = ezshopDb.getOrder(orderId);
@@ -453,12 +454,12 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return false;
             }
-            
+
             if (o != null && o.getStatus().equals("COMPLETED")) {
                 ezshopDb.closeConnection();
                 return true;
             }
-            if(!ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
+            if (!ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
                 ezshopDb.closeConnection();
                 throw new InvalidRFIDException();
             }
@@ -761,7 +762,8 @@ public class EZShop implements EZShopInterface {
             if (productCode == null)
                 return false;
             ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
-            if (p != null && activeSaleTransaction != null && activeSaleTransaction.getTicketNumber() == transactionId
+            if (p != null && activeSaleTransaction != null
+                    && activeSaleTransaction.getTicketNumber() == transactionId
                     && activeSaleTransaction.getStatus().equalsIgnoreCase("open")) {
                 if (!activeSaleTransaction.getEntries().stream()
                         .anyMatch(x -> x.getBarCode().equals(productCode)))
@@ -816,11 +818,11 @@ public class EZShop implements EZShopInterface {
                 return false;
             }
             TicketEntryImpl t = (TicketEntryImpl) ticketEntry.get();
-            if(!t.getRFID().stream().filter(x-> x.equals(RFID)).findFirst().isPresent()){
+            if (!t.getRFID().stream().filter(x -> x.equals(RFID)).findFirst().isPresent()) {
                 ezshopDb.closeConnection();
                 return false;
             }
-            /*TODO rimuovere rfid da elenco*/	
+            /* TODO rimuovere rfid da elenco */
             int a = t.getAmount();
             if (a == 1)
                 activeSaleTransaction.getEntries().remove(t);
@@ -1158,7 +1160,7 @@ public class EZShop implements EZShopInterface {
 
         saleTransaction = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
         Integer idRFID = ezshopDb.getTransactionByRFID(RFID);
- 
+
 
         if (saleTransaction == null || saleTransaction.getTicketNumber() != idRFID) {
             ezshopDb.closeConnection();
@@ -1173,6 +1175,7 @@ public class EZShop implements EZShopInterface {
         double money = p.getPricePerUnit();
         activeReturnTransaction.updateTotal(money);
         activeReturnTransaction.addProductToReturn(productCode, 1);
+        ezshopDb.closeConnection();
 
         return true;
 
