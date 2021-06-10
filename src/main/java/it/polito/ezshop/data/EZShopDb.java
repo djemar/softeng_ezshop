@@ -832,7 +832,8 @@ public class EZShopDb {
                     pstm.setString(6, t.getProductDescription());
 
                     pstm.executeUpdate();
-
+                    /*TicketEntryImpl t = (TicketEntryImpl)t;
+                    t.getRFID().forEach(x->)*/
                     pstm = connection.prepareStatement("update product set TransactionId=? ");
                     pstm.setInt(1, saleTransaction.getTicketNumber());
 
