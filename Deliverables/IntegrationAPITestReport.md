@@ -307,6 +307,13 @@ JUnit test cases applied to them> JUnit test classes should be here src/test/jav
 | EZShop  | testInValidUpdatePosition()             |
 | EZShop  | testValidUpdateQuantity()               |
 | EZShop  | testInalidUpdateQuantity()              |
+| EZShop  |testValidRecordOrderArrivalRFID()        |
+| EZShop  |testInvalidRecordOrderArrivalRFID()      |
+| EZShop  |testInvalidReturnProdRFID()              |
+| EZShop  |testValidReturnProdRFID()                | 
+| EZShop  |testValidAddProductToSaleRFID()          |
+| EZShop  |testInvalidAddProductToSalebyRFID()      |
+| EZShop  |testInvalidDeleteProductFromSaleRFID()   |
 
 # Scenarios
 
