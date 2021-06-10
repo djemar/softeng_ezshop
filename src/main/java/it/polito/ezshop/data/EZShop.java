@@ -813,7 +813,7 @@ public class EZShop implements EZShopInterface {
             }
             Optional<TicketEntry> ticketEntry = activeSaleTransaction.getEntries().stream()
                     .filter(x -> x.getBarCode().equals(productCode)).findFirst();
-            if (!ticketEntry.isPresent()) {
+            if (!ticketEntry.isPresent() || ticketEntry.get() == null) {
                 ezshopDb.closeConnection();
                 return false;
             }

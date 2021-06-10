@@ -280,6 +280,8 @@ public class TestR17_SaleTransactionEZ {
 		assertTrue(ezshop.addProductToSaleRFID(id, "123456789111"));
 
 		assertFalse(ezshop.deleteProductFromSaleRFID(id, "123456789112"));
+		assertTrue(ezshop.deleteProductFromSaleRFID(id, "123456789111"));
+		assertFalse(ezshop.deleteProductFromSaleRFID(id, "123456789111"));
 
 
 		assertThrows(InvalidTransactionIdException.class, () -> {
