@@ -257,6 +257,8 @@ public class TestR19_OrderEZ {
         boolean result;
         long start = System.currentTimeMillis();
         result = ezshop.recordOrderArrivalRFID(orderId,"000000000010");
+        result = ezshop.recordOrderArrivalRFID(orderId,"000000000010");
+
         long fine = System.currentTimeMillis();
         //assertTrue(fine - start < 500);
         assertTrue(result);
@@ -278,6 +280,11 @@ public class TestR19_OrderEZ {
         ezshop.payOrder(orderId);
         assertTrue(ezshop.recordOrderArrivalRFID(orderId,"000000000100"));
 
+        int orderId2=ezshop.issueOrder( "2905911158926", 2, 2);
+        ezshop.payOrder(orderId2);
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId2,"000000000100");
+        });
 
 
         assertThrows(InvalidOrderIdException.class, () -> {
