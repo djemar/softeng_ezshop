@@ -256,10 +256,64 @@ public class TestR19_OrderEZ {
         ezshop.payOrder(orderId);
         boolean result;
         long start = System.currentTimeMillis();
-        result = ezshop.recordOrderArrivalRFID(orderId,"0000000010");
+        result = ezshop.recordOrderArrivalRFID(orderId,"000000000010");
         long fine = System.currentTimeMillis();
         //assertTrue(fine - start < 500);
         assertTrue(result);
+    }
+    @Test
+    public void testInvalidRecordOrderArrivalRFID() throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException, InvalidRFIDException, InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, InvalidUsernameException, InvalidPasswordException, InvalidQuantityException{
+        assertFalse(ezshop.recordOrderArrivalRFID(64846,"000000000090"));
+
+        ezshop.payOrder(orderId);
+
+        ezshop.deleteProductType(prodId);
+        assertThrows(InvalidLocationException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId,"000000000100");
+        });
+
+        prodId = ezshop.createProductType("honey", "2905911158926", 10, "");
+        ezshop.updatePosition(prodId, "347-sdfg-3673");
+        orderId=ezshop.issueOrder( "2905911158926", 2, 2);
+        ezshop.payOrder(orderId);
+        assertTrue(ezshop.recordOrderArrivalRFID(orderId,"000000000100"));
+
+
+
+        assertThrows(InvalidOrderIdException.class, () -> {
+            ezshop.recordOrderArrivalRFID(-1,"000000000100");
+        });
+
+        assertThrows(InvalidOrderIdException.class, () -> {
+            ezshop.recordOrderArrivalRFID(null,"000000000100");
+        });
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId,"");
+        });
+
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId,null);
+        });
+        ezshop.recordBalanceUpdate(100000);
+
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(1,"test");
+        });
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(1,"00000test0");
+        });
+        
+        assertThrows(InvalidRFIDException.class, () -> {
+            ezshop.recordOrderArrivalRFID(1,"0000100");
+        });
+        ezshop.logout();
+        assertThrows(UnauthorizedException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId,"000000000100");
+        });
+        ezshop.login("diego", "d");
+        assertThrows(UnauthorizedException.class, () -> {
+            ezshop.recordOrderArrivalRFID(orderId,"000000000100");
+        });
     }
     
 
