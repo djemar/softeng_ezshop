@@ -247,10 +247,41 @@ public class TestR17_SaleTransactionEZ {
 
 
 	@Test
-	public void testInvalidDeleteProductFromSaleRFID()
-			throws UnauthorizedException, InvalidUsernameException, InvalidPasswordException,
-			InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException {
+	public void testValidDeleteProductFromSaleRFID() throws UnauthorizedException,
+			InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException,
+			InvalidRFIDException, InvalidQuantityException, InvalidProductCodeException,
+			InvalidPricePerUnitException, InvalidOrderIdException, InvalidLocationException {
 		ezshop.login("elisa", "elisa98"); // TODO
+		ezshop.recordBalanceUpdate(100);
+
+		int orderId = ezshop.payOrderFor("12345678912237", 2, 4);
+		ezshop.recordOrderArrivalRFID(orderId, "123456789111");
+
+		int id = ezshop.startSaleTransaction();
+		assertTrue(ezshop.addProductToSaleRFID(id, "123456789111"));
+		assertTrue(ezshop.addProductToSaleRFID(id, "123456789112"));
+
+		assertTrue(ezshop.deleteProductFromSaleRFID(id, "123456789111"));
+
+	}
+
+	@Test
+	public void testInvalidDeleteProductFromSaleRFID() throws UnauthorizedException,
+			InvalidUsernameException, InvalidPasswordException, InvalidTransactionIdException,
+			InvalidRFIDException, InvalidQuantityException, InvalidProductCodeException,
+			InvalidPricePerUnitException, InvalidOrderIdException, InvalidLocationException {
+		ezshop.login("elisa", "elisa98"); // TODO
+		ezshop.recordBalanceUpdate(100);
+
+		int orderId = ezshop.payOrderFor("12345678912237", 2, 4);
+		ezshop.recordOrderArrivalRFID(orderId, "123456789111");
+
+		int id = ezshop.startSaleTransaction();
+		assertTrue(ezshop.addProductToSaleRFID(id, "123456789111"));
+
+		assertFalse(ezshop.deleteProductFromSaleRFID(id, "123456789112"));
+
+
 		assertThrows(InvalidTransactionIdException.class, () -> {
 			ezshop.deleteProductFromSaleRFID(-1, "123456789111");
 		});

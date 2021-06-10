@@ -822,7 +822,7 @@ public class EZShop implements EZShopInterface {
                 ezshopDb.closeConnection();
                 return false;
             }
-            /* TODO rimuovere rfid da elenco */
+
             int a = t.getAmount();
             if (a == 1)
                 activeSaleTransaction.getEntries().remove(t);
