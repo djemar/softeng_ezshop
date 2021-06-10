@@ -7,15 +7,6 @@ public class SaleTransactionImpl implements SaleTransaction {
 
 	Integer transactionID;
 	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();
-	ArrayList<Product> RFIDs = new ArrayList<Product>();
-
-	public ArrayList<Product> getRFIDs() {
-		return RFIDs;
-	}
-
-	public void setRFIDs(ArrayList<Product> rFIDs) {
-		RFIDs = rFIDs;
-	}
 
 	private double discountRate = 0;
 	private double price;
