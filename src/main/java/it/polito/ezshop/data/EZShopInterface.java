@@ -369,6 +369,7 @@ public interface EZShopInterface {
      * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
      * @throws InvalidRFIDException if the RFID has invalid format or is not unique 
      */
+    /*TODO*/
     public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException, InvalidRFIDException;
     /**
      * This method return the list of all orders ISSUED, ORDERED and COMLPETED.
@@ -550,6 +551,7 @@ public interface EZShopInterface {
      * @throws InvalidRFIDException if the RFID code is empty, null or invalid
      * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
      */
+    /*TODO*/
     public boolean addProductToSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException;
       /**
      * This method deletes a product from a sale transaction , receiving its barcode, increasing the temporary amount of product available on the
@@ -587,6 +589,7 @@ public interface EZShopInterface {
      * @throws InvalidRFIDException if the RFID is empty, null or invalid
      * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
      */
+    /*TODO*/
     public boolean deleteProductFromSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException;
 
     /**
@@ -743,6 +746,7 @@ public interface EZShopInterface {
      * @throws InvalidRFIDException if the RFID is empty, null or invalid
      * @throws UnauthorizedException if there is no logged user or if it has not the rights to perform the operation
      */
+    /*TODO*/
     public boolean returnProductRFID(Integer returnId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException;
     /**
      * This method closes a return transaction. A closed return transaction can be committed (i.e. <commit> = true) thus

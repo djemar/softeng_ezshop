@@ -6,7 +6,8 @@ import java.util.List;
 public class SaleTransactionImpl implements SaleTransaction {
 
 	Integer transactionID;
-	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();;
+	ArrayList<TicketEntry> ticketsList = new ArrayList<TicketEntry>();
+
 	private double discountRate = 0;
 	private double price;
 	// (open, closed, payed)
@@ -80,6 +81,7 @@ public class SaleTransactionImpl implements SaleTransaction {
 	public double getPrice() {
 		return this.price;
 	}
+
 
 	public void estimatePrice() {
 		if (this.ticketsList.isEmpty())

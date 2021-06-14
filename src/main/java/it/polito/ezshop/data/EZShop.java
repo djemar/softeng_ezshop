@@ -359,7 +359,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException("Unauthorized user");
         if (ezshopDb.createConnection()) {
             ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(productCode);
-            if (prod != null && ezshopDb.getBalance() > pricePerUnit * quantity) {
+            if (prod != null && ezshopDb.getBalance() >= pricePerUnit * quantity) {
                 BalanceOperationImpl balanceOp = new BalanceOperationImpl(LocalDate.now(),
                         -quantity * pricePerUnit, "ORDER");
                 int idBOp = ezshopDb.insertBalanceOperation(balanceOp);
@@ -433,10 +433,57 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, 
-InvalidLocationException, InvalidRFIDException {
-        return false;
+    /* TODO */
+    public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom)
+            throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException,
+            InvalidRFIDException {
+        boolean isSuccess = false;
+        if (orderId == null || orderId <= 0)
+            throw new InvalidOrderIdException("Invalid order id");
+        if (RFIDfrom == null || RFIDfrom.isEmpty() || RFIDfrom.length() != 12
+                || !Utils.isOnlyDigit(RFIDfrom))
+            throw new InvalidRFIDException();
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")))
+            throw new UnauthorizedException("Unauthorized user");
+
+        if (ezshopDb.createConnection()) {
+
+            OrderImpl o = ezshopDb.getOrder(orderId);
+            if (o == null) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+
+            if (o != null && o.getStatus().equals("COMPLETED")) {
+                ezshopDb.closeConnection();
+                return true;
+            }
+            if (!ezshopDb.verifyRFID(RFIDfrom, o.getQuantity())) {
+                ezshopDb.closeConnection();
+                throw new InvalidRFIDException();
+            }
+
+
+            if (o.getStatus().equals("PAYED")) {
+                ProductTypeImpl prod = ezshopDb.getProductTypeByBarCode(o.getProductCode());
+                if (prod == null || prod.getLocation() == null || prod.getLocation().isEmpty()) {
+                    ezshopDb.closeConnection();
+                    throw new InvalidLocationException("Invalid Location");
+                }
+
+
+                if (ezshopDb.updateOrder(o.getOrderId(), "COMPLETED", o.getBalanceId())
+                        && !ezshopDb.updateQuantity(prod.getId(), o.getQuantity())
+                        && ezshopDb.insertProducts(RFIDfrom, o.getQuantity(), o.getProductCode())) {
+                    isSuccess = true;
+                }
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
+
     @Override
     public List<Order> getAllOrders() throws UnauthorizedException {
         List<Order> list = null;
@@ -697,15 +744,106 @@ InvalidLocationException, InvalidRFIDException {
     }
 
     @Override
-    public boolean addProductToSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
-        return false;
+    /* TODO */
+    public boolean addProductToSaleRFID(Integer transactionId, String RFID)
+            throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException,
+            UnauthorizedException {
+        boolean isSuccess = false;
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 12)
+            throw new InvalidRFIDException("rfid invalid");
+        if (ezshopDb.createConnection()) {
+            String productCode = ezshopDb.getBarCodebyRFID(RFID);
+            if (productCode == null)
+                return false;
+            ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
+            if (p != null && activeSaleTransaction != null
+                    && activeSaleTransaction.getTicketNumber() == transactionId
+                    && activeSaleTransaction.getStatus().equalsIgnoreCase("open")) {
+                if (!activeSaleTransaction.getEntries().stream()
+                        .anyMatch(x -> x.getBarCode().equals(productCode)))
+                    activeSaleTransaction.getEntries().add(new TicketEntryImpl(p.getBarCode(),
+                            p.getProductDescription(), 1, p.getPricePerUnit(), RFID));
+                else {
+                    TicketEntryImpl t = (TicketEntryImpl) activeSaleTransaction.getEntries()
+                            .stream().filter(x -> x.getBarCode().equals(productCode)).findFirst()
+                            .get();
+                    int amountf = t.getAmount() + 1;
+                    t.setAmount(amountf);
+                    t.addRFID(RFID);
+                }
+
+                activeSaleTransaction.estimatePrice();
+                if (!ezshopDb.updateQuantity(p.getId(), -1))
+                    isSuccess = true;
+            }
+            ezshopDb.closeConnection();
+        }
+        return isSuccess;
     }
-    
+
 
     @Override
-    public boolean deleteProductFromSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
-        return false;
+    /* TODO */
+    public boolean deleteProductFromSaleRFID(Integer transactionId, String RFID)
+            throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException,
+            UnauthorizedException {
+        if (currentUser == null || !(currentUser.getRole().equalsIgnoreCase("Administrator")
+                || currentUser.getRole().equalsIgnoreCase("ShopManager")
+                || currentUser.getRole().equalsIgnoreCase("Cashier")))
+            throw new UnauthorizedException("Unauthorized user");
+        if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+        if (RFID == null || RFID.isEmpty() || RFID.length() != 12 || !Utils.isOnlyDigit(RFID))
+            throw new InvalidRFIDException();
+
+        if (ezshopDb.createConnection()) {
+            String productCode = ezshopDb.getBarCodebyRFID(RFID);
+            ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
+            if (productCode == null || activeSaleTransaction == null || p == null
+                    || activeSaleTransaction.getTicketNumber() != transactionId
+                    || !activeSaleTransaction.getStatus().equalsIgnoreCase("open")) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+            Optional<TicketEntry> ticketEntry = activeSaleTransaction.getEntries().stream()
+                    .filter(x -> x.getBarCode().equals(productCode)).findFirst();
+            if (!ticketEntry.isPresent() || ticketEntry.get() == null) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+            TicketEntryImpl t = (TicketEntryImpl) ticketEntry.get();
+            if (!t.getRFID().stream().filter(x -> x.equals(RFID)).findFirst().isPresent()) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+
+            int a = t.getAmount();
+            if (a == 1)
+                activeSaleTransaction.getEntries().remove(t);
+            else
+                t.setAmount(a - 1);
+            activeSaleTransaction.estimatePrice();
+            if (ezshopDb.updateQuantity(p.getId(), 1)) {
+                ezshopDb.closeConnection();
+                return false;
+            }
+
+            activeSaleTransaction.estimatePrice();
+
+        } else {
+            return false;
+        }
+
+        ezshopDb.closeConnection();
+        return true;
     }
+
 
     @Override
     public boolean deleteProductFromSale(Integer transactionId, String productCode, int amount)
@@ -1000,9 +1138,47 @@ InvalidLocationException, InvalidRFIDException {
     }
 
     @Override
-    public boolean returnProductRFID(Integer returnId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException 
-    {
-        return false;
+    /* TODO!!!!!!! */
+    public boolean returnProductRFID(Integer returnId, String RFID)
+            throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException {
+        SaleTransactionImpl saleTransaction;
+        if (returnId == null || returnId <= 0)
+            throw new InvalidTransactionIdException("invalid id");
+        if (RFID == null || RFID.isEmpty() || !Utils.isOnlyDigit(RFID) || RFID.length() != 12)
+            throw new InvalidRFIDException("rfid invalid");
+        if (currentUser == null || (!currentUser.getRole().equalsIgnoreCase("administrator")
+                && !currentUser.getRole().equalsIgnoreCase("cashier")
+                && !currentUser.getRole().equalsIgnoreCase("shopmanager")))
+            throw new UnauthorizedException();
+
+        if (activeReturnTransaction == null || activeReturnTransaction.getReturnId() != returnId)
+            return false;
+
+        boolean conn = ezshopDb.createConnection();
+        if (!conn)
+            return false;
+
+        saleTransaction = ezshopDb.getSaleTransaction(activeReturnTransaction.getTransactionId());
+        Integer idRFID = ezshopDb.getTransactionByRFID(RFID);
+
+
+        if (saleTransaction == null || saleTransaction.getTicketNumber() != idRFID) {
+            ezshopDb.closeConnection();
+            return false;
+        }
+        String productCode = ezshopDb.getBarCodebyRFID(RFID);
+        if (productCode == null) {
+            ezshopDb.closeConnection();
+            return false;
+        }
+        ProductTypeImpl p = ezshopDb.getProductTypeByBarCode(productCode);
+        double money = p.getPricePerUnit();
+        activeReturnTransaction.updateTotal(money);
+        activeReturnTransaction.addProductToReturn(productCode, 1);
+        ezshopDb.closeConnection();
+
+        return true;
+
     }
 
     @Override

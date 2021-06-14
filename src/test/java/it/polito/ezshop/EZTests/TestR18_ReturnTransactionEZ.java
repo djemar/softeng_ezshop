@@ -6,6 +6,7 @@ import it.polito.ezshop.data.EZShopDb;
 import it.polito.ezshop.exceptions.InvalidCreditCardException;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidLocationException;
+import it.polito.ezshop.exceptions.InvalidOrderIdException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidPaymentException;
 import it.polito.ezshop.exceptions.InvalidPricePerUnitException;
@@ -13,6 +14,7 @@ import it.polito.ezshop.exceptions.InvalidProductCodeException;
 import it.polito.ezshop.exceptions.InvalidProductDescriptionException;
 import it.polito.ezshop.exceptions.InvalidProductIdException;
 import it.polito.ezshop.exceptions.InvalidQuantityException;
+import it.polito.ezshop.exceptions.InvalidRFIDException;
 import it.polito.ezshop.exceptions.InvalidRoleException;
 import it.polito.ezshop.exceptions.InvalidTransactionIdException;
 import it.polito.ezshop.exceptions.InvalidUsernameException;
@@ -343,4 +345,44 @@ public class TestR18_ReturnTransactionEZ {
 	    	assertTrue(fine-start< 500);
 
         }
+        @Test
+    	public void testInvalidReturnProdRFID() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, UnauthorizedException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, InvalidProductIdException, InvalidLocationException, InvalidTransactionIdException, InvalidQuantityException, InvalidPaymentException, InvalidOrderIdException, InvalidRFIDException {
+    		ezshop.createUser("admin", "admin", "Administrator");
+    		
+    		assertThrows(UnauthorizedException.class,()->ezshop.returnProductRFID(10,"000000000000"));
+    		ezshop.login("admin", "admin");
+    		
+    		assertThrows(InvalidTransactionIdException.class,()->ezshop.returnProductRFID(null,"000000000000"));
+    		assertThrows(InvalidTransactionIdException.class,()->ezshop.returnProductRFID(0,"000000000000"));
+    		assertThrows(InvalidTransactionIdException.class,()->ezshop.returnProductRFID(-10,"000000000000"));
+    		assertThrows(InvalidRFIDException.class,()->ezshop.returnProductRFID(10,null));
+    		assertThrows(InvalidRFIDException.class,()->ezshop.returnProductRFID(10,""));
+    		assertThrows(InvalidRFIDException.class,()->ezshop.returnProductRFID(10,"00"));
+    		assertThrows(InvalidRFIDException.class,()->ezshop.returnProductRFID(10,"0ab0"));
+    		
+    		assertFalse(ezshop.returnProductRFID(10,"000000000000"));
+    				
+    	}
+    	@Test
+    	public void testValidReturnProdRFID() throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException, UnauthorizedException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, InvalidProductIdException, InvalidLocationException, InvalidTransactionIdException, InvalidQuantityException, InvalidPaymentException, InvalidRFIDException, InvalidOrderIdException {
+        	ezshop.login("elisa", "elisa98");
+    		int pid = ezshop.createProductType("Eggs","234829476238",2.0,"note1");
+    		ezshop.updatePosition(pid, "33-H-12");
+    		ezshop.recordBalanceUpdate(100.00);
+    		int id=ezshop.issueOrder("234829476238",10,3.50);
+    		ezshop.payOrder(id);
+    		ezshop.recordOrderArrivalRFID(id,"000000000001");
+    		int saleId = ezshop.startSaleTransaction();
+    		ezshop.addProductToSaleRFID(saleId,"000000000001");
+    		ezshop.addProductToSaleRFID(saleId,"000000000002");
+    		ezshop.addProductToSaleRFID(saleId,"000000000004");
+    		ezshop.endSaleTransaction(saleId);
+    		ezshop.receiveCashPayment(saleId, 50);
+    		Integer retId =ezshop.startReturnTransaction(saleId);
+    		
+    		assertFalse(ezshop.returnProductRFID(retId,"000000000000"));
+    		assertTrue(ezshop.returnProductRFID(retId,"000000000004"));
+    		assertTrue(ezshop.returnProductRFID(retId,"000000000002"));
+    		assertFalse(ezshop.returnProductRFID(retId,"000000000003"));	
+    	}
 }
